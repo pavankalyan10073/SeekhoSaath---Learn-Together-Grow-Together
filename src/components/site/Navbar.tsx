@@ -150,7 +150,7 @@ export function Navbar() {
                 </Link>
                 <Link
                   to="/signup"
-                  className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-crimson to-ember px-3 py-1.5 text-xs font-extrabold text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg sm:px-4 sm:py-2 sm:text-sm"
+                  className="hidden rounded-full bg-gradient-to-r from-crimson to-ember px-3 py-1.5 text-xs font-extrabold text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg sm:inline-flex sm:px-4 sm:py-2 sm:text-sm"
                 >
                   Get started
                 </Link>
@@ -283,6 +283,15 @@ export function Navbar() {
                       className="block rounded-xl px-4 py-3 text-sm font-extrabold text-muted-foreground transition-all hover:bg-gradient-to-r hover:from-crimson/10 hover:to-ember/10 hover:text-crimson"
                     >
                       Sign in
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/signup"
+                      onClick={handleNavClick}
+                      className="block rounded-xl px-4 py-3 text-sm font-extrabold text-crimson transition-all hover:bg-crimson/10"
+                    >
+                      Get started
                     </Link>
                   </li>
                 )}
