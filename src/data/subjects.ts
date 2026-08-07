@@ -25,16 +25,32 @@ export const subjectCategories: SubjectCategory[] = [
         name: "Primary Mathematics",
         emoji: "🔢",
         tutorCount: 342,
-        description: "Number sense, arithmetic, basic geometry, and problem-solving skills for young learners.",
-        topics: ["Addition & Subtraction", "Multiplication & Division", "Fractions", "Basic Geometry", "Measurement", "Patterns"],
+        description:
+          "Number sense, arithmetic, basic geometry, and problem-solving skills for young learners.",
+        topics: [
+          "Addition & Subtraction",
+          "Multiplication & Division",
+          "Fractions",
+          "Basic Geometry",
+          "Measurement",
+          "Patterns",
+        ],
       },
       {
         id: "primary-english",
         name: "English (Primary)",
         emoji: "📖",
         tutorCount: 418,
-        description: "Reading, writing, grammar, and vocabulary building for primary school students.",
-        topics: ["Reading Comprehension", "Grammar Basics", "Creative Writing", "Vocabulary", "Phonics", "Spelling"],
+        description:
+          "Reading, writing, grammar, and vocabulary building for primary school students.",
+        topics: [
+          "Reading Comprehension",
+          "Grammar Basics",
+          "Creative Writing",
+          "Vocabulary",
+          "Phonics",
+          "Spelling",
+        ],
       },
       {
         id: "primary-hindi",
@@ -58,7 +74,13 @@ export const subjectCategories: SubjectCategory[] = [
         emoji: "🧠",
         tutorCount: 124,
         description: "Fun facts, current affairs, and general awareness for curious young minds.",
-        topics: ["Current Affairs", "Famous Personalities", "Countries & Capitals", "Science Facts", "Sports"],
+        topics: [
+          "Current Affairs",
+          "Famous Personalities",
+          "Countries & Capitals",
+          "Science Facts",
+          "Sports",
+        ],
       },
       {
         id: "vedic-math",
@@ -80,8 +102,16 @@ export const subjectCategories: SubjectCategory[] = [
         name: "Mathematics",
         emoji: "📐",
         tutorCount: 1240,
-        description: "Algebra, geometry, trigonometry, and statistics for middle and high school students.",
-        topics: ["Algebra", "Geometry", "Trigonometry", "Statistics", "Mensuration", "Number Systems"],
+        description:
+          "Algebra, geometry, trigonometry, and statistics for middle and high school students.",
+        topics: [
+          "Algebra",
+          "Geometry",
+          "Trigonometry",
+          "Statistics",
+          "Mensuration",
+          "Number Systems",
+        ],
       },
       {
         id: "physics-6-10",
@@ -97,7 +127,13 @@ export const subjectCategories: SubjectCategory[] = [
         emoji: "🧪",
         tutorCount: 734,
         description: "Elements, compounds, reactions, and the periodic table made easy.",
-        topics: ["Periodic Table", "Chemical Reactions", "Acids & Bases", "Metals", "Organic Chemistry"],
+        topics: [
+          "Periodic Table",
+          "Chemical Reactions",
+          "Acids & Bases",
+          "Metals",
+          "Organic Chemistry",
+        ],
       },
       {
         id: "biology-6-10",
@@ -105,7 +141,14 @@ export const subjectCategories: SubjectCategory[] = [
         emoji: "🧬",
         tutorCount: 512,
         description: "Cell biology, genetics, ecology, and human physiology for school students.",
-        topics: ["Cell Biology", "Genetics", "Human Body", "Ecology", "Evolution", "Microorganisms"],
+        topics: [
+          "Cell Biology",
+          "Genetics",
+          "Human Body",
+          "Ecology",
+          "Evolution",
+          "Microorganisms",
+        ],
       },
       {
         id: "english-6-10",
@@ -113,7 +156,14 @@ export const subjectCategories: SubjectCategory[] = [
         emoji: "📚",
         tutorCount: 2108,
         description: "Grammar, literature, creative writing, and comprehension skills.",
-        topics: ["Grammar", "Literature", "Creative Writing", "Comprehension", "Poetry", "Essay Writing"],
+        topics: [
+          "Grammar",
+          "Literature",
+          "Creative Writing",
+          "Comprehension",
+          "Poetry",
+          "Essay Writing",
+        ],
       },
       {
         id: "social-science",
@@ -152,7 +202,14 @@ export const subjectCategories: SubjectCategory[] = [
         emoji: "📊",
         tutorCount: 980,
         description: "Advanced calculus, algebra, and probability for board exams and JEE.",
-        topics: ["Calculus", "Probability", "Vectors", "3D Geometry", "Linear Programming", "Matrices"],
+        topics: [
+          "Calculus",
+          "Probability",
+          "Vectors",
+          "3D Geometry",
+          "Linear Programming",
+          "Matrices",
+        ],
       },
       {
         id: "physics-11-12",
@@ -160,7 +217,14 @@ export const subjectCategories: SubjectCategory[] = [
         emoji: "🔭",
         tutorCount: 876,
         description: "Advanced mechanics, electromagnetism, optics, and modern physics.",
-        topics: ["Mechanics", "Thermodynamics", "Waves", "Optics", "Electromagnetism", "Modern Physics"],
+        topics: [
+          "Mechanics",
+          "Thermodynamics",
+          "Waves",
+          "Optics",
+          "Electromagnetism",
+          "Modern Physics",
+        ],
       },
       {
         id: "chemistry-11-12",
@@ -168,7 +232,13 @@ export const subjectCategories: SubjectCategory[] = [
         emoji: "⚗️",
         tutorCount: 712,
         description: "Physical, organic, and inorganic chemistry for boards and NEET.",
-        topics: ["Physical Chemistry", "Organic Chemistry", "Inorganic Chemistry", "Electrochemistry", "Solutions"],
+        topics: [
+          "Physical Chemistry",
+          "Organic Chemistry",
+          "Inorganic Chemistry",
+          "Electrochemistry",
+          "Solutions",
+        ],
       },
       {
         id: "biology-11-12",
@@ -176,7 +246,14 @@ export const subjectCategories: SubjectCategory[] = [
         emoji: "🦠",
         tutorCount: 634,
         description: "Advanced biology for NEET aspirants and board exam preparation.",
-        topics: ["Genetics", "Biotechnology", "Ecology", "Human Physiology", "Plant Physiology", "Reproduction"],
+        topics: [
+          "Genetics",
+          "Biotechnology",
+          "Ecology",
+          "Human Physiology",
+          "Plant Physiology",
+          "Reproduction",
+        ],
       },
       {
         id: "economics-11-12",
@@ -192,7 +269,13 @@ export const subjectCategories: SubjectCategory[] = [
         emoji: "✍️",
         tutorCount: 567,
         description: "Advanced literature, writing skills, and board exam preparation.",
-        topics: ["Literature Analysis", "Essay Writing", "Grammar", "Comprehension", "Creative Writing"],
+        topics: [
+          "Literature Analysis",
+          "Essay Writing",
+          "Grammar",
+          "Comprehension",
+          "Creative Writing",
+        ],
       },
       {
         id: "commerce",
@@ -231,7 +314,14 @@ export const subjectCategories: SubjectCategory[] = [
         emoji: "🐍",
         tutorCount: 654,
         description: "From basics to advanced Python including data science and web development.",
-        topics: ["Python Basics", "OOP in Python", "NumPy & Pandas", "Django/Flask", "Data Science", "Automation"],
+        topics: [
+          "Python Basics",
+          "OOP in Python",
+          "NumPy & Pandas",
+          "Django/Flask",
+          "Data Science",
+          "Automation",
+        ],
       },
       {
         id: "java",
@@ -262,7 +352,8 @@ export const subjectCategories: SubjectCategory[] = [
         name: "C++",
         emoji: "➕",
         tutorCount: 312,
-        description: "Object-oriented programming with C++ for competitive programming and software development.",
+        description:
+          "Object-oriented programming with C++ for competitive programming and software development.",
         topics: ["OOP", "STL", "Templates", "Competitive Programming", "Data Structures"],
       },
       {
@@ -270,7 +361,8 @@ export const subjectCategories: SubjectCategory[] = [
         name: "Web Development",
         emoji: "🌐",
         tutorCount: 723,
-        description: "Full-stack web development with HTML, CSS, JavaScript, and modern frameworks.",
+        description:
+          "Full-stack web development with HTML, CSS, JavaScript, and modern frameworks.",
         topics: ["HTML/CSS", "JavaScript", "React", "Node.js", "MongoDB", "Deployment"],
       },
       {
@@ -287,7 +379,14 @@ export const subjectCategories: SubjectCategory[] = [
         emoji: "📉",
         tutorCount: 345,
         description: "Data analysis, visualization, machine learning, and statistical modeling.",
-        topics: ["Statistics", "Pandas", "Matplotlib", "Scikit-learn", "ML Algorithms", "Deep Learning"],
+        topics: [
+          "Statistics",
+          "Pandas",
+          "Matplotlib",
+          "Scikit-learn",
+          "ML Algorithms",
+          "Deep Learning",
+        ],
       },
     ],
   },
@@ -302,7 +401,14 @@ export const subjectCategories: SubjectCategory[] = [
         emoji: "🌳",
         tutorCount: 567,
         description: "Essential DSA concepts for coding interviews and competitive programming.",
-        topics: ["Arrays & Strings", "Linked Lists", "Trees & Graphs", "Sorting", "Dynamic Programming", "Greedy Algorithms"],
+        topics: [
+          "Arrays & Strings",
+          "Linked Lists",
+          "Trees & Graphs",
+          "Sorting",
+          "Dynamic Programming",
+          "Greedy Algorithms",
+        ],
       },
       {
         id: "operating-systems",
@@ -310,7 +416,14 @@ export const subjectCategories: SubjectCategory[] = [
         emoji: "🖥️",
         tutorCount: 234,
         description: "Process management, memory management, file systems, and concurrency.",
-        topics: ["Processes", "Threads", "Memory Management", "File Systems", "Scheduling", "Deadlocks"],
+        topics: [
+          "Processes",
+          "Threads",
+          "Memory Management",
+          "File Systems",
+          "Scheduling",
+          "Deadlocks",
+        ],
       },
       {
         id: "computer-networks",
@@ -325,16 +438,32 @@ export const subjectCategories: SubjectCategory[] = [
         name: "DBMS (Engineering)",
         emoji: "💾",
         tutorCount: 289,
-        description: "Advanced database concepts, transaction management, and distributed databases.",
-        topics: ["Relational Model", "SQL", "Transaction Management", "Indexing", "NoSQL", "Distributed DB"],
+        description:
+          "Advanced database concepts, transaction management, and distributed databases.",
+        topics: [
+          "Relational Model",
+          "SQL",
+          "Transaction Management",
+          "Indexing",
+          "NoSQL",
+          "Distributed DB",
+        ],
       },
       {
         id: "machine-learning",
         name: "Machine Learning",
         emoji: "🤖",
         tutorCount: 412,
-        description: "Supervised, unsupervised, and reinforcement learning with practical projects.",
-        topics: ["Linear Regression", "Classification", "Neural Networks", "CNN", "NLP", "Reinforcement Learning"],
+        description:
+          "Supervised, unsupervised, and reinforcement learning with practical projects.",
+        topics: [
+          "Linear Regression",
+          "Classification",
+          "Neural Networks",
+          "CNN",
+          "NLP",
+          "Reinforcement Learning",
+        ],
       },
       {
         id: "cloud-computing",
@@ -350,7 +479,13 @@ export const subjectCategories: SubjectCategory[] = [
         emoji: "🔒",
         tutorCount: 156,
         description: "Ethical hacking, network security, and cybersecurity fundamentals.",
-        topics: ["Ethical Hacking", "Cryptography", "Network Security", "Web Security", "Malware Analysis"],
+        topics: [
+          "Ethical Hacking",
+          "Cryptography",
+          "Network Security",
+          "Web Security",
+          "Malware Analysis",
+        ],
       },
       {
         id: "software-engineering",
@@ -384,7 +519,7 @@ export function getSubjectsByTutorId(tutorId: string): Subject[] {
         tutor.specializations.some(
           (s) =>
             s.toLowerCase().includes(subject.name.toLowerCase().split(" ")[0]) ||
-            subject.name.toLowerCase().includes(s.toLowerCase().split(" ")[0])
+            subject.name.toLowerCase().includes(s.toLowerCase().split(" ")[0]),
         ) ||
         tutor.subj.toLowerCase().includes(subject.name.toLowerCase().split(" ")[0])
       ) {

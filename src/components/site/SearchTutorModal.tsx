@@ -19,13 +19,7 @@ const SEARCH_TUTORS = [
 
 type Phase = "idle" | "searching" | "found";
 
-export function SearchTutorModal({
-  open,
-  onClose,
-}: {
-  open: boolean;
-  onClose: () => void;
-}) {
+export function SearchTutorModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [phase, setPhase] = useState<Phase>("idle");
   const [matchedTutor, setMatchedTutor] = useState(SEARCH_TUTORS[0]);
   const [shuffling, setShuffling] = useState(false);
@@ -85,7 +79,14 @@ export function SearchTutorModal({
               className="absolute right-3 top-3 z-10 grid h-8 w-8 place-items-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-muted-foreground hover:text-background sm:right-4 sm:top-4"
               aria-label="Close"
             >
-              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <svg
+                viewBox="0 0 24 24"
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
                 <path d="M18 6L6 18M6 6l12 12" />
               </svg>
             </button>
@@ -94,9 +95,18 @@ export function SearchTutorModal({
               {/* Header */}
               <div className="text-center">
                 <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-primary-soft sm:h-14 sm:w-14">
-                  <svg viewBox="0 0 24 24" className="h-6 w-6 text-primary sm:h-7 sm:w-7" fill="none">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-6 w-6 text-primary sm:h-7 sm:w-7"
+                    fill="none"
+                  >
                     <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
-                    <path d="m20 20-3.5-3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    <path
+                      d="m20 20-3.5-3.5"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
                   </svg>
                 </div>
                 <h2 className="mt-3 font-display text-lg font-bold sm:mt-4 sm:text-xl">

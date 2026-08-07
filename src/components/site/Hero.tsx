@@ -18,29 +18,29 @@ export function Hero() {
   };
 
   return (
-    <section className="relative overflow-hidden pb-12 pt-24 sm:pb-16 sm:pt-28 md:pb-20 md:pt-32 lg:pb-28 lg:pt-40">
+    <section className="relative overflow-hidden pb-16 pt-28 sm:pb-24 sm:pt-36 md:pb-32 md:pt-44 lg:pb-40 lg:pt-52">
       <div className="bg-mesh absolute inset-0 -z-10" />
       <div
         aria-hidden
-        className="absolute -top-24 left-1/2 -z-10 h-72 w-72 -translate-x-1/2 rounded-full bg-primary/20 blur-2xl sm:-top-32 sm:h-[400px] sm:w-[400px] sm:blur-3xl md:h-[520px] md:w-[520px]"
+        className="absolute -top-32 left-1/2 -z-10 h-80 w-80 -translate-x-1/2 rounded-full bg-primary/25 blur-3xl sm:-top-40 sm:h-[500px] sm:w-[500px] sm:blur-3xl md:h-[640px] md:w-[640px]"
       />
 
-      <div className="container-px mx-auto grid max-w-7xl items-center gap-8 lg:grid-cols-[1.1fr_1fr] lg:gap-12">
+      <div className="container-px mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
         {/* LEFT — copy + search */}
         <div className="relative order-1">
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1.5 text-[11px] font-medium text-muted-foreground backdrop-blur sm:text-xs">
-            <span className="relative flex h-2 w-2">
+          <div className="inline-flex items-center gap-2.5 rounded-full border border-border bg-card/80 px-4 py-2 text-xs font-semibold text-muted-foreground backdrop-blur sm:text-sm">
+            <span className="relative flex h-2.5 w-2.5">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-primary" />
             </span>
             12,480 tutors live right now
           </div>
 
-          <h1 className="mt-4 font-display text-3xl font-extrabold leading-[1.05] tracking-tight sm:mt-5 sm:text-5xl md:text-6xl lg:text-7xl">
+          <h1 className="mt-6 font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:mt-8 sm:text-6xl md:text-7xl lg:text-8xl">
             Find your perfect tutor. <span className="text-gradient">In seconds.</span>
           </h1>
 
-          <p className="mt-4 max-w-xl text-sm text-muted-foreground sm:mt-5 sm:text-base md:text-lg">
+          <p className="mt-6 max-w-xl text-base text-muted-foreground sm:mt-8 sm:text-lg md:text-xl">
             SeekhoSaath instantly matches you with verified expert tutors — online or near you — for
             any subject, any class, any goal.
           </p>
@@ -51,12 +51,12 @@ export function Hero() {
               e.preventDefault();
               startSearch();
             }}
-            className="mt-6 flex w-full max-w-xl flex-col gap-2 rounded-2xl border border-border bg-card p-2 shadow-[var(--shadow-card)] sm:mt-8 sm:flex-row sm:items-center sm:rounded-full sm:p-1.5"
+            className="mt-8 flex w-full max-w-xl flex-col gap-3 rounded-3xl border border-border bg-card p-2.5 shadow-[var(--shadow-card)] sm:mt-10 sm:flex-row sm:items-center sm:rounded-full sm:p-2"
           >
-            <div className="flex flex-1 items-center gap-3 px-3 py-1.5 sm:px-4 sm:py-2">
+            <div className="flex flex-1 items-center gap-3 px-3 py-2 sm:px-5 sm:py-3">
               <svg
                 viewBox="0 0 24 24"
-                className="h-4 w-4 shrink-0 text-muted-foreground sm:h-5 sm:w-5"
+                className="h-5 w-5 shrink-0 text-muted-foreground sm:h-6 sm:w-6"
                 fill="none"
               >
                 <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
@@ -71,19 +71,21 @@ export function Hero() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Try 'Physics tutor for Class 12'"
-                className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground sm:text-base"
+                className="w-full bg-transparent text-base outline-none placeholder:text-muted-foreground sm:text-lg"
               />
             </div>
             <button
               type="submit"
-              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition-transform hover:-translate-y-0.5 active:translate-y-0 sm:px-6 sm:py-3"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-base font-bold text-primary-foreground shadow-[var(--shadow-glow)] transition-all hover:-translate-y-0.5 active:translate-y-0 sm:px-8 sm:py-3.5 sm:text-lg"
             >
               Find tutor
-              <span aria-hidden>→</span>
+              <span aria-hidden className="text-lg">
+                →
+              </span>
             </button>
           </form>
 
-          <div className="mt-3 flex flex-wrap gap-1.5 sm:mt-4 sm:gap-2">
+          <div className="mt-5 flex flex-wrap gap-2 sm:mt-8 sm:gap-3">
             {SUGGESTIONS.map((s) => (
               <button
                 key={s}
@@ -91,7 +93,7 @@ export function Hero() {
                   setQuery(s);
                   startSearch();
                 }}
-                className="rounded-full border border-border bg-card px-2.5 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:border-primary hover:text-foreground sm:px-3 sm:py-1.5 sm:text-xs"
+                className="rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-semibold text-muted-foreground transition-all hover:border-primary hover:text-foreground sm:px-4 sm:py-2 sm:text-sm"
               >
                 {s}
               </button>
@@ -99,24 +101,24 @@ export function Hero() {
           </div>
 
           {/* trust row */}
-          <div className="mt-6 flex items-center gap-3 sm:mt-10 sm:gap-5">
-            <div className="flex -space-x-2">
+          <div className="mt-8 flex items-center gap-4 sm:mt-12 sm:gap-6">
+            <div className="flex -space-x-2.5">
               {[tutor1, tutor2, tutor3, tutor4].map((src, i) => (
                 <img
                   key={i}
                   src={src}
                   alt=""
-                  width={32}
-                  height={32}
+                  width={40}
+                  height={40}
                   loading="lazy"
-                  className="h-8 w-8 rounded-full border-2 border-background object-cover sm:h-9 sm:w-9"
+                  className="h-10 w-10 rounded-full border-[3px] border-background object-cover shadow-sm sm:h-11 sm:w-11"
                 />
               ))}
             </div>
-            <div className="text-xs sm:text-sm">
-              <div className="flex items-center gap-1 font-semibold">
-                <span className="text-primary">★★★★★</span>
-                <span className="ml-1 text-foreground">4.9/5</span>
+            <div className="text-sm sm:text-base">
+              <div className="flex items-center gap-1.5 font-bold">
+                <span className="text-primary text-base sm:text-lg">★★★★★</span>
+                <span className="text-foreground">4.9/5</span>
               </div>
               <div className="text-muted-foreground">from 38,000+ students</div>
             </div>
@@ -124,14 +126,14 @@ export function Hero() {
         </div>
 
         {/* RIGHT — visual canvas */}
-        <div className="relative order-2 mx-auto w-full max-w-sm sm:max-w-md lg:max-w-lg">
-          <div className="relative aspect-[4/3] w-full sm:aspect-square">
-            <div className="absolute inset-0 overflow-hidden rounded-2xl bg-gradient-to-br from-primary-soft via-card to-card shadow-[var(--shadow-soft)] sm:rounded-[2rem]">
-              <div className="absolute inset-0 rounded-2xl ring-1 ring-border sm:rounded-[2rem]" />
+        <div className="relative order-2 mx-auto w-full max-w-md sm:max-w-lg lg:max-w-xl">
+          <div className="relative aspect-[4/3] w-full sm:aspect-[3/4]">
+            <div className="absolute inset-0 overflow-hidden rounded-3xl bg-gradient-to-br from-primary-soft via-card to-card shadow-[var(--shadow-float)] sm:rounded-[2.5rem]">
+              <div className="absolute inset-0 rounded-3xl ring-1 ring-border sm:rounded-[2.5rem]" />
 
               {/* Map grid */}
               <svg
-                className="absolute inset-0 h-full w-full opacity-30"
+                className="absolute inset-0 h-full w-full opacity-20"
                 viewBox="0 0 100 100"
                 preserveAspectRatio="none"
                 aria-hidden
@@ -142,7 +144,7 @@ export function Hero() {
                       d="M10 0H0V10"
                       stroke="currentColor"
                       strokeWidth="0.15"
-                      className="text-primary/40"
+                      className="text-primary/50"
                       fill="none"
                     />
                   </pattern>
@@ -158,17 +160,17 @@ export function Hero() {
                     className="absolute inset-0 -z-10 animate-pulse-ring rounded-full bg-primary/30"
                     style={{ animationDelay: "0.8s" }}
                   />
-                  <div className="relative h-16 w-16 overflow-hidden rounded-full ring-3 ring-background shadow-[var(--shadow-glow)] sm:h-20 sm:w-20 md:h-24 md:w-24">
+                  <div className="relative h-20 w-20 overflow-hidden rounded-full ring-4 ring-background shadow-[var(--shadow-glow)] sm:h-24 sm:w-24 md:h-28 md:w-28">
                     <img
                       src={heroImg}
                       alt="You"
                       loading="lazy"
-                      width={96}
-                      height={96}
+                      width={112}
+                      height={112}
                       className="h-full w-full object-cover"
                     />
                   </div>
-                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-foreground px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-background sm:px-2.5 sm:py-1 sm:text-[10px]">
+                  <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-foreground px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-background sm:px-3 sm:py-1.5 sm:text-xs">
                     You
                   </div>
                 </div>
@@ -176,42 +178,44 @@ export function Hero() {
 
               {/* Floating tutor pills */}
               {[
-                { name: "Aanya R.", subject: "Physics", img: tutor1, x: "12%", y: "22%" },
-                { name: "Rahul M.", subject: "Math", img: tutor2, x: "78%", y: "16%" },
-                { name: "Sara K.", subject: "Chemistry", img: tutor3, x: "8%", y: "70%" },
-                { name: "Dev P.", subject: "English", img: tutor4, x: "82%", y: "66%" },
+                { name: "Aanya R.", subject: "Physics", img: tutor1, x: "10%", y: "18%" },
+                { name: "Rahul M.", subject: "Math", img: tutor2, x: "76%", y: "14%" },
+                { name: "Sara K.", subject: "Chemistry", img: tutor3, x: "6%", y: "68%" },
+                { name: "Dev P.", subject: "English", img: tutor4, x: "80%", y: "64%" },
               ].map((t, i) => (
                 <motion.div
                   key={t.name}
                   initial={{ opacity: 0, scale: 0.6 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5, delay: 0.3 + i * 0.1, type: "spring", damping: 18 }}
+                  transition={{ duration: 0.6, delay: 0.4 + i * 0.12, type: "spring", damping: 16 }}
                   className="absolute animate-float"
-                  style={{ left: t.x, top: t.y, animationDelay: `${i * 0.7}s` }}
+                  style={{ left: t.x, top: t.y, animationDelay: `${i * 0.8}s` }}
                 >
-                  <div className="flex items-center gap-1.5 rounded-full bg-card p-1 pr-2 shadow-[var(--shadow-card)] ring-1 ring-border sm:gap-2 sm:pr-3">
+                  <div className="flex items-center gap-2 rounded-full bg-card p-1 pr-3 shadow-[var(--shadow-card)] ring-1 ring-border sm:gap-2.5 sm:pr-4">
                     <img
                       src={t.img}
                       alt={t.name}
                       loading="lazy"
-                      width={32}
-                      height={32}
-                      className="h-7 w-7 rounded-full object-cover sm:h-9 sm:w-9"
+                      width={40}
+                      height={40}
+                      className="h-8 w-8 rounded-full object-cover sm:h-10 sm:w-10"
                     />
                     <div className="leading-tight">
-                      <div className="text-[10px] font-semibold sm:text-xs">{t.name}</div>
-                      <div className="text-[9px] text-muted-foreground sm:text-[10px]">{t.subject}</div>
+                      <div className="text-xs font-bold sm:text-sm">{t.name}</div>
+                      <div className="text-[10px] text-muted-foreground sm:text-xs">
+                        {t.subject}
+                      </div>
                     </div>
                   </div>
                 </motion.div>
               ))}
 
               {/* Status badge */}
-              <div className="absolute left-1/2 top-4 z-10 -translate-x-1/2 sm:top-6">
-                <div className="glass flex items-center gap-2 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-semibold text-foreground shadow-[var(--shadow-card)] sm:px-4 sm:py-2 sm:text-sm">
-                  <span className="relative flex h-2 w-2">
+              <div className="absolute left-1/2 top-5 z-10 -translate-x-1/2 sm:top-6">
+                <div className="glass flex items-center gap-2.5 whitespace-nowrap rounded-full px-4 py-2 text-sm font-bold text-foreground shadow-[var(--shadow-card)] sm:px-5 sm:py-2.5 sm:text-base">
+                  <span className="relative flex h-2.5 w-2.5">
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-primary" />
                   </span>
                   Ready to match
                 </div>
