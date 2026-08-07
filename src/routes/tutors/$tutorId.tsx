@@ -1,5 +1,4 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
-import { motion } from "motion/react";
 import { tutors } from "@/data/tutors";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Sections";
@@ -18,15 +17,6 @@ export const Route = createFileRoute("/tutors/$tutorId")({
   },
   component: TutorDetailPage,
 });
-
-const easeOutExpo = [0.16, 1, 0.3, 1] as [number, number, number, number];
-
-const fadeUp = {
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-40px" },
-  transition: { duration: 0.6, ease: easeOutExpo },
-};
 
 function TutorDetailPage() {
   const tutor = Route.useLoaderData();
@@ -49,16 +39,16 @@ function TutorDetailPage() {
           className="absolute -top-20 left-1/2 -z-10 h-64 w-64 -translate-x-1/2 rounded-full bg-crimson/25 blur-3xl sm:-top-28 sm:h-[400px] sm:w-[400px] sm:blur-3xl"
         />
         <div className="container-px mx-auto max-w-7xl">
-          <motion.div {...fadeUp}>
+          <div>
             <Link
               to="/tutors"
               className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-crimson transition-colors sm:text-base"
             >
               ← All tutors
             </Link>
-          </motion.div>
+          </div>
 
-          <motion.div {...fadeUp} transition={{ delay: 0.1 }} className="mt-4 sm:mt-5">
+          <div className="mt-4 sm:mt-5">
             <div className="grid gap-6 md:grid-cols-[280px_1fr] lg:grid-cols-[340px_1fr] md:gap-8 lg:gap-10">
               {/* Image */}
               <div className="relative mx-auto w-full max-w-[280px] md:max-w-none">
@@ -146,7 +136,7 @@ function TutorDetailPage() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -154,20 +144,17 @@ function TutorDetailPage() {
       <section className="container-px mx-auto max-w-7xl py-8 sm:py-10 md:py-14">
         <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
           {/* About */}
-          <motion.div
-            {...fadeUp}
+          <div
             className="rounded-2xl border-2 border-border bg-card p-5 sm:rounded-3xl sm:p-6 col-span-2 md:col-span-2 lg:col-span-1"
           >
             <h2 className="font-display text-base font-bold sm:text-lg">About</h2>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:mt-3 sm:text-base">
               {tutor.bio}
             </p>
-          </motion.div>
+          </div>
 
           {/* Education */}
-          <motion.div
-            {...fadeUp}
-            transition={{ delay: 0.05 }}
+          <div
             className="rounded-2xl border-2 border-border bg-card p-5 sm:rounded-3xl sm:p-6"
           >
             <h2 className="font-display text-base font-bold sm:text-lg">Education</h2>
@@ -195,12 +182,10 @@ function TutorDetailPage() {
                 ))}
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Specializations */}
-          <motion.div
-            {...fadeUp}
-            transition={{ delay: 0.1 }}
+          <div
             className="rounded-2xl border-2 border-border bg-card p-5 sm:rounded-3xl sm:p-6"
           >
             <h2 className="font-display text-base font-bold sm:text-lg">Specializations</h2>
@@ -214,14 +199,14 @@ function TutorDetailPage() {
                 </span>
               ))}
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Other tutors */}
       {otherTutors.length > 0 && (
         <section className="container-px mx-auto max-w-7xl py-8 sm:py-10 md:py-14">
-          <motion.div {...fadeUp}>
+          <div>
             <div className="flex items-center justify-between gap-4">
               <h2 className="font-display text-xl font-bold sm:text-2xl md:text-3xl">
                 Similar Tutors
@@ -235,10 +220,9 @@ function TutorDetailPage() {
             </div>
             <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
               {otherTutors.slice(0, 3).map((t, i) => (
-                <motion.div
+                <div
                   key={t.id}
-                  {...fadeUp}
-                  transition={{ duration: 0.5, delay: i * 0.08, ease: easeOutExpo }}
+                  className=""
                 >
                   <Link
                     to="/tutors/$tutorId"
@@ -254,7 +238,7 @@ function TutorDetailPage() {
                         height={500}
                         className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                       <div className="absolute left-2.5 top-2.5 rounded-full bg-background/95 px-2.5 py-1 text-[11px] font-bold backdrop-blur sm:left-3 sm:top-3 sm:px-3 sm:py-1.5 sm:text-xs shadow-lg">
                         ★ {t.rating}
                       </div>
@@ -268,11 +252,16 @@ function TutorDetailPage() {
                       <h3 className="font-display text-base font-bold sm:text-lg">{t.name}</h3>
                       <p className="text-xs text-muted-foreground sm:text-sm">{t.subj}</p>
                       <div className="mt-2.5 flex items-center justify-between border-t border-border pt-2.5 sm:mt-3 sm:pt-3">
-                        <div className="font-display text-base font-bold sm:text-lg">
-                          {t.price}
-                          <span className="text-xs font-normal text-muted-foreground sm:text-sm">
-                            /Session
-                          </span>
+                        <div>
+                          <div className="font-display text-base font-bold sm:text-lg">
+                            {t.price}
+                            <span className="text-xs font-normal text-muted-foreground sm:text-sm">
+                              /Session
+                            </span>
+                          </div>
+                          <div className="text-[10px] text-muted-foreground sm:text-xs">
+                            {t.sessions}+ sessions
+                          </div>
                         </div>
                         <span className="rounded-full bg-navy px-3 py-2 text-[11px] font-bold text-white transition-all hover:bg-crimson hover:text-white sm:px-4 sm:py-2.5 sm:text-xs">
                           Book
@@ -280,10 +269,10 @@ function TutorDetailPage() {
                       </div>
                     </div>
                   </Link>
-                </motion.div>
+                </div>
               ))}
             </div>
-          </motion.div>
+          </div>
         </section>
       )}
 

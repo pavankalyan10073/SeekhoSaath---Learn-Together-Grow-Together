@@ -1,23 +1,8 @@
-import { motion } from "motion/react";
 import { Link } from "@tanstack/react-router";
 import tutor1 from "@/assets/tutor-1.jpg";
 import tutor2 from "@/assets/tutor-2.jpg";
 import tutor3 from "@/assets/tutor-3.jpg";
 import tutor4 from "@/assets/tutor-4.jpg";
-
-const easeOutExpo = [0.16, 1, 0.3, 1] as [number, number, number, number];
-
-const fadeUp = {
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-40px" },
-  transition: { duration: 0.6, ease: easeOutExpo },
-};
-
-const fadeUpStagger = (index: number, total: number = 4) => ({
-  ...fadeUp,
-  transition: { duration: 0.5, delay: index * 0.08, ease: easeOutExpo },
-});
 
 export function LogoMarquee() {
   const items = [
@@ -61,9 +46,8 @@ export function Stats() {
     <section className="container-px mx-auto max-w-7xl py-10 sm:py-14 md:py-20">
       <div className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-border sm:rounded-3xl md:grid-cols-4">
         {stats.map((s, i) => (
-          <motion.div
+          <div
             key={s.l}
-            {...fadeUpStagger(i)}
             className="bg-card p-5 text-center sm:p-8 md:p-10"
           >
             <div className="font-display text-2xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
@@ -72,7 +56,7 @@ export function Stats() {
             <div className="mt-1.5 text-xs font-semibold text-muted-foreground sm:mt-2 sm:text-sm">
               {s.l}
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
     </section>
@@ -121,9 +105,8 @@ export function Features() {
       />
       <div className="mt-8 grid gap-3 sm:mt-10 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
         {features.map((f, i) => (
-          <motion.div
+          <div
             key={f.t}
-            {...fadeUpStagger(i, 6)}
             className="group relative overflow-hidden rounded-2xl border-2 border-border bg-card p-5 transition-all duration-500 hover:-translate-y-1 hover:border-crimson/30 hover:shadow-[var(--shadow-premium)] sm:rounded-3xl sm:p-7"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-crimson/5 via-transparent to-ember/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
@@ -135,7 +118,7 @@ export function Features() {
             </h3>
             <p className="mt-1.5 text-xs text-muted-foreground sm:text-sm relative z-10">{f.d}</p>
             <div className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-crimson/50 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-          </motion.div>
+          </div>
         ))}
       </div>
     </section>
@@ -171,7 +154,7 @@ export function Subjects() {
       </div>
       <div className="mt-6 grid grid-cols-2 gap-2 sm:mt-8 sm:gap-3 md:grid-cols-3 lg:grid-cols-4">
         {subjects.map((s, i) => (
-          <motion.div key={s.n} {...fadeUpStagger(i, 8)}>
+          <div key={s.n}>
             <Link
               to="/subjects/$subjectId"
               params={{ subjectId: s.n.toLowerCase().replace(/[^a-z0-9]+/g, "-") }}
@@ -190,7 +173,7 @@ export function Subjects() {
                 →
               </span>
             </Link>
-          </motion.div>
+          </div>
         ))}
       </div>
     </section>
@@ -250,9 +233,8 @@ export function Tutors() {
       </div>
       <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
         {tutors.map((t, i) => (
-          <motion.article
+          <article
             key={t.name}
-            {...fadeUpStagger(i, 4)}
             className="group overflow-hidden rounded-2xl border-2 border-border bg-card transition-all duration-500 hover:-translate-y-1 hover:border-crimson/30 hover:shadow-[var(--shadow-premium)] sm:rounded-3xl"
           >
             <div className="relative aspect-[3/4] overflow-hidden sm:aspect-[4/5]">
@@ -300,7 +282,7 @@ export function Tutors() {
                 </button>
               </div>
             </div>
-          </motion.article>
+          </article>
         ))}
       </div>
     </section>
@@ -332,9 +314,8 @@ export function HowItWorks() {
         <SectionHeader eyebrow="How it works" title="From goal to growth in 3 simple steps." />
         <div className="mt-8 grid gap-3 sm:mt-10 sm:gap-4 md:grid-cols-3">
           {steps.map((s, i) => (
-            <motion.div
+            <div
               key={s.n}
-              {...fadeUpStagger(i, 3)}
               className="relative rounded-2xl border-2 border-border bg-card p-5 transition-all duration-500 hover:-translate-y-1 hover:border-crimson/30 hover:shadow-[var(--shadow-premium)] sm:rounded-3xl sm:p-7"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-crimson/5 via-transparent to-ember/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
@@ -345,7 +326,7 @@ export function HowItWorks() {
                 {s.t}
               </h3>
               <p className="mt-1.5 text-xs text-muted-foreground sm:text-sm relative z-10">{s.d}</p>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
@@ -394,9 +375,8 @@ export function Testimonials() {
       />
       <div className="mt-6 grid gap-3 sm:mt-8 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
         {items.map((t, i) => (
-          <motion.figure
+          <figure
             key={i}
-            {...fadeUpStagger(i, 6)}
             className="rounded-2xl border-2 border-border bg-card p-5 transition-all duration-500 hover:-translate-y-1 hover:border-crimson/30 hover:shadow-[var(--shadow-premium)] sm:rounded-3xl sm:p-6"
           >
             <div className="flex gap-0.5 text-sm text-crimson sm:text-base">{"★★★★★"}</div>
@@ -412,7 +392,7 @@ export function Testimonials() {
                 <div className="text-xs text-muted-foreground sm:text-sm">{t.r}</div>
               </div>
             </figcaption>
-          </motion.figure>
+          </figure>
         ))}
       </div>
     </section>
@@ -462,9 +442,8 @@ export function Pricing() {
       />
       <div className="mt-8 grid gap-3 sm:mt-10 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
         {tiers.map((t, i) => (
-          <motion.div
+          <div
             key={t.name}
-            {...fadeUpStagger(i, 3)}
             className={`relative rounded-2xl border-2 p-5 transition-all duration-500 hover:-translate-y-1 sm:rounded-3xl sm:p-7 ${
               t.popular
                 ? "border-crimson bg-gradient-to-br from-crimson to-ember text-white shadow-[var(--shadow-glow)]"
@@ -515,7 +494,7 @@ export function Pricing() {
             >
               {t.cta}
             </button>
-          </motion.div>
+          </div>
         ))}
       </div>
     </section>

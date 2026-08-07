@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { motion } from "motion/react";
 import { Link } from "@tanstack/react-router";
 import { tutors } from "@/data/tutors";
 import { Navbar } from "@/components/site/Navbar";
@@ -18,15 +17,6 @@ export const Route = createFileRoute("/tutors/")({
   }),
   component: TutorsPage,
 });
-
-const easeOutExpo = [0.16, 1, 0.3, 1] as [number, number, number, number];
-
-const fadeUp = {
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-40px" },
-  transition: { duration: 0.6, ease: easeOutExpo },
-};
 
 const ALL_SUBJECTS = [...new Set(tutors.map((t) => t.subj.split("•")[0].trim()))];
 
@@ -66,7 +56,7 @@ function TutorsPage() {
           className="absolute -top-20 left-1/2 -z-10 h-64 w-64 -translate-x-1/2 rounded-full bg-crimson/25 blur-3xl sm:-top-28 sm:h-[400px] sm:w-[400px] sm:blur-3xl"
         />
         <div className="container-px mx-auto max-w-7xl">
-          <motion.div {...fadeUp} className="mx-auto max-w-3xl text-center">
+          <div className="mx-auto max-w-3xl text-center">
             <span className="inline-block rounded-full border-2 border-crimson/30 bg-crimson/5 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-crimson sm:px-5 sm:py-2 sm:text-xs sm:tracking-[0.22em]">
               Our Tutors
             </span>
@@ -77,14 +67,13 @@ function TutorsPage() {
               20+ verified tutors ready to help you excel. Filter by subject, sort by rating or
               price.
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Filters */}
       <section className="container-px mx-auto max-w-7xl pb-4 sm:pb-6">
-        <motion.div
-          {...fadeUp}
+        <div
           className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:gap-3"
         >
           <div className="relative flex-1">
@@ -132,11 +121,11 @@ function TutorsPage() {
               <option value="price">Lowest Price</option>
             </select>
           </div>
-        </motion.div>
-        <motion.p {...fadeUp} className="mt-2.5 text-xs text-muted-foreground sm:mt-3 sm:text-sm">
+        </div>
+        <p className="mt-2.5 text-xs text-muted-foreground sm:mt-3 sm:text-sm">
           Showing <span className="font-extrabold text-foreground">{filtered.length}</span> of{" "}
           <span className="font-extrabold text-foreground">{tutors.length}</span> tutors
-        </motion.p>
+        </p>
       </section>
 
       {/* Tutor Grid */}
@@ -144,10 +133,9 @@ function TutorsPage() {
         {filtered.length > 0 ? (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
             {filtered.map((t, i) => (
-              <motion.div
+              <div
                 key={t.id}
-                {...fadeUp}
-                transition={{ duration: 0.5, delay: (i % 8) * 0.04, ease: easeOutExpo }}
+                className=""
               >
                 <Link
                   to="/tutors/$tutorId"
@@ -203,7 +191,7 @@ function TutorsPage() {
                     </div>
                   </div>
                 </Link>
-              </motion.div>
+              </div>
             ))}
           </div>
         ) : (

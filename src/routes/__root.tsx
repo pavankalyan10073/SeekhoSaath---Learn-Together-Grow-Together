@@ -11,10 +11,10 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Toaster } from "sonner";
 
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider } from "@/lib/auth-context";
 import { MobileBottomNav } from "@/components/site/MobileBottomNav";
 import { PWAContext, usePWA } from "@/lib/pwa-context";
+import { FloatingCTA } from "@/components/site/FloatingCTA";
 
 function PWAProvider({ children }: { children: ReactNode }) {
   const [canInstall, setCanInstall] = useState(false);
@@ -58,14 +58,16 @@ function PWAProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const triggerInstall = async () => {
-    if (!deferredPrompt) return false;
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === "accepted") {
-      setCanInstall(false);
-      setDeferredPrompt(null);
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === "accepted") {
+        setCanInstall(false);
+        setDeferredPrompt(null);
+      }
+      return true;
     }
-    return true;
+    return false;
   };
 
   return (
@@ -121,7 +123,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
+    // Error is logged to console; no external reporting dependency.
   }, [error]);
 
   return (
@@ -183,29 +185,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "Find the perfect tutor in seconds. SeekhoSaath connects students with verified expert tutors across every subject, online and nearby.",
       },
-      {
-        property: "og:image",
-        content:
-          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4e3f710c-84e1-4282-83ac-4e3965d884c2/id-preview-9eecc8c3--5225fa50-9351-4943-b209-3a24a8420c7c.lovable.app-1781797677530.png",
-      },
-      {
-        name: "twitter:image",
-        content:
-          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4e3f710c-84e1-4282-83ac-4e3965d884c2/id-preview-9eecc8c3--5225fa50-9351-4943-b209-3a24a8420c7c.lovable.app-1781797677530.png",
-      },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "canonical", href: "/" },
+      { rel: "icon", type: "image/png", href: "/hero-tutor-rounded.jpg" },
+      { rel: "apple-touch-icon", href: "/hero-tutor-rounded.jpg" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "preconnect", href: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev" },
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap",
       },
       { rel: "manifest", href: "/manifest.json" },
-      { rel: "apple-touch-icon", href: "/hero-tutor.jpg" },
     ],
   }),
   shellComponent: RootShell,
@@ -240,6 +232,7 @@ function RootComponent() {
         <PWAProvider>
           <Outlet />
           {!hideBottomNav && <MobileBottomNav />}
+          <FloatingCTA />
           <Toaster position="top-center" richColors />
         </PWAProvider>
       </AuthProvider>

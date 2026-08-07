@@ -1,5 +1,4 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
-import { motion } from "motion/react";
 import { getSubjectById, subjectCategories } from "@/data/subjects";
 import { tutors } from "@/data/tutors";
 import { Navbar } from "@/components/site/Navbar";
@@ -19,15 +18,6 @@ export const Route = createFileRoute("/subjects/$subjectId")({
   },
   component: SubjectDetailPage,
 });
-
-const easeOutExpo = [0.16, 1, 0.3, 1] as [number, number, number, number];
-
-const fadeUp = {
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-40px" },
-  transition: { duration: 0.6, ease: easeOutExpo },
-};
 
 function SubjectDetailPage() {
   const { subject, category } = Route.useLoaderData();
@@ -57,7 +47,7 @@ function SubjectDetailPage() {
           className="absolute -top-20 left-1/2 -z-10 h-64 w-64 -translate-x-1/2 rounded-full bg-crimson/25 blur-3xl sm:-top-28 sm:h-[400px] sm:w-[400px] sm:blur-3xl"
         />
         <div className="container-px mx-auto max-w-7xl">
-          <motion.div {...fadeUp}>
+          <div>
             <Link
               to="/subjects"
               className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-crimson transition-colors sm:text-base"
@@ -88,14 +78,14 @@ function SubjectDetailPage() {
                 {category.name} category
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Topics */}
       {subject.topics && subject.topics.length > 0 && (
         <section className="container-px mx-auto max-w-7xl py-6 sm:py-8 md:py-10">
-          <motion.div {...fadeUp}>
+          <div>
             <h2 className="font-display text-lg font-bold sm:text-xl md:text-2xl">
               Topics Covered
             </h2>
@@ -109,13 +99,13 @@ function SubjectDetailPage() {
                 </span>
               ))}
             </div>
-          </motion.div>
+          </div>
         </section>
       )}
 
       {/* Tutors for this subject */}
       <section className="container-px mx-auto max-w-7xl py-6 sm:py-8 md:py-10">
-        <motion.div {...fadeUp}>
+        <div>
           <div className="flex items-center justify-between gap-4">
             <h2 className="font-display text-xl font-bold sm:text-2xl md:text-3xl">
               Top Tutors for {subject.name}
@@ -127,15 +117,14 @@ function SubjectDetailPage() {
               View all →
             </Link>
           </div>
-        </motion.div>
+        </div>
 
         {relatedTutors.length > 0 ? (
           <div className="mt-5 grid grid-cols-2 gap-3 sm:mt-6 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
             {relatedTutors.slice(0, 6).map((t, i) => (
-              <motion.div
+              <div
                 key={t.id}
-                {...fadeUp}
-                transition={{ duration: 0.5, delay: i * 0.06, ease: easeOutExpo }}
+                className=""
               >
                 <Link
                   to="/tutors/$tutorId"
@@ -188,7 +177,7 @@ function SubjectDetailPage() {
                     </div>
                   </div>
                 </Link>
-              </motion.div>
+              </div>
             ))}
           </div>
         ) : (
@@ -213,7 +202,7 @@ function SubjectDetailPage() {
       {/* Other subjects in same category */}
       {otherSubjects.length > 0 && (
         <section className="container-px mx-auto max-w-7xl py-6 sm:py-8 md:py-10">
-          <motion.div {...fadeUp}>
+          <div>
             <h2 className="font-display text-xl font-bold sm:text-2xl md:text-3xl">
               Other subjects in {category.name}
             </h2>
@@ -235,7 +224,7 @@ function SubjectDetailPage() {
                 </Link>
               ))}
             </div>
-          </motion.div>
+          </div>
         </section>
       )}
 

@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { motion } from "motion/react";
 import { Link } from "@tanstack/react-router";
 import { subjectCategories } from "@/data/subjects";
 import { Navbar } from "@/components/site/Navbar";
@@ -19,15 +18,6 @@ export const Route = createFileRoute("/subjects/")({
   component: SubjectsPage,
 });
 
-const easeOutExpo = [0.16, 1, 0.3, 1] as [number, number, number, number];
-
-const fadeUp = {
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-40px" },
-  transition: { duration: 0.6, ease: easeOutExpo },
-};
-
 function SubjectsPage() {
   return (
     <main className="min-h-screen bg-background text-foreground pb-safe">
@@ -39,7 +29,7 @@ function SubjectsPage() {
           className="absolute -top-20 left-1/2 -z-10 h-64 w-64 -translate-x-1/2 rounded-full bg-crimson/25 blur-3xl sm:-top-28 sm:h-[400px] sm:w-[400px] sm:blur-3xl"
         />
         <div className="container-px mx-auto max-w-7xl">
-          <motion.div {...fadeUp} className="mx-auto max-w-3xl text-center">
+          <div className="mx-auto max-w-3xl text-center">
             <span className="inline-block rounded-full border-2 border-crimson/30 bg-crimson/5 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-crimson sm:px-5 sm:py-2 sm:text-xs sm:tracking-[0.22em]">
               Subjects
             </span>
@@ -49,16 +39,14 @@ function SubjectsPage() {
             <p className="mt-3 text-sm text-muted-foreground sm:mt-4 sm:text-base md:text-lg">
               From primary school to professional courses — find expert tutors for every subject.
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       <div className="container-px mx-auto max-w-7xl pb-12 sm:pb-16 md:pb-20">
         {subjectCategories.map((category, catIdx) => (
-          <motion.section
+          <section
             key={category.id}
-            {...fadeUp}
-            transition={{ duration: 0.6, delay: catIdx * 0.1, ease: easeOutExpo }}
             className="mb-10 sm:mb-14 md:mb-16"
           >
             <div className="mb-5 sm:mb-6">
@@ -71,10 +59,9 @@ function SubjectsPage() {
             </div>
             <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 md:grid-cols-3 lg:grid-cols-4">
               {category.subjects.map((subject, subIdx) => (
-                <motion.div
+                <div
                   key={subject.id}
-                  {...fadeUp}
-                  transition={{ duration: 0.5, delay: subIdx * 0.04, ease: easeOutExpo }}
+                  className=""
                 >
                   <Link
                     to="/subjects/$subjectId"
@@ -93,10 +80,10 @@ function SubjectsPage() {
                       View details →
                     </span>
                   </Link>
-                </motion.div>
+                </div>
               ))}
             </div>
-          </motion.section>
+          </section>
         ))}
       </div>
 

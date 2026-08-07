@@ -198,7 +198,7 @@ export function Hero() {
                 <motion.div
                   animate={{ y: [0, -4, 0] }}
                   transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute left-3 top-3 sm:left-5 sm:top-5 right-12 sm:right-16"
+                  className="absolute left-3 top-3 sm:left-5 sm:top-5 right-16 sm:right-20"
                 >
                   <div className="rounded-xl border border-border bg-card/95 p-2.5 shadow-lg backdrop-blur-sm sm:rounded-2xl sm:p-3">
                     <div className="flex items-center gap-1.5 mb-1.5 sm:mb-2">
@@ -250,7 +250,7 @@ export function Hero() {
                 <motion.div
                   animate={{ y: [0, 4, 0] }}
                   transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                  className="absolute right-3 bottom-3 sm:right-5 sm:bottom-5 left-12 sm:left-16"
+                  className="absolute right-3 bottom-3 sm:right-5 sm:bottom-5 left-16 sm:left-20"
                 >
                   <div className="rounded-xl border border-border bg-card/95 p-2.5 shadow-lg backdrop-blur-sm sm:rounded-2xl sm:p-3">
                     <div className="flex items-center gap-1.5 mb-1.5 sm:mb-2">
@@ -317,30 +317,6 @@ export function Hero() {
                     </span>
                   </motion.button>
                 </motion.div>
-
-                {/* Decorative connection lines */}
-                <svg
-                  className="absolute inset-0 h-full w-full pointer-events-none opacity-20"
-                  viewBox="0 0 200 200"
-                  preserveAspectRatio="none"
-                >
-                  <motion.path
-                    d="M 30 30 Q 100 100 170 170"
-                    fill="none"
-                    stroke="url(#lineGrad)"
-                    strokeWidth="1"
-                    strokeDasharray="4 4"
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ duration: 1.5, delay: 0.8, ease: "easeInOut" }}
-                  />
-                  <defs>
-                    <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="var(--color-crimson)" />
-                      <stop offset="100%" stopColor="var(--color-ember)" />
-                    </linearGradient>
-                  </defs>
-                </svg>
               </div>
             </div>
           </motion.div>

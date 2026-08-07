@@ -37,6 +37,21 @@ export function Navbar() {
     { label: "Pricing", href: "#pricing" },
   ];
 
+  const handleInstallClick = async () => {
+    const installed = await triggerInstall();
+    if (!installed) {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const isAndroid = /Android/.test(navigator.userAgent);
+      if (isIOS) {
+        toast.info("To install: tap Share then Add to Home Screen");
+      } else if (isAndroid) {
+        toast.info("To install: tap Menu then Add to Home Screen");
+      } else {
+        toast.info("Look for the install icon in your browser address bar");
+      }
+    }
+  };
+
   const handleNavClick = () => setMobileOpen(false);
 
   const handleSignOut = async () => {
@@ -64,22 +79,7 @@ export function Navbar() {
           }`}
         >
           <Link to="/" className="flex items-center gap-2 sm:gap-2.5">
-            <div className="relative grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-crimson to-ember text-white shadow-md transition-transform duration-500 hover:scale-110 sm:h-9 sm:w-9 sm:rounded-xl sm:shadow-[var(--shadow-glow)]">
-              <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 sm:h-5 sm:w-5">
-                <path
-                  d="M3 7l9-4 9 4-9 4-9-4z"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M7 10v5c0 1 2 3 5 3s5-2 5-3v-5"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </div>
+            <img src="/hero-tutor-rounded.jpg" alt="SeekhoSaath" className="h-8 w-8 rounded-full object-cover sm:h-9 sm:w-9" />
             <span className="font-display text-base font-extrabold tracking-tight sm:text-lg">
               Seekho<span className="text-gradient">Saath</span>
             </span>
@@ -117,7 +117,7 @@ export function Navbar() {
 
           <div className="flex items-center gap-1.5 sm:gap-2">
             <button
-              onClick={triggerInstall}
+              onClick={handleInstallClick}
               className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-crimson to-ember px-3 py-1.5 text-[11px] font-extrabold text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg sm:px-4 sm:py-2 sm:text-sm"
             >
               <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
