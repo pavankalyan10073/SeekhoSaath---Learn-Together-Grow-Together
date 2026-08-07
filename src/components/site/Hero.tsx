@@ -183,78 +183,114 @@ export function Hero() {
             </motion.div>
           </div>
 
-          {/* RIGHT — compact matching visual */}
+          {/* RIGHT — matching visual */}
           <motion.div
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="relative order-2 mx-auto w-full max-w-xs sm:max-w-sm lg:max-w-md"
+            className="relative order-2 mx-auto w-full max-w-[340px] sm:max-w-sm lg:max-w-md"
           >
             <div className="relative aspect-square w-full sm:aspect-[4/3]">
               <div className="absolute inset-0 overflow-hidden rounded-2xl bg-gradient-to-br from-crimson/10 via-card to-ember/5 shadow-[var(--shadow-float)] sm:rounded-3xl ring-1 ring-border">
                 <div className="absolute inset-0 bg-gradient-to-tr from-primary-soft/30 via-transparent to-mint/10 opacity-60" />
 
-                {/* Student side */}
-                <div className="absolute left-3 top-3 sm:left-4 sm:top-4">
-                  <div className="rounded-xl border-2 border-border bg-card/90 p-2.5 shadow-lg backdrop-blur-sm sm:p-3">
-                    <div className="text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground mb-1.5 sm:mb-2">
-                      Students
+                {/* Student side — top-left */}
+                <motion.div
+                  animate={{ y: [0, -4, 0] }}
+                  transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute left-3 top-3 sm:left-5 sm:top-5 right-12 sm:right-16"
+                >
+                  <div className="rounded-xl border border-border bg-card/95 p-2.5 shadow-lg backdrop-blur-sm sm:rounded-2xl sm:p-3">
+                    <div className="flex items-center gap-1.5 mb-1.5 sm:mb-2">
+                      <div className="h-2 w-2 rounded-full bg-mint sm:h-2.5 sm:w-2.5" />
+                      <div className="text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground sm:text-xs">
+                        Students
+                      </div>
                     </div>
                     <div className="space-y-1.5 sm:space-y-2">
                       {[
                         { name: "You", subject: "Physics", img: heroImg, active: true },
                         { name: "Aarav", subject: "Math", img: tutor2, active: false },
+                        { name: "Priya", subject: "Chemistry", img: tutor3, active: false },
+                        { name: "Rohan", subject: "English", img: tutor4, active: false },
                       ].map((p) => (
-                        <div key={p.name} className="flex items-center gap-2">
-                          <img
-                            src={p.img}
-                            alt={p.name}
-                            className="h-7 w-7 rounded-full object-cover sm:h-8 sm:w-8"
-                          />
-                          <div>
+                        <div key={p.name} className="flex items-center gap-2 sm:gap-2.5">
+                          <div className="relative shrink-0">
+                            <img
+                              src={p.img}
+                              alt={p.name}
+                              className="h-7 w-7 rounded-full object-cover sm:h-8 sm:w-8"
+                            />
+                            {p.active && (
+                              <motion.span
+                                animate={{ scale: [1, 1.4, 1], opacity: [0.5, 1, 0.5] }}
+                                transition={{ duration: 2, repeat: Infinity }}
+                                className="absolute -inset-0.5 rounded-full bg-crimson/50 blur-[2px]"
+                              />
+                            )}
+                          </div>
+                          <div className="min-w-0 flex-1">
                             <div
-                              className={`text-[11px] font-extrabold ${p.active ? "text-crimson" : ""}`}
+                              className={`text-[10px] font-extrabold truncate sm:text-xs ${p.active ? "text-crimson" : "text-foreground"}`}
                             >
                               {p.name}
                             </div>
-                            <div className="text-[9px] text-muted-foreground sm:text-[10px]">
+                            <div className="text-[9px] text-muted-foreground truncate sm:text-[10px]">
                               {p.subject}
                             </div>
                           </div>
+                          {p.active && <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-crimson sm:h-2 sm:w-2" />}
                         </div>
                       ))}
                     </div>
                   </div>
-                </div>
+                </motion.div>
 
-                {/* Tutor side */}
-                <div className="absolute right-3 bottom-3 sm:right-4 sm:bottom-4">
-                  <div className="rounded-xl border-2 border-border bg-card/90 p-2.5 shadow-lg backdrop-blur-sm sm:p-3">
-                    <div className="text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground mb-1.5 sm:mb-2">
-                      Tutors
+                {/* Tutor side — bottom-right */}
+                <motion.div
+                  animate={{ y: [0, 4, 0] }}
+                  transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                  className="absolute right-3 bottom-3 sm:right-5 sm:bottom-5 left-12 sm:left-16"
+                >
+                  <div className="rounded-xl border border-border bg-card/95 p-2.5 shadow-lg backdrop-blur-sm sm:rounded-2xl sm:p-3">
+                    <div className="flex items-center gap-1.5 mb-1.5 sm:mb-2">
+                      <div className="h-2 w-2 rounded-full bg-crimson sm:h-2.5 sm:w-2.5" />
+                      <div className="text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground sm:text-xs">
+                        Tutors
+                      </div>
                     </div>
                     <div className="space-y-1.5 sm:space-y-2">
                       {[
                         { name: "Aanya R.", subject: "Physics", img: tutor1 },
+                        { name: "Rahul M.", subject: "Math", img: tutor2 },
                         { name: "Sara K.", subject: "Chemistry", img: tutor3 },
+                        { name: "Dev P.", subject: "English", img: tutor4 },
                       ].map((p) => (
-                        <div key={p.name} className="flex items-center gap-2">
+                        <motion.div
+                          key={p.name}
+                          whileHover={{ x: 1 }}
+                          className="flex items-center gap-2 sm:gap-2.5 cursor-default"
+                        >
                           <img
                             src={p.img}
                             alt={p.name}
                             className="h-7 w-7 rounded-full object-cover sm:h-8 sm:w-8"
                           />
-                          <div>
-                            <div className="text-[11px] font-extrabold">{p.name}</div>
-                            <div className="text-[9px] text-muted-foreground sm:text-[10px]">
+                          <div className="min-w-0 flex-1">
+                            <div className="text-[10px] font-extrabold truncate sm:text-xs">{p.name}</div>
+                            <div className="text-[9px] text-muted-foreground truncate sm:text-[10px]">
                               {p.subject}
                             </div>
                           </div>
-                        </div>
+                        </motion.div>
                       ))}
                     </div>
                   </div>
-                </div>
+                </motion.div>
+
+                {/* Corner accent dots — fill all 4 corners */}
+                <div className="absolute top-3 right-3 h-2 w-2 rounded-full bg-crimson/30 sm:h-2.5 sm:w-2.5 sm:top-5 sm:right-5" />
+                <div className="absolute bottom-3 left-3 h-2 w-2 rounded-full bg-mint/30 sm:h-2.5 sm:w-2.5 sm:bottom-5 sm:left-5" />
 
                 {/* Center match badge */}
                 <motion.div
@@ -263,12 +299,48 @@ export function Hero() {
                   transition={{ duration: 0.5, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
                   className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
                 >
-                  <div className="flex items-center justify-center rounded-full bg-gradient-to-br from-crimson to-ember px-3 py-1.5 shadow-[var(--shadow-glow)] sm:px-4 sm:py-2">
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-white sm:text-xs">
+                  <motion.button
+                    onClick={startSearch}
+                    whileTap={{ scale: 0.95 }}
+                    animate={{
+                      boxShadow: [
+                        "0 0 20px -8px var(--shadow-glow)",
+                        "0 0 32px -4px var(--shadow-glow)",
+                        "0 0 20px -8px var(--shadow-glow)",
+                      ],
+                    }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                    className="flex items-center justify-center rounded-full bg-gradient-to-br from-crimson to-ember px-4 py-2 sm:px-5 sm:py-2.5"
+                  >
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-white sm:text-sm">
                       Ready to match
                     </span>
-                  </div>
+                  </motion.button>
                 </motion.div>
+
+                {/* Decorative connection lines */}
+                <svg
+                  className="absolute inset-0 h-full w-full pointer-events-none opacity-20"
+                  viewBox="0 0 200 200"
+                  preserveAspectRatio="none"
+                >
+                  <motion.path
+                    d="M 30 30 Q 100 100 170 170"
+                    fill="none"
+                    stroke="url(#lineGrad)"
+                    strokeWidth="1"
+                    strokeDasharray="4 4"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 1.5, delay: 0.8, ease: "easeInOut" }}
+                  />
+                  <defs>
+                    <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="var(--color-crimson)" />
+                      <stop offset="100%" stopColor="var(--color-ember)" />
+                    </linearGradient>
+                  </defs>
+                </svg>
               </div>
             </div>
           </motion.div>

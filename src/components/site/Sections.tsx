@@ -248,7 +248,7 @@ export function Tutors() {
           See all tutors →
         </Link>
       </div>
-      <div className="mt-6 grid gap-4 sm:mt-8 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
+      <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
         {tutors.map((t, i) => (
           <motion.article
             key={t.name}

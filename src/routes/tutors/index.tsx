@@ -142,7 +142,7 @@ function TutorsPage() {
       {/* Tutor Grid */}
       <section className="container-px mx-auto max-w-7xl py-6 sm:py-8 md:py-12">
         {filtered.length > 0 ? (
-          <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
             {filtered.map((t, i) => (
               <motion.div
                 key={t.id}
