@@ -86,7 +86,7 @@ export function Hero() {
                 to="/signup"
                 className="inline-flex items-center gap-2 rounded-full border-2 border-border bg-card px-5 py-2.5 text-sm font-extrabold transition-all hover:border-crimson hover:text-crimson hover:shadow-[var(--shadow-soft)] sm:px-6 sm:py-3 sm:text-base"
               >
-                Teach & earn
+                Teach & Earn
                 <span aria-hidden className="text-base">
                   ₹
                 </span>
