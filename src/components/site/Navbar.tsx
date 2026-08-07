@@ -85,7 +85,6 @@ export function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop nav */}
           <ul className="hidden items-center gap-1 lg:flex">
             {links.map((l) => (
               <li key={l.label}>
@@ -148,16 +147,9 @@ export function Navbar() {
                 >
                   Sign in
                 </Link>
-                <Link
-                  to="/signup"
-                  className="hidden rounded-full bg-gradient-to-r from-crimson to-ember px-3 py-1.5 text-xs font-extrabold text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg sm:inline-flex sm:px-4 sm:py-2 sm:text-sm"
-                >
-                  Get started
-                </Link>
               </>
             )}
 
-            {/* Mobile menu button */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="grid h-9 w-9 place-items-center rounded-xl text-foreground transition-all hover:bg-muted lg:hidden"
@@ -165,25 +157,11 @@ export function Navbar() {
               aria-expanded={mobileOpen}
             >
               {mobileOpen ? (
-                <svg
-                  viewBox="0 0 24 24"
-                  className="h-5 w-5"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                >
+                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                   <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
               ) : (
-                <svg
-                  viewBox="0 0 24 24"
-                  className="h-5 w-5"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                >
+                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                   <path d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               )}
@@ -191,7 +169,6 @@ export function Navbar() {
           </div>
         </nav>
 
-        {/* Mobile menu overlay */}
         {mobileOpen && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -214,14 +191,7 @@ export function Navbar() {
                 className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-muted-foreground hover:text-background"
                 aria-label="Close menu"
               >
-                <svg
-                  viewBox="0 0 24 24"
-                  className="h-4 w-4"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                >
+                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                   <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
               </button>
@@ -276,24 +246,26 @@ export function Navbar() {
                     </li>
                   </>
                 ) : (
-                  <li className="border-t-2 border-border pt-2 mt-2">
-                    <Link
-                      to="/login"
-                      onClick={handleNavClick}
-                      className="block rounded-xl px-4 py-3 text-sm font-extrabold text-muted-foreground transition-all hover:bg-gradient-to-r hover:from-crimson/10 hover:to-ember/10 hover:text-crimson"
-                    >
-                      Sign in
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/signup"
-                      onClick={handleNavClick}
-                      className="block rounded-xl px-4 py-3 text-sm font-extrabold text-crimson transition-all hover:bg-crimson/10"
-                    >
-                      Get started
-                    </Link>
-                  </li>
+                  <>
+                    <li className="border-t-2 border-border pt-2 mt-2">
+                      <Link
+                        to="/login"
+                        onClick={handleNavClick}
+                        className="block rounded-xl px-4 py-3 text-sm font-extrabold text-muted-foreground transition-all hover:bg-gradient-to-r hover:from-crimson/10 hover:to-ember/10 hover:text-crimson"
+                      >
+                        Sign in
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/signup"
+                        onClick={handleNavClick}
+                        className="block rounded-xl px-4 py-3 text-sm font-extrabold text-crimson transition-all hover:bg-crimson/10"
+                      >
+                        Get started
+                      </Link>
+                    </li>
+                  </>
                 )}
               </ul>
             </motion.div>
