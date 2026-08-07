@@ -117,19 +117,17 @@ export function Navbar() {
           </ul>
 
           <div className="flex items-center gap-1.5 sm:gap-2">
-            {canInstall && (
-              <button
-                onClick={triggerInstall}
-                className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-crimson to-ember px-2.5 py-1.5 text-[11px] font-extrabold text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg sm:px-3.5 sm:py-2 sm:text-xs"
-              >
-                <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                  <polyline points="7 10 12 15 17 10" />
-                  <line x1="12" y1="15" x2="12" y2="3" />
-                </svg>
-                <span className="hidden sm:inline">Install</span>
-              </button>
-            )}
+            <button
+              onClick={triggerInstall}
+              className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-crimson to-ember px-3 py-1.5 text-[11px] font-extrabold text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg sm:px-4 sm:py-2 sm:text-sm"
+            >
+              <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Get the App
+            </button>
             {user ? (
               <>
                 <span className="hidden text-xs font-extrabold text-foreground sm:inline-flex max-w-[120px] truncate">
@@ -258,24 +256,6 @@ export function Navbar() {
                     Become a tutor
                   </Link>
                 </li>
-                {canInstall && (
-                  <li>
-                    <button
-                      onClick={() => {
-                        triggerInstall();
-                        handleNavClick();
-                      }}
-                      className="flex w-full items-center gap-2 rounded-xl px-4 py-3 text-sm font-extrabold text-crimson transition-all hover:bg-crimson/10"
-                    >
-                      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                        <polyline points="7 10 12 15 17 10" />
-                        <line x1="12" y1="15" x2="12" y2="3" />
-                      </svg>
-                      Install App
-                    </button>
-                  </li>
-                )}
                 {user ? (
                   <>
                     <li className="border-t-2 border-border pt-2 mt-2">
