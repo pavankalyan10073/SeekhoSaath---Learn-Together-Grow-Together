@@ -12,7 +12,8 @@ import { Toaster } from "sonner";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { AuthProvider } from "../lib/auth-context";
+import { AuthProvider } from "@/lib/auth-context";
+import { MobileBottomNav } from "@/components/site/MobileBottomNav";
 
 function NotFoundComponent() {
   return (
@@ -147,11 +148,15 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+  const pathname = router.state.location.pathname;
+  const hideBottomNav = pathname === "/login" || pathname === "/signup";
 
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Outlet />
+        {!hideBottomNav && <MobileBottomNav />}
         <Toaster position="top-center" richColors />
       </AuthProvider>
     </QueryClientProvider>

@@ -38,7 +38,7 @@ function TutorDetailPage() {
   );
 
   return (
-    <main className="min-h-screen bg-background text-foreground">
+    <main className="min-h-screen bg-background text-foreground pb-safe">
       <Navbar />
 
       {/* Hero */}
