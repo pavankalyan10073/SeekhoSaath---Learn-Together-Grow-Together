@@ -19,6 +19,7 @@ import { PWAContext, usePWA } from "@/lib/pwa-context";
 function PWAProvider({ children }: { children: ReactNode }) {
   const [canInstall, setCanInstall] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isStandalone, setIsStandalone] = useState(false);
 
   useEffect(() => {
     const onBeforeInstall = (e: Event) => {
@@ -30,10 +31,19 @@ function PWAProvider({ children }: { children: ReactNode }) {
     const onAppInstalled = () => {
       setCanInstall(false);
       setDeferredPrompt(null);
+      setIsStandalone(true);
     };
 
     window.addEventListener("beforeinstallprompt", onBeforeInstall);
     window.addEventListener("appinstalled", onAppInstalled);
+
+    const checkStandalone = () => {
+      const standalone = window.matchMedia("(display-mode: standalone)").matches ||
+        (window.navigator as any).standalone === true;
+      setIsStandalone(standalone);
+      if (standalone) setCanInstall(false);
+    };
+    checkStandalone();
 
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
