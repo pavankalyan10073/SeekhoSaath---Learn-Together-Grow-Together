@@ -11,7 +11,7 @@ export function Navbar() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
+    const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -50,20 +50,20 @@ export function Navbar() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
-        scrolled ? "py-2 sm:py-3" : "py-3 sm:py-4"
+        scrolled ? "py-2 sm:py-2.5" : "py-2.5 sm:py-3"
       }`}
     >
       <div className="container-px mx-auto max-w-7xl">
         <nav
-          className={`flex items-center justify-between rounded-full px-4 py-2.5 transition-all duration-500 sm:px-6 sm:py-3 ${
+          className={`flex items-center justify-between rounded-full px-3.5 py-2 transition-all duration-500 sm:px-5 sm:py-2.5 ${
             scrolled
-              ? "glass shadow-[var(--shadow-card)] border border-border/50"
+              ? "glass shadow-[var(--shadow-card)] border border-border/60"
               : "bg-transparent"
           }`}
         >
-          <Link to="/" className="flex items-center gap-2.5 pl-1 sm:gap-3 sm:pl-0 group">
-            <div className="relative grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-crimson to-ember text-white shadow-[var(--shadow-glow)] transition-transform duration-500 group-hover:scale-110 sm:h-11 sm:w-11 sm:rounded-2xl">
-              <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5 sm:h-6 sm:w-6">
+          <Link to="/" className="flex items-center gap-2 sm:gap-2.5">
+            <div className="relative grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-crimson to-ember text-white shadow-md transition-transform duration-500 hover:scale-110 sm:h-9 sm:w-9 sm:rounded-xl sm:shadow-[var(--shadow-glow)]">
+              <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 sm:h-5 sm:w-5">
                 <path
                   d="M3 7l9-4 9 4-9 4-9-4z"
                   stroke="currentColor"
@@ -77,9 +77,8 @@ export function Navbar() {
                   strokeLinecap="round"
                 />
               </svg>
-              <div className="absolute -inset-1 rounded-2xl bg-gradient-to-br from-crimson to-ember opacity-50 blur-md transition-opacity duration-500 group-hover:opacity-80 -z-10" />
             </div>
-            <span className="font-display text-lg font-bold tracking-tight sm:text-xl">
+            <span className="font-display text-base font-extrabold tracking-tight sm:text-lg">
               Seekho<span className="text-gradient">Saath</span>
             </span>
           </Link>
@@ -91,31 +90,39 @@ export function Navbar() {
                 {"to" in l && l.to ? (
                   <Link
                     to={l.to}
-                    className="relative rounded-full px-4 py-2 text-sm font-bold text-foreground transition-all hover:bg-primary-soft/60 hover:text-crimson"
+                    className="rounded-full px-3 py-1.5 text-xs font-extrabold text-foreground transition-all hover:bg-primary-soft/70 hover:text-crimson sm:px-4 sm:py-2 sm:text-sm"
                   >
                     {l.label}
                   </Link>
                 ) : (
                   <a
                     href={l.href}
-                    className="relative rounded-full px-4 py-2 text-sm font-bold text-foreground transition-all hover:bg-primary-soft/60 hover:text-crimson"
+                    className="rounded-full px-3 py-1.5 text-xs font-extrabold text-foreground transition-all hover:bg-primary-soft/70 hover:text-crimson sm:px-4 sm:py-2 sm:text-sm"
                   >
                     {l.label}
                   </a>
                 )}
               </li>
             ))}
+            <li>
+              <Link
+                to="/signup"
+                className="rounded-full px-3 py-1.5 text-xs font-extrabold text-crimson transition-all hover:bg-crimson/10 sm:px-4 sm:py-2 sm:text-sm"
+              >
+                Become a tutor
+              </Link>
+            </li>
           </ul>
 
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             {user ? (
               <>
-                <span className="hidden text-sm font-bold text-foreground sm:inline-flex max-w-[140px] truncate">
+                <span className="hidden text-xs font-extrabold text-foreground sm:inline-flex max-w-[120px] truncate">
                   {user.displayName || user.email?.split("@")[0] || "User"}
                 </span>
                 <button
                   onClick={handleSignOut}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-navy px-4 py-2.5 text-sm font-bold text-white shadow-[var(--shadow-glow)] transition-all hover:-translate-y-0.5 hover:shadow-lg sm:px-5 sm:py-2.5 sm:text-base"
+                  className="inline-flex items-center gap-1 rounded-full bg-navy px-3 py-1.5 text-xs font-extrabold text-white transition-all hover:bg-crimson sm:px-4 sm:py-2 sm:text-sm"
                 >
                   Sign out
                 </button>
@@ -124,18 +131,15 @@ export function Navbar() {
               <>
                 <Link
                   to="/login"
-                  className="hidden rounded-full px-4 py-2.5 text-sm font-bold text-foreground transition-all hover:bg-muted hover:text-crimson sm:inline-flex"
+                  className="hidden rounded-full px-3 py-1.5 text-xs font-extrabold text-foreground transition-all hover:bg-muted hover:text-crimson sm:inline-flex sm:px-4 sm:py-2 sm:text-sm"
                 >
                   Sign in
                 </Link>
                 <Link
                   to="/signup"
-                  className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-crimson to-ember px-5 py-2.5 text-sm font-bold text-white shadow-[var(--shadow-glow)] transition-all hover:-translate-y-0.5 hover:shadow-lg sm:px-6 sm:py-2.5 sm:text-base"
+                  className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-crimson to-ember px-3 py-1.5 text-xs font-extrabold text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg sm:px-4 sm:py-2 sm:text-sm"
                 >
                   Get started
-                  <span aria-hidden className="hidden sm:inline text-base">
-                    →
-                  </span>
                 </Link>
               </>
             )}
@@ -143,7 +147,7 @@ export function Navbar() {
             {/* Mobile menu button */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="grid h-10 w-10 place-items-center rounded-xl text-foreground transition-all hover:bg-muted lg:hidden"
+              className="grid h-9 w-9 place-items-center rounded-xl text-foreground transition-all hover:bg-muted lg:hidden"
               aria-label="Toggle menu"
               aria-expanded={mobileOpen}
             >
@@ -187,19 +191,19 @@ export function Navbar() {
               onClick={() => setMobileOpen(false)}
             />
             <motion.div
-              initial={{ opacity: 0, y: -20 }}
+              initial={{ opacity: 0, y: -16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute inset-x-0 top-0 z-50 mx-3 mt-20 rounded-3xl border-2 border-border bg-card p-6 shadow-[var(--shadow-float)]"
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute inset-x-0 top-0 z-50 mx-3 mt-16 rounded-2xl border-2 border-border bg-card p-4 shadow-[var(--shadow-float)]"
             >
-              <ul className="space-y-1">
+              <ul className="space-y-0.5">
                 {links.map((l) => (
                   <li key={l.label}>
                     {"to" in l && l.to ? (
                       <Link
                         to={l.to}
                         onClick={handleNavClick}
-                        className="block rounded-2xl px-5 py-4 text-base font-bold text-foreground transition-all hover:bg-gradient-to-r hover:from-crimson/10 hover:to-ember/10 hover:text-crimson"
+                        className="block rounded-xl px-4 py-3 text-sm font-extrabold text-foreground transition-all hover:bg-gradient-to-r hover:from-crimson/10 hover:to-ember/10 hover:text-crimson"
                       >
                         {l.label}
                       </Link>
@@ -207,17 +211,26 @@ export function Navbar() {
                       <a
                         href={l.href}
                         onClick={handleNavClick}
-                        className="block rounded-2xl px-5 py-4 text-base font-bold text-foreground transition-all hover:bg-gradient-to-r hover:from-crimson/10 hover:to-ember/10 hover:text-crimson"
+                        className="block rounded-xl px-4 py-3 text-sm font-extrabold text-foreground transition-all hover:bg-gradient-to-r hover:from-crimson/10 hover:to-ember/10 hover:text-crimson"
                       >
                         {l.label}
                       </a>
                     )}
                   </li>
                 ))}
+                <li>
+                  <Link
+                    to="/signup"
+                    onClick={handleNavClick}
+                    className="block rounded-xl px-4 py-3 text-sm font-extrabold text-crimson transition-all hover:bg-crimson/10"
+                  >
+                    Become a tutor
+                  </Link>
+                </li>
                 {user ? (
                   <>
-                    <li className="border-t-2 border-border pt-3 mt-3">
-                      <span className="block rounded-2xl px-5 py-3 text-base font-bold text-muted-foreground">
+                    <li className="border-t-2 border-border pt-2 mt-2">
+                      <span className="block rounded-xl px-4 py-2.5 text-sm font-extrabold text-muted-foreground">
                         {user.displayName || user.email?.split("@")[0] || "User"}
                       </span>
                     </li>
@@ -227,18 +240,18 @@ export function Navbar() {
                           handleNavClick();
                           handleSignOut();
                         }}
-                        className="block w-full text-left rounded-2xl px-5 py-4 text-base font-bold text-foreground transition-all hover:bg-gradient-to-r hover:from-crimson/10 hover:to-ember/10 hover:text-crimson"
+                        className="block w-full text-left rounded-xl px-4 py-3 text-sm font-extrabold text-foreground transition-all hover:bg-gradient-to-r hover:from-crimson/10 hover:to-ember/10 hover:text-crimson"
                       >
                         Sign out
                       </button>
                     </li>
                   </>
                 ) : (
-                  <li className="border-t-2 border-border pt-3 mt-3">
+                  <li className="border-t-2 border-border pt-2 mt-2">
                     <Link
                       to="/login"
                       onClick={handleNavClick}
-                      className="block rounded-2xl px-5 py-4 text-base font-bold text-muted-foreground transition-all hover:bg-gradient-to-r hover:from-crimson/10 hover:to-ember/10 hover:text-crimson"
+                      className="block rounded-xl px-4 py-3 text-sm font-extrabold text-muted-foreground transition-all hover:bg-gradient-to-r hover:from-crimson/10 hover:to-ember/10 hover:text-crimson"
                     >
                       Sign in
                     </Link>
