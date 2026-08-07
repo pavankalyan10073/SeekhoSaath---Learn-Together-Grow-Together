@@ -13,7 +13,7 @@ export function FloatingCTA() {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 z-[9999] flex flex-col items-center gap-2 sm:bottom-6 sm:right-6">
+    <div className="fixed bottom-20 right-4 z-[9999] flex flex-col items-center gap-2 sm:bottom-6 sm:right-6">
       {/* Circular image with blue ring */}
       <a
         href={`tel:${PHONE_NUMBER}`}
