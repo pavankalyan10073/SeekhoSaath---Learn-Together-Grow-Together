@@ -130,7 +130,7 @@ function SubjectDetailPage() {
         </motion.div>
 
         {relatedTutors.length > 0 ? (
-          <div className="mt-5 grid gap-3 sm:mt-6 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+          <div className="mt-5 grid grid-cols-2 gap-3 sm:mt-6 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
             {relatedTutors.slice(0, 6).map((t, i) => (
               <motion.div
                 key={t.id}

@@ -233,7 +233,7 @@ function TutorDetailPage() {
                 View all →
               </Link>
             </div>
-            <div className="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+            <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
               {otherTutors.slice(0, 3).map((t, i) => (
                 <motion.div
                   key={t.id}
