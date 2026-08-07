@@ -7,13 +7,82 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Toaster } from "sonner";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider } from "@/lib/auth-context";
 import { MobileBottomNav } from "@/components/site/MobileBottomNav";
+import { PWAContext, usePWA } from "@/lib/pwa-context";
+
+function PWAProvider({ children }: { children: ReactNode }) {
+  const [canInstall, setCanInstall] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+  useEffect(() => {
+    const onBeforeInstall = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setCanInstall(true);
+    };
+
+    const onAppInstalled = () => {
+      setCanInstall(false);
+      setDeferredPrompt(null);
+    };
+
+    window.addEventListener("beforeinstallprompt", onBeforeInstall);
+    window.addEventListener("appinstalled", onAppInstalled);
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("/sw.js")
+        .catch(() => {});
+    }
+
+    return () => {
+      window.removeEventListener("beforeinstallprompt", onBeforeInstall);
+      window.removeEventListener("appinstalled", onAppInstalled);
+    };
+  }, []);
+
+  const triggerInstall = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === "accepted") {
+      setCanInstall(false);
+      setDeferredPrompt(null);
+    }
+  };
+
+  return (
+    <PWAContext.Provider value={{ canInstall, triggerInstall }}>
+      {children}
+    </PWAContext.Provider>
+  );
+}
+
+function InstallPromptButton() {
+  const { canInstall, triggerInstall } = usePWA();
+
+  if (!canInstall) return null;
+
+  return (
+    <button
+      onClick={triggerInstall}
+      className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-crimson to-ember px-3 py-1.5 text-xs font-extrabold text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg sm:px-4 sm:py-2 sm:text-sm"
+    >
+      <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+        <polyline points="7 10 12 15 17 10" />
+        <line x1="12" y1="15" x2="12" y2="3" />
+      </svg>
+      Install App
+    </button>
+  );
+}
 
 function NotFoundComponent() {
   return (
@@ -124,6 +193,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap",
       },
+      { rel: "manifest", href: "/manifest.json" },
+      { rel: "apple-touch-icon", href: "/hero-tutor.jpg" },
     ],
   }),
   shellComponent: RootShell,
@@ -155,9 +226,11 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <Outlet />
-        {!hideBottomNav && <MobileBottomNav />}
-        <Toaster position="top-center" richColors />
+        <PWAProvider>
+          <Outlet />
+          {!hideBottomNav && <MobileBottomNav />}
+          <Toaster position="top-center" richColors />
+        </PWAProvider>
       </AuthProvider>
     </QueryClientProvider>
   );
