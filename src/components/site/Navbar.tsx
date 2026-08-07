@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
+import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
@@ -10,7 +11,7 @@ export function Navbar() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
+    const onScroll = () => setScrolled(window.scrollY > 10);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -49,34 +50,37 @@ export function Navbar() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
-        scrolled ? "py-2 sm:py-3" : "py-3 sm:py-5"
+        scrolled ? "py-2 sm:py-3" : "py-3 sm:py-4"
       }`}
     >
       <div className="container-px mx-auto max-w-7xl">
         <nav
           className={`flex items-center justify-between rounded-full px-4 py-2.5 transition-all duration-500 sm:px-6 sm:py-3 ${
-            scrolled ? "glass shadow-[var(--shadow-card)]" : "bg-transparent"
+            scrolled
+              ? "glass shadow-[var(--shadow-card)] border border-border/50"
+              : "bg-transparent"
           }`}
         >
-          <Link to="/" className="flex items-center gap-2.5 pl-1 sm:gap-3 sm:pl-0">
-            <div className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground sm:h-10 sm:w-10 sm:rounded-2xl sm:shadow-[var(--shadow-glow)]">
-              <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 sm:h-5 sm:w-5">
+          <Link to="/" className="flex items-center gap-2.5 pl-1 sm:gap-3 sm:pl-0 group">
+            <div className="relative grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-crimson to-ember text-white shadow-[var(--shadow-glow)] transition-transform duration-500 group-hover:scale-110 sm:h-11 sm:w-11 sm:rounded-2xl">
+              <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5 sm:h-6 sm:w-6">
                 <path
                   d="M3 7l9-4 9 4-9 4-9-4z"
                   stroke="currentColor"
-                  strokeWidth="2"
+                  strokeWidth="2.5"
                   strokeLinejoin="round"
                 />
                 <path
                   d="M7 10v5c0 1 2 3 5 3s5-2 5-3v-5"
                   stroke="currentColor"
-                  strokeWidth="2"
+                  strokeWidth="2.5"
                   strokeLinecap="round"
                 />
               </svg>
+              <div className="absolute -inset-1 rounded-2xl bg-gradient-to-br from-crimson to-ember opacity-50 blur-md transition-opacity duration-500 group-hover:opacity-80 -z-10" />
             </div>
             <span className="font-display text-lg font-bold tracking-tight sm:text-xl">
-              Seekho<span className="text-primary">Saath</span>
+              Seekho<span className="text-gradient">Saath</span>
             </span>
           </Link>
 
@@ -87,14 +91,14 @@ export function Navbar() {
                 {"to" in l && l.to ? (
                   <Link
                     to={l.to}
-                    className="rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground transition-all hover:bg-primary-soft hover:text-foreground"
+                    className="relative rounded-full px-4 py-2 text-sm font-bold text-foreground transition-all hover:bg-primary-soft/60 hover:text-crimson"
                   >
                     {l.label}
                   </Link>
                 ) : (
                   <a
                     href={l.href}
-                    className="rounded-full px-4 py-2 text-sm font-semibold text-muted-foreground transition-all hover:bg-primary-soft hover:text-foreground"
+                    className="relative rounded-full px-4 py-2 text-sm font-bold text-foreground transition-all hover:bg-primary-soft/60 hover:text-crimson"
                   >
                     {l.label}
                   </a>
@@ -111,7 +115,7 @@ export function Navbar() {
                 </span>
                 <button
                   onClick={handleSignOut}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground shadow-[var(--shadow-glow)] transition-all hover:-translate-y-0.5 sm:px-5 sm:py-2.5 sm:text-base"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-navy px-4 py-2.5 text-sm font-bold text-white shadow-[var(--shadow-glow)] transition-all hover:-translate-y-0.5 hover:shadow-lg sm:px-5 sm:py-2.5 sm:text-base"
                 >
                   Sign out
                 </button>
@@ -120,13 +124,13 @@ export function Navbar() {
               <>
                 <Link
                   to="/login"
-                  className="hidden rounded-full px-4 py-2.5 text-sm font-bold text-foreground transition-all hover:bg-muted sm:inline-flex"
+                  className="hidden rounded-full px-4 py-2.5 text-sm font-bold text-foreground transition-all hover:bg-muted hover:text-crimson sm:inline-flex"
                 >
                   Sign in
                 </Link>
                 <Link
                   to="/signup"
-                  className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground shadow-[var(--shadow-glow)] transition-all hover:-translate-y-0.5 sm:px-6 sm:py-2.5 sm:text-base"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-crimson to-ember px-5 py-2.5 text-sm font-bold text-white shadow-[var(--shadow-glow)] transition-all hover:-translate-y-0.5 hover:shadow-lg sm:px-6 sm:py-2.5 sm:text-base"
                 >
                   Get started
                   <span aria-hidden className="hidden sm:inline text-base">
@@ -139,7 +143,7 @@ export function Navbar() {
             {/* Mobile menu button */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="grid h-10 w-10 place-items-center rounded-xl text-foreground lg:hidden"
+              className="grid h-10 w-10 place-items-center rounded-xl text-foreground transition-all hover:bg-muted lg:hidden"
               aria-label="Toggle menu"
               aria-expanded={mobileOpen}
             >
@@ -172,12 +176,22 @@ export function Navbar() {
 
         {/* Mobile menu overlay */}
         {mobileOpen && (
-          <div className="fixed inset-0 top-0 z-40 lg:hidden">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 top-0 z-40 lg:hidden"
+          >
             <div
-              className="absolute inset-0 bg-background/90 backdrop-blur-md"
+              className="absolute inset-0 bg-background/95 backdrop-blur-md"
               onClick={() => setMobileOpen(false)}
             />
-            <div className="absolute inset-x-0 top-0 z-50 mx-3 mt-20 rounded-3xl border border-border bg-card p-5 shadow-[var(--shadow-float)]">
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute inset-x-0 top-0 z-50 mx-3 mt-20 rounded-3xl border-2 border-border bg-card p-6 shadow-[var(--shadow-float)]"
+            >
               <ul className="space-y-1">
                 {links.map((l) => (
                   <li key={l.label}>
@@ -185,7 +199,7 @@ export function Navbar() {
                       <Link
                         to={l.to}
                         onClick={handleNavClick}
-                        className="block rounded-2xl px-5 py-3.5 text-base font-bold text-foreground transition-all hover:bg-primary-soft"
+                        className="block rounded-2xl px-5 py-4 text-base font-bold text-foreground transition-all hover:bg-gradient-to-r hover:from-crimson/10 hover:to-ember/10 hover:text-crimson"
                       >
                         {l.label}
                       </Link>
@@ -193,7 +207,7 @@ export function Navbar() {
                       <a
                         href={l.href}
                         onClick={handleNavClick}
-                        className="block rounded-2xl px-5 py-3.5 text-base font-bold text-foreground transition-all hover:bg-primary-soft"
+                        className="block rounded-2xl px-5 py-4 text-base font-bold text-foreground transition-all hover:bg-gradient-to-r hover:from-crimson/10 hover:to-ember/10 hover:text-crimson"
                       >
                         {l.label}
                       </a>
@@ -202,7 +216,7 @@ export function Navbar() {
                 ))}
                 {user ? (
                   <>
-                    <li className="border-t border-border pt-3 mt-3">
+                    <li className="border-t-2 border-border pt-3 mt-3">
                       <span className="block rounded-2xl px-5 py-3 text-base font-bold text-muted-foreground">
                         {user.displayName || user.email?.split("@")[0] || "User"}
                       </span>
@@ -213,26 +227,26 @@ export function Navbar() {
                           handleNavClick();
                           handleSignOut();
                         }}
-                        className="block w-full text-left rounded-2xl px-5 py-3.5 text-base font-bold text-foreground transition-all hover:bg-primary-soft"
+                        className="block w-full text-left rounded-2xl px-5 py-4 text-base font-bold text-foreground transition-all hover:bg-gradient-to-r hover:from-crimson/10 hover:to-ember/10 hover:text-crimson"
                       >
                         Sign out
                       </button>
                     </li>
                   </>
                 ) : (
-                  <li className="border-t border-border pt-3 mt-3">
+                  <li className="border-t-2 border-border pt-3 mt-3">
                     <Link
                       to="/login"
                       onClick={handleNavClick}
-                      className="block rounded-2xl px-5 py-3.5 text-base font-bold text-muted-foreground transition-all hover:bg-primary-soft hover:text-foreground"
+                      className="block rounded-2xl px-5 py-4 text-base font-bold text-muted-foreground transition-all hover:bg-gradient-to-r hover:from-crimson/10 hover:to-ember/10 hover:text-crimson"
                     >
                       Sign in
                     </Link>
                   </li>
                 )}
               </ul>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         )}
       </div>
     </header>

@@ -22,9 +22,9 @@ export const Route = createFileRoute("/tutors/")({
 const easeOutExpo = [0.16, 1, 0.3, 1] as [number, number, number, number];
 
 const fadeUp = {
-  initial: { opacity: 0, y: 24 },
+  initial: { opacity: 0, y: 20 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-60px" },
+  viewport: { once: true, margin: "-40px" },
   transition: { duration: 0.6, ease: easeOutExpo },
 };
 
@@ -59,21 +59,21 @@ function TutorsPage() {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative overflow-hidden pb-12 pt-28 sm:pb-16 sm:pt-36 md:pb-20 md:pt-40">
+      <section className="relative overflow-hidden pt-24 pb-10 sm:pt-28 sm:pb-12 md:pt-32 md:pb-14">
         <div className="bg-mesh absolute inset-0 -z-10" />
         <div
           aria-hidden
-          className="absolute -top-28 left-1/2 -z-10 h-80 w-80 -translate-x-1/2 rounded-full bg-primary/25 blur-3xl sm:-top-36 sm:h-[500px] sm:w-[500px] sm:blur-3xl"
+          className="absolute -top-20 left-1/2 -z-10 h-64 w-64 -translate-x-1/2 rounded-full bg-crimson/25 blur-3xl sm:-top-28 sm:h-[400px] sm:w-[400px] sm:blur-3xl"
         />
         <div className="container-px mx-auto max-w-7xl">
           <motion.div {...fadeUp} className="mx-auto max-w-3xl text-center">
-            <span className="inline-block rounded-full border-2 border-border bg-card px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-primary sm:px-5 sm:py-2 sm:text-xs sm:tracking-[0.22em]">
+            <span className="inline-block rounded-full border-2 border-crimson/30 bg-crimson/5 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-crimson sm:px-5 sm:py-2 sm:text-xs sm:tracking-[0.22em]">
               Our Tutors
             </span>
-            <h1 className="mt-5 font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:mt-6 sm:text-5xl md:text-6xl lg:text-7xl">
+            <h1 className="mt-4 font-display text-3xl font-extrabold leading-[1.05] tracking-tight sm:mt-5 sm:text-4xl md:text-5xl lg:text-6xl">
               Meet our <span className="text-gradient">expert tutors</span>
             </h1>
-            <p className="mt-5 text-base text-muted-foreground sm:mt-6 sm:text-lg md:text-xl">
+            <p className="mt-3 text-sm text-muted-foreground sm:mt-4 sm:text-base md:text-lg">
               20+ verified tutors ready to help you excel. Filter by subject, sort by rating or
               price.
             </p>
@@ -82,15 +82,15 @@ function TutorsPage() {
       </section>
 
       {/* Filters */}
-      <section className="container-px mx-auto max-w-7xl pb-6 sm:pb-8">
+      <section className="container-px mx-auto max-w-7xl pb-4 sm:pb-6">
         <motion.div
           {...fadeUp}
-          className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4"
+          className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:gap-3"
         >
           <div className="relative flex-1">
             <svg
               viewBox="0 0 24 24"
-              className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground sm:h-6 sm:w-6 sm:left-5"
+              className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground sm:h-5 sm:w-5 sm:left-4"
               fill="none"
             >
               <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
@@ -106,14 +106,14 @@ function TutorsPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search tutors by name, subject, or specialization..."
-              className="w-full rounded-2xl border-2 border-border bg-card py-3.5 pl-12 pr-4 text-base outline-none focus:border-primary transition-colors sm:rounded-full sm:py-4 sm:pl-14 sm:text-lg"
+              className="w-full rounded-xl border-2 border-border bg-card py-2.5 pl-10 pr-4 text-sm outline-none focus:border-crimson transition-colors sm:rounded-full sm:py-3 sm:pl-11 sm:text-base"
             />
           </div>
-          <div className="flex gap-2.5 sm:gap-3">
+          <div className="flex gap-2 sm:gap-2.5">
             <select
               value={selectedSubject}
               onChange={(e) => setSelectedSubject(e.target.value)}
-              className="flex-1 rounded-2xl border-2 border-border bg-card px-4 py-3.5 text-base outline-none focus:border-primary transition-colors sm:rounded-full sm:px-5 sm:py-4 sm:text-lg"
+              className="flex-1 rounded-xl border-2 border-border bg-card px-3 py-2.5 text-sm outline-none focus:border-crimson transition-colors sm:rounded-full sm:px-4 sm:py-3 sm:text-base"
             >
               <option value="all">All Subjects</option>
               {ALL_SUBJECTS.map((s) => (
@@ -125,7 +125,7 @@ function TutorsPage() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as "rating" | "sessions" | "price")}
-              className="flex-1 rounded-2xl border-2 border-border bg-card px-4 py-3.5 text-base outline-none focus:border-primary transition-colors sm:rounded-full sm:px-5 sm:py-4 sm:text-lg"
+              className="flex-1 rounded-xl border-2 border-border bg-card px-3 py-2.5 text-sm outline-none focus:border-crimson transition-colors sm:rounded-full sm:px-4 sm:py-3 sm:text-base"
             >
               <option value="rating">Top Rated</option>
               <option value="sessions">Most Sessions</option>
@@ -133,26 +133,26 @@ function TutorsPage() {
             </select>
           </div>
         </motion.div>
-        <motion.p {...fadeUp} className="mt-4 text-sm text-muted-foreground sm:mt-5 sm:text-base">
-          Showing <span className="font-bold text-foreground">{filtered.length}</span> of{" "}
-          <span className="font-bold text-foreground">{tutors.length}</span> tutors
+        <motion.p {...fadeUp} className="mt-2.5 text-xs text-muted-foreground sm:mt-3 sm:text-sm">
+          Showing <span className="font-extrabold text-foreground">{filtered.length}</span> of{" "}
+          <span className="font-extrabold text-foreground">{tutors.length}</span> tutors
         </motion.p>
       </section>
 
       {/* Tutor Grid */}
-      <section className="container-px mx-auto max-w-7xl py-8 sm:py-12 md:py-16">
+      <section className="container-px mx-auto max-w-7xl py-6 sm:py-8 md:py-12">
         {filtered.length > 0 ? (
-          <div className="grid gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
             {filtered.map((t, i) => (
               <motion.div
                 key={t.id}
                 {...fadeUp}
-                transition={{ duration: 0.5, delay: (i % 8) * 0.05, ease: easeOutExpo }}
+                transition={{ duration: 0.5, delay: (i % 8) * 0.04, ease: easeOutExpo }}
               >
                 <Link
                   to="/tutors/$tutorId"
                   params={{ tutorId: t.id }}
-                  className="group block overflow-hidden rounded-3xl border-2 border-border bg-card transition-all duration-500 hover:-translate-y-1 hover:shadow-[var(--shadow-premium)]"
+                  className="group block overflow-hidden rounded-2xl border-2 border-border bg-card transition-all duration-500 hover:-translate-y-1 hover:border-crimson/30 hover:shadow-[var(--shadow-premium)] sm:rounded-3xl"
                 >
                   <div className="relative aspect-[3/4] overflow-hidden sm:aspect-[4/5]">
                     <img
@@ -164,40 +164,40 @@ function TutorsPage() {
                       className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                    <div className="absolute left-3 top-3 rounded-full bg-background/95 px-3 py-1.5 text-xs font-bold backdrop-blur sm:left-4 sm:top-4 sm:px-3.5 sm:py-2 sm:text-sm shadow-lg">
+                    <div className="absolute left-2.5 top-2.5 rounded-full bg-background/95 px-2.5 py-1 text-[11px] font-bold backdrop-blur sm:left-3 sm:top-3 sm:px-3 sm:py-1.5 sm:text-xs shadow-lg">
                       ★ {t.rating}
                     </div>
                     <div
-                      className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-primary text-base text-primary-foreground shadow-lg sm:right-4 sm:top-4 sm:h-10 sm:w-10 sm:text-lg"
+                      className="absolute right-2.5 top-2.5 grid h-8 w-8 place-items-center rounded-full bg-gradient-to-br from-crimson to-ember text-sm text-white shadow-lg sm:right-3 sm:top-3 sm:h-9 sm:w-9 sm:text-base"
                       title="Verified"
                     >
                       ✓
                     </div>
-                    <div className="absolute bottom-0 inset-x-0 p-4 translate-y-3 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 sm:p-5">
-                      <span className="inline-flex w-full items-center justify-center rounded-full bg-white/95 px-4 py-3 text-sm font-bold text-foreground backdrop-blur transition-all hover:bg-white sm:text-base">
+                    <div className="absolute bottom-0 inset-x-0 p-3 translate-y-2 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 sm:p-4">
+                      <span className="inline-flex w-full items-center justify-center rounded-full bg-white/95 px-4 py-2.5 text-sm font-bold text-foreground backdrop-blur transition-all hover:bg-white sm:text-base">
                         View profile →
                       </span>
                     </div>
                   </div>
-                  <div className="p-5 sm:p-6">
-                    <h3 className="font-display text-lg font-bold sm:text-xl">{t.name}</h3>
-                    <p className="text-sm text-muted-foreground">{t.subj}</p>
-                    <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground sm:text-sm">
+                  <div className="p-3.5 sm:p-4">
+                    <h3 className="font-display text-base font-bold sm:text-lg">{t.name}</h3>
+                    <p className="text-xs text-muted-foreground sm:text-sm">{t.subj}</p>
+                    <div className="mt-1 flex items-center gap-1.5 text-[10px] text-muted-foreground sm:text-xs">
                       <span>📍 {t.location}</span>
                     </div>
-                    <div className="mt-4 flex items-center justify-between border-t border-border pt-4 sm:mt-5 sm:pt-5">
+                    <div className="mt-2.5 flex items-center justify-between border-t border-border pt-2.5 sm:mt-3 sm:pt-3">
                       <div>
-                        <div className="font-display text-lg font-bold sm:text-xl">
+                        <div className="font-display text-base font-bold sm:text-lg">
                           {t.price}
-                          <span className="text-sm font-normal text-muted-foreground sm:text-base">
+                          <span className="text-xs font-normal text-muted-foreground sm:text-sm">
                             /Session
                           </span>
                         </div>
-                        <div className="text-xs text-muted-foreground sm:text-sm">
+                        <div className="text-[10px] text-muted-foreground sm:text-xs">
                           {t.sessions}+ sessions
                         </div>
                       </div>
-                      <span className="rounded-full bg-foreground px-4 py-2.5 text-xs font-bold text-background transition-all hover:bg-primary hover:text-primary-foreground sm:px-5 sm:py-3 sm:text-sm">
+                      <span className="rounded-full bg-navy px-3 py-2 text-[11px] font-bold text-white transition-all hover:bg-crimson hover:shadow-lg sm:px-4 sm:py-2.5 sm:text-xs">
                         Book
                       </span>
                     </div>
@@ -207,10 +207,10 @@ function TutorsPage() {
             ))}
           </div>
         ) : (
-          <div className="rounded-3xl border-2 border-border bg-card p-10 text-center sm:p-16">
-            <div className="text-4xl sm:text-5xl">🔍</div>
-            <h3 className="mt-4 font-display text-lg font-bold sm:text-xl">No tutors found</h3>
-            <p className="mt-2 text-base text-muted-foreground">
+          <div className="rounded-2xl border-2 border-border bg-card p-8 text-center sm:p-12">
+            <div className="text-3xl sm:text-4xl">🔍</div>
+            <h3 className="mt-3 font-display text-base font-bold sm:text-lg">No tutors found</h3>
+            <p className="mt-2 text-sm text-muted-foreground">
               Try adjusting your search or filter criteria.
             </p>
             <button
@@ -218,7 +218,7 @@ function TutorsPage() {
                 setSearchQuery("");
                 setSelectedSubject("all");
               }}
-              className="mt-5 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-base font-bold text-primary-foreground sm:px-6 sm:py-3 sm:text-lg"
+              className="mt-4 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-crimson to-ember px-5 py-2.5 text-sm font-bold text-white shadow-[var(--shadow-glow)] transition-all hover:-translate-y-0.5 sm:px-6 sm:py-3 sm:text-base"
             >
               Clear filters
             </button>
