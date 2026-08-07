@@ -1,10 +1,11 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Home, Search, BookOpen, User } from "lucide-react";
+import { Home, Search, BookOpen, GraduationCap, User } from "lucide-react";
 
 const items = [
   { icon: Home, label: "Home", to: "/" },
   { icon: Search, label: "Find", to: "/tutors" },
   { icon: BookOpen, label: "Subjects", to: "/subjects" },
+  { icon: GraduationCap, label: "Teach", to: "/signup" },
   { icon: User, label: "Account", to: "/login" },
 ];
 

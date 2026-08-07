@@ -196,6 +196,22 @@ export function Navbar() {
               transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
               className="absolute inset-x-0 top-0 z-50 mx-3 mt-16 rounded-2xl border-2 border-border bg-card p-4 shadow-[var(--shadow-float)]"
             >
+              <button
+                onClick={() => setMobileOpen(false)}
+                className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-muted-foreground hover:text-background"
+                aria-label="Close menu"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                >
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
               <ul className="space-y-0.5">
                 {links.map((l) => (
                   <li key={l.label}>
