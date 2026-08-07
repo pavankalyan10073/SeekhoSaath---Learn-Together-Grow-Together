@@ -117,7 +117,10 @@ export function Navbar() {
 
           <div className="flex items-center gap-1.5 sm:gap-2">
             <button
-              onClick={triggerInstall}
+              onClick={async () => {
+                const ok = await triggerInstall();
+                if (!ok) toast.info("App installation is being prepared. Please visit the site a few more times.");
+              }}
               className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-crimson to-ember px-3 py-1.5 text-[11px] font-extrabold text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg sm:px-4 sm:py-2 sm:text-sm"
             >
               <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

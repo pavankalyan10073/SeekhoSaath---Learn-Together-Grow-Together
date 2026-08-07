@@ -48,13 +48,14 @@ function PWAProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const triggerInstall = async () => {
-    if (!deferredPrompt) return;
+    if (!deferredPrompt) return false;
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
     if (outcome === "accepted") {
       setCanInstall(false);
       setDeferredPrompt(null);
     }
+    return true;
   };
 
   return (
