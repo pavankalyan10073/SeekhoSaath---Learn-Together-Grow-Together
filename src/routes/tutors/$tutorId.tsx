@@ -152,11 +152,11 @@ function TutorDetailPage() {
 
       {/* Details */}
       <section className="container-px mx-auto max-w-7xl py-8 sm:py-10 md:py-14">
-        <div className="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
           {/* About */}
           <motion.div
             {...fadeUp}
-            className="rounded-2xl border-2 border-border bg-card p-5 sm:rounded-3xl sm:p-6 md:col-span-2 lg:col-span-1"
+            className="rounded-2xl border-2 border-border bg-card p-5 sm:rounded-3xl sm:p-6 col-span-2 md:col-span-2 lg:col-span-1"
           >
             <h2 className="font-display text-base font-bold sm:text-lg">About</h2>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:mt-3 sm:text-base">
