@@ -1,0 +1,38 @@
+{
+  "name": "SeekhoSaath - Learn Together, Grow Together",
+  "short_name": "SeekhoSaath",
+  "description": "Find the perfect tutor in seconds. SeekhoSaath connects students with verified expert tutors across every subject, online and nearby.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#FF7A29",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/hero-tutor.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/hero-tutor.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "learning", "tutoring"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Find Tutors",
+      "url": "/tutors",
+      "description": "Browse and search for tutors"
+    },
+    {
+      "name": "Browse Subjects",
+      "url": "/subjects",
+      "description": "Explore all subjects"
+    }
+  ]
+}
