@@ -6,12 +6,13 @@ import tutor3 from "@/assets/tutor-3.jpg";
 import tutor4 from "@/assets/tutor-4.jpg";
 import heroImg from "@/assets/hero-tutor.jpg";
 import { SearchTutorModal } from "@/components/site/SearchTutorModal";
+import { Search } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 
 const SUGGESTIONS = ["Physics tutor", "IIT-JEE Math", "Spoken English", "Class 10 Science"];
 
 export function Hero() {
-  const [query, setQuery] = useState("Physics tutor");
+  const [query, setQuery] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
 
   const startSearch = () => {
@@ -121,14 +122,15 @@ export function Hero() {
                 <input
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Try 'Physics tutor for Class 12'"
+                  placeholder="What do you want to learn?"
                   className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground sm:text-base"
                 />
               </div>
               <button
                 type="submit"
-                className="inline-flex items-center justify-center gap-1.5 rounded-full bg-navy px-4 py-2 text-xs font-extrabold text-white transition-all hover:bg-crimson sm:px-5 sm:py-2.5 sm:text-sm"
+                className="inline-flex items-center justify-center gap-1.5 rounded-full bg-navy px-3 py-2 text-xs font-extrabold text-white transition-all hover:bg-crimson sm:px-4 sm:py-2.5 sm:text-sm"
               >
+                <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 Search
               </button>
             </motion.form>
