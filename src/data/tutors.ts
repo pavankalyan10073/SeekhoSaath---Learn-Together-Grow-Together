@@ -18,6 +18,44 @@ export interface Tutor {
   location: string;
   education: string;
   responseTime: string;
+  profilePic?: string;
+  aadharFront?: string;
+  aadharBack?: string;
+  degree?: string;
+  college?: string;
+  yearOfPassing?: string;
+  subjectsToTeach?: string[];
+  chargePerSession?: string;
+  teachingMode?: "online" | "offline" | "hybrid";
+  aadharNumber?: string;
+  verified?: boolean;
+  applicationDate?: string;
+  userId?: string;
+}
+
+export interface TutorApplication {
+  id: string;
+  userId?: string;
+  fullName: string;
+  email: string;
+  mobile: string;
+  profilePic: string;
+  bio: string;
+  experience: string;
+  degree: string;
+  college: string;
+  yearOfPassing: string;
+  specializations: string[];
+  subjectsToTeach: string[];
+  chargePerSession: string;
+  teachingMode: "online" | "offline" | "hybrid";
+  location: string;
+  languages: string[];
+  aadharFront: string;
+  aadharBack: string;
+  aadharNumber: string;
+  applicationDate: string;
+  verified: boolean;
 }
 
 export const tutors: Tutor[] = [

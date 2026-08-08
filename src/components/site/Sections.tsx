@@ -127,14 +127,14 @@ export function Features() {
 
 export function Subjects() {
   const subjects = [
-    { n: "Mathematics", c: "1,240 tutors", emoji: "📐" },
-    { n: "Physics", c: "892 tutors", emoji: "⚛️" },
-    { n: "Chemistry", c: "734 tutors", emoji: "🧪" },
-    { n: "English", c: "2,108 tutors", emoji: "📚" },
-    { n: "Computer Science", c: "654 tutors", emoji: "💻" },
-    { n: "Biology", c: "512 tutors", emoji: "🧬" },
-    { n: "Economics", c: "388 tutors", emoji: "📊" },
-    { n: "Music", c: "271 tutors", emoji: "🎵" },
+    { n: "Mathematics", c: "1,240 tutors", emoji: "📐", id: "math-6-10" },
+    { n: "Physics", c: "892 tutors", emoji: "⚛️", id: "physics-6-10" },
+    { n: "Chemistry", c: "734 tutors", emoji: "🧪", id: "chemistry-6-10" },
+    { n: "English", c: "2,108 tutors", emoji: "📚", id: "english-6-10" },
+    { n: "Computer Science", c: "654 tutors", emoji: "💻", id: "computer-6-10" },
+    { n: "Biology", c: "512 tutors", emoji: "🧬", id: "biology-6-10" },
+    { n: "Economics", c: "388 tutors", emoji: "📊", id: "economics-11-12" },
+    { n: "Music", c: "271 tutors", emoji: "🎵", id: "music" },
   ];
   return (
     <section id="subjects" className="container-px mx-auto max-w-7xl py-10 sm:py-14 md:py-20">
@@ -154,10 +154,10 @@ export function Subjects() {
       </div>
       <div className="mt-6 grid grid-cols-2 gap-2 sm:mt-8 sm:gap-3 md:grid-cols-3 lg:grid-cols-4">
         {subjects.map((s, i) => (
-          <div key={s.n}>
+          <div key={s.id}>
             <Link
               to="/subjects/$subjectId"
-              params={{ subjectId: s.n.toLowerCase().replace(/[^a-z0-9]+/g, "-") }}
+              params={{ subjectId: s.id }}
               className="group flex items-center justify-between rounded-xl border-2 border-border bg-card p-3 transition-all duration-500 hover:-translate-y-0.5 hover:border-crimson/40 hover:shadow-[var(--shadow-premium)] sm:rounded-2xl sm:p-4"
             >
               <div className="flex items-center gap-2.5 sm:gap-3">
@@ -183,6 +183,7 @@ export function Subjects() {
 export function Tutors() {
   const tutors = [
     {
+      id: "aanya-rajput",
       name: "Aanya Rajput",
       subj: "Physics • IIT-JEE",
       price: "₹699",
@@ -191,6 +192,7 @@ export function Tutors() {
       img: tutor1,
     },
     {
+      id: "rahul-mehta",
       name: "Rahul Mehta",
       subj: "Mathematics • Class 8-12",
       price: "₹599",
@@ -199,6 +201,7 @@ export function Tutors() {
       img: tutor2,
     },
     {
+      id: "sara-khanna",
       name: "Sara Khanna",
       subj: "Chemistry • NEET",
       price: "₹749",
@@ -207,6 +210,7 @@ export function Tutors() {
       img: tutor3,
     },
     {
+      id: "dev-patel",
       name: "Dev Patel",
       subj: "Spoken English",
       price: "₹499",
@@ -233,9 +237,11 @@ export function Tutors() {
       </div>
       <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
         {tutors.map((t, i) => (
-          <article
-            key={t.name}
-            className="group overflow-hidden rounded-2xl border-2 border-border bg-card transition-all duration-500 hover:-translate-y-1 hover:border-crimson/30 hover:shadow-[var(--shadow-premium)] sm:rounded-3xl"
+          <Link
+            key={t.id}
+            to="/tutors/$tutorId"
+            params={{ tutorId: t.id }}
+            className="group block overflow-hidden rounded-2xl border-2 border-border bg-card transition-all duration-500 hover:-translate-y-1 hover:border-crimson/30 hover:shadow-[var(--shadow-premium)] sm:rounded-3xl"
           >
             <div className="relative aspect-[3/4] overflow-hidden sm:aspect-[4/5]">
               <img
@@ -257,9 +263,9 @@ export function Tutors() {
                 ✓
               </div>
               <div className="absolute bottom-0 inset-x-0 p-3 translate-y-2 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 sm:p-4">
-                <button className="w-full rounded-full bg-white/95 py-2.5 text-xs font-bold text-foreground backdrop-blur transition-all hover:bg-white sm:text-sm shadow-lg">
+                <span className="inline-flex w-full items-center justify-center rounded-full bg-white/95 px-4 py-2.5 text-sm font-bold text-foreground backdrop-blur transition-all hover:bg-white sm:text-base">
                   View profile →
-                </button>
+                </span>
               </div>
             </div>
             <div className="p-3.5 sm:p-4">
@@ -277,12 +283,12 @@ export function Tutors() {
                     {t.sessions}+ sessions
                   </div>
                 </div>
-                <button className="rounded-full bg-navy px-3 py-2 text-[11px] font-bold text-white transition-all hover:bg-crimson hover:shadow-lg sm:px-4 sm:py-2.5 sm:text-xs">
+                <span className="rounded-full bg-navy px-3 py-2 text-[11px] font-bold text-white transition-all hover:bg-crimson hover:shadow-lg sm:px-4 sm:py-2.5 sm:text-xs">
                   Book
-                </button>
+                </span>
               </div>
             </div>
-          </article>
+          </Link>
         ))}
       </div>
     </section>
@@ -594,22 +600,16 @@ export function Footer() {
       <div className="container-px mx-auto max-w-7xl py-10 sm:py-14 md:py-20">
         <div className="grid gap-8 sm:grid-cols-2 sm:gap-10 md:grid-cols-[1.4fr_2fr]">
           <div>
-            <div className="flex items-center gap-2.5">
-              <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-crimson to-ember text-white shadow-[var(--shadow-glow)] sm:h-10 sm:w-10 sm:rounded-2xl">
-                <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 sm:h-5 sm:w-5">
-                  <path d="M3 7l9-4 9 4-9 4-9-4z" stroke="currentColor" strokeWidth="2" />
-                  <path
-                    d="M7 10v5c0 1 2 3 5 3s5-2 5-3v-5"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </div>
+            <button
+              type="button"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              className="flex items-center gap-2.5"
+            >
+              <img src="/hero-tutor-rounded.jpg" alt="SeekhoSaath" className="h-9 w-9 rounded-full object-cover sm:h-10 sm:w-10" />
               <span className="font-display text-lg font-bold sm:text-xl">
                 Seekho<span className="text-gradient">Saath</span>
               </span>
-            </div>
+            </button>
             <p className="mt-3 max-w-sm text-xs text-muted-foreground sm:mt-4 sm:text-sm">
               Learn together, grow together. The world&apos;s most loved tutoring platform — built
               with care from India for the world.

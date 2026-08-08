@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Eye, EyeOff, ArrowRight, Mail, Lock } from "lucide-react";
+import { Eye, EyeOff, ArrowRight, ArrowLeft, Mail, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -116,34 +116,28 @@ function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="relative min-h-screen bg-background">
       <div className="absolute inset-0 bg-mesh opacity-60 pointer-events-none" />
 
-      <header className="relative z-10 px-4 py-4 sm:px-6 lg:px-8">
-        <Link to="/" className="inline-flex items-center gap-2">
-          <div className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground shadow-[var(--shadow-glow)]">
-            <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
-              <path
-                d="M3 7l9-4 9 4-9 4-9-4z"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M7 10v5c0 1 2 3 5 3s5-2 5-3v-5"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
-          </div>
-          <span className="font-display text-lg font-bold tracking-tight">
-            Seekho<span className="text-primary">Saath</span>
-          </span>
-        </Link>
+      <header className="absolute inset-x-0 top-0 z-50 px-4 py-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col items-start gap-3">
+          <Link to="/" className="inline-flex items-center gap-2">
+            <img src="/hero-tutor-rounded.jpg" alt="SeekhoSaath" className="h-9 w-9 rounded-full object-cover" />
+            <span className="font-display text-lg font-bold tracking-tight">
+              Seekho<span className="text-primary">Saath</span>
+            </span>
+          </Link>
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to home
+          </Link>
+        </div>
       </header>
 
-      <main className="relative z-10 flex-1 flex items-center justify-center px-4 py-12">
+      <main className="relative z-10 flex items-center justify-center px-4 py-12 min-h-screen">
         <Card className="w-full max-w-md border-border shadow-[var(--shadow-card)]">
           <CardHeader className="text-center pb-2">
             <CardTitle className="font-display text-2xl font-bold tracking-tight">

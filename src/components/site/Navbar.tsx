@@ -143,7 +143,7 @@ export function Navbar() {
               <>
                 <Link
                   to="/login"
-                  className="hidden rounded-full px-3 py-1.5 text-xs font-extrabold text-foreground transition-all hover:bg-muted hover:text-crimson sm:inline-flex sm:px-4 sm:py-2 sm:text-sm"
+                  className="hidden sm:inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-navy to-blue-700 px-3 py-1.5 text-[11px] font-extrabold text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg sm:px-4 sm:py-2 sm:text-sm"
                 >
                   Sign in
                 </Link>
@@ -247,11 +247,11 @@ export function Navbar() {
                   </>
                 ) : (
                   <>
-                    <li className="border-t-2 border-border pt-2 mt-2">
+                    <li>
                       <Link
                         to="/login"
                         onClick={handleNavClick}
-                        className="block rounded-xl px-4 py-3 text-sm font-extrabold text-muted-foreground transition-all hover:bg-gradient-to-r hover:from-crimson/10 hover:to-ember/10 hover:text-crimson"
+                        className="flex items-center justify-center rounded-xl bg-gradient-to-r from-navy to-blue-700 px-4 py-3 text-sm font-extrabold text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg"
                       >
                         Sign in
                       </Link>
@@ -260,7 +260,7 @@ export function Navbar() {
                       <Link
                         to="/signup"
                         onClick={handleNavClick}
-                        className="block rounded-xl px-4 py-3 text-sm font-extrabold text-crimson transition-all hover:bg-crimson/10"
+                        className="flex items-center justify-center rounded-xl bg-gradient-to-r from-crimson to-ember px-4 py-3 text-sm font-extrabold text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg"
                       >
                         Get started
                       </Link>
