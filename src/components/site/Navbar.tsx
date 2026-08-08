@@ -4,6 +4,14 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { usePWA } from "@/lib/pwa-context";
 import { toast } from "sonner";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { User, LogOut, ChevronDown } from "lucide-react";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -128,28 +136,54 @@ export function Navbar() {
               Get the App
             </button>
             {user ? (
-              <>
-                <span className="hidden text-xs font-extrabold text-foreground sm:inline-flex max-w-[120px] truncate">
-                  {user.displayName || user.email?.split("@")[0] || "User"}
-                </span>
-                <button
-                  onClick={handleSignOut}
-                  className="inline-flex items-center gap-1 rounded-full bg-navy px-3 py-1.5 text-xs font-extrabold text-white transition-all hover:bg-crimson sm:px-4 sm:py-2 sm:text-sm"
-                >
-                  Sign out
-                </button>
-              </>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center gap-2 rounded-full bg-muted/50 px-2 py-1.5 pr-1 transition-all hover:bg-muted sm:px-3 sm:py-2">
+                    <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-gradient-to-br from-crimson to-ember text-xs font-extrabold text-white sm:text-sm">
+                      {(user.displayName || user.email?.split("@")[0] || "U").charAt(0).toUpperCase()}
+                    </div>
+                    <span className="hidden text-xs font-extrabold text-foreground sm:inline-flex max-w-[100px] truncate">
+                      {user.displayName || user.email?.split("@")[0] || "User"}
+                    </span>
+                    <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <div className="flex items-center gap-3 px-2 py-2">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-crimson to-ember text-sm font-extrabold text-white">
+                      {(user.displayName || user.email?.split("@")[0] || "U").charAt(0).toUpperCase()}
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-extrabold text-foreground">
+                        {user.displayName || user.email?.split("@")[0] || "User"}
+                      </span>
+                      <span className="text-xs text-muted-foreground truncate max-w-[140px]">
+                        {user.email}
+                      </span>
+                    </div>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/account" className="flex items-center gap-2 cursor-pointer">
+                      <User className="h-4 w-4" />
+                      <span className="font-extrabold">My Account</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="text-destructive focus:text-destructive cursor-pointer">
+                    <LogOut className="h-4 w-4" />
+                    <span className="font-extrabold">Sign Out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
-              <>
-                <Link
-                  to="/login"
-                  className="hidden sm:inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-navy to-blue-700 px-3 py-1.5 text-[11px] font-extrabold text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg sm:px-4 sm:py-2 sm:text-sm"
-                >
-                  Sign in
-                </Link>
-              </>
+              <Link
+                to="/login"
+                className="hidden sm:inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-navy to-blue-700 px-3 py-1.5 text-[11px] font-extrabold text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg sm:px-4 sm:py-2 sm:text-sm"
+              >
+                Sign in
+              </Link>
             )}
-
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="grid h-9 w-9 place-items-center rounded-xl text-foreground transition-all hover:bg-muted lg:hidden"
@@ -229,9 +263,19 @@ export function Navbar() {
                 {user ? (
                   <>
                     <li className="border-t-2 border-border pt-2 mt-2">
-                      <span className="block rounded-xl px-4 py-2.5 text-sm font-extrabold text-muted-foreground">
-                        {user.displayName || user.email?.split("@")[0] || "User"}
-                      </span>
+                      <Link
+                        to="/account"
+                        onClick={handleNavClick}
+                        className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-extrabold text-foreground transition-all hover:bg-gradient-to-r hover:from-crimson/10 hover:to-ember/10 hover:text-crimson"
+                      >
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-crimson to-ember text-xs font-extrabold text-white">
+                          {(user.displayName || user.email?.split("@")[0] || "U").charAt(0).toUpperCase()}
+                        </div>
+                        <div className="flex flex-col">
+                          <span>{user.displayName || user.email?.split("@")[0] || "User"}</span>
+                          <span className="text-[10px] text-muted-foreground font-medium truncate max-w-[180px]">{user.email}</span>
+                        </div>
+                      </Link>
                     </li>
                     <li>
                       <button
