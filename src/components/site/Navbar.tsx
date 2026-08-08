@@ -126,7 +126,7 @@ export function Navbar() {
           <div className="flex items-center gap-1.5 sm:gap-2">
             <button
               onClick={handleInstallClick}
-              className={`inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-crimson to-ember px-3 py-1.5 font-extrabold text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg sm:px-4 sm:py-2 sm:text-sm ${user ? "text-[6px]" : "text-[11px]"}`}
+              className={`inline-flex items-center rounded-full bg-gradient-to-r from-crimson to-ember px-3 py-1.5 font-extrabold text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg sm:px-4 sm:py-2 sm:text-sm ${user ? "text-[6px] gap-1" : "text-[11px] gap-1.5"}`}
             >
               <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
