@@ -123,7 +123,7 @@ export function Navbar() {
             </li>
           </ul>
 
-          <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className={`flex items-center ${user ? "gap-1" : "gap-1.5"} sm:gap-2`}>
             <button
               onClick={handleInstallClick}
               className={`inline-flex items-center rounded-full bg-gradient-to-r from-crimson to-ember px-3 py-1.5 font-extrabold text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg sm:px-4 sm:py-2 sm:text-sm ${user ? "text-[6px] gap-1" : "text-[11px] gap-1.5"}`}
