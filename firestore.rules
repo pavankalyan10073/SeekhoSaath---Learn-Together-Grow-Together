@@ -2,8 +2,8 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /tutor_applications/{applicationId} {
-      allow read: if request.auth != null && (request.auth.uid == resource.data.userId || get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == "admin");
-      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
       allow update: if request.auth != null && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == "admin";
       allow delete: if false;
     }
