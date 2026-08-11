@@ -1,4 +1,4 @@
-import { db, storage } from "@/lib/firebase";
+import { db } from "@/lib/firebase";
 import {
   doc,
   setDoc,
@@ -7,10 +7,8 @@ import {
   query,
   where,
   getDocs,
-  updateDoc,
   serverTimestamp,
 } from "firebase/firestore";
-import { ref, uploadBytes, uploadString, getDownloadURL, deleteObject } from "firebase/storage";
 
 export interface TutorApplication {
   id: string;
@@ -53,15 +51,4 @@ export async function getTutorApplicationByEmail(email: string): Promise<TutorAp
   if (snapshot.empty) return null;
   const doc = snapshot.docs[0];
   return { id: doc.id, ...doc.data() } as TutorApplication;
-}
-
-export async function uploadBase64Image(path: string, base64: string): Promise<string> {
-  const storageRef = ref(storage, path);
-  await uploadString(storageRef, base64, "data_url");
-  return getDownloadURL(storageRef);
-}
-
-export async function deleteImage(path: string) {
-  const storageRef = ref(storage, path);
-  await deleteObject(storageRef);
 }

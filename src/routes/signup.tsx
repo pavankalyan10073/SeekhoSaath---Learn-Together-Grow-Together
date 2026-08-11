@@ -57,7 +57,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
-import { saveTutorApplication, uploadBase64Image } from "@/lib/firebase-data";
+import { saveTutorApplication } from "@/lib/firebase-data";
 import { subjectCategories, type Subject } from "@/data/subjects";
 
 type Role = "student" | "tutor" | null;
@@ -1459,19 +1459,8 @@ function SignupPage() {
 
       const applicationId = `tutor-app-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
       
-      toast.info("Uploading documents...");
-      
-      const [profilePicUrl, aadharFrontUrl, aadharBackUrl] = await Promise.all([
-        uploadBase64Image(`tutors/${applicationId}/profile.jpg`, tutorData.profilePic),
-        uploadBase64Image(`tutors/${applicationId}/aadhar-front.jpg`, tutorData.aadharFront),
-        uploadBase64Image(`tutors/${applicationId}/aadhar-back.jpg`, tutorData.aadharBack),
-      ]);
-
       const application: TutorFormData & { id: string; applicationDate: string; verified: boolean } = {
         ...tutorData,
-        profilePic: profilePicUrl,
-        aadharFront: aadharFrontUrl,
-        aadharBack: aadharBackUrl,
         id: applicationId,
         applicationDate: new Date().toISOString(),
         verified: false,
