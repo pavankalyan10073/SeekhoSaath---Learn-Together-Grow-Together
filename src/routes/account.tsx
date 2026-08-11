@@ -1,7 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useAuth } from "@/lib/auth-context";
+import { getTutorApplicationByEmail } from "@/lib/firebase-data";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Sections";
 import { toast } from "sonner";
@@ -57,16 +58,24 @@ function AccountPage() {
   const [loading, setLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
 
-  const isTutor = useMemo(() => {
-    if (!user?.email) return false;
-    const applications = JSON.parse(localStorage.getItem("seekhoSaath_tutorApplications") || "[]");
-    return applications.some((app: any) => app.email === user.email && app.verified);
-  }, [user?.email]);
+  const [isTutor, setIsTutor] = useState(false);
+  const [tutorData, setTutorData] = useState<any>(null);
 
-  const tutorData = useMemo(() => {
-    if (!user?.email) return null;
-    const applications = JSON.parse(localStorage.getItem("seekhoSaath_tutorApplications") || "[]");
-    return applications.find((app: any) => app.email === user.email) || null;
+  useEffect(() => {
+    let mounted = true;
+    const load = async () => {
+      if (!user?.email) return;
+      const app = await getTutorApplicationByEmail(user.email);
+      if (!mounted) return;
+      if (app) {
+        setIsTutor(app.verified);
+        setTutorData(app);
+      }
+    };
+    load();
+    return () => {
+      mounted = false;
+    };
   }, [user?.email]);
 
   const displayName = user?.displayName || user?.email?.split("@")[0] || "User";
