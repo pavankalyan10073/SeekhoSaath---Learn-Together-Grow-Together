@@ -4,13 +4,13 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCqvYLSnF6CT9VCFYkAInJQebM-KasjCzw",
-  authDomain: "seekho-saath.firebaseapp.com",
-  projectId: "seekho-saath",
-  storageBucket: "seekho-saath.firebasestorage.app",
-  messagingSenderId: "558290608996",
-  appId: "1:558290608996:web:a4055521b8c3b007ecd071",
-  measurementId: "G-RQQBNWLLQQ",
+  apiKey: "AIzaSyDx1axuRHjyzWrPbr0O_2qQNo3Khgi2z4o",
+  authDomain: "seekho-saath-8764e.firebaseapp.com",
+  projectId: "seekho-saath-8764e",
+  storageBucket: "seekho-saath-8764e.firebasestorage.app",
+  messagingSenderId: "84074990876",
+  appId: "1:84074990876:web:f5421c7c11ba7e42c57ed9",
+  measurementId: "G-02RTWJNGG4",
 };
 
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
