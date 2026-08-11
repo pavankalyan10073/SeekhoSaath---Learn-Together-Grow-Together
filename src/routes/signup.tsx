@@ -939,6 +939,60 @@ function readFileAsBase64(file: File): Promise<string> {
   });
 }
 
+async function compressImage(file: File, maxBase64Length: number): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+        const maxWidth = 1200;
+        const maxHeight = 1200;
+
+        if (width > maxWidth || height > maxHeight) {
+          const ratio = Math.min(maxWidth / width, maxHeight / height);
+          width = Math.round(width * ratio);
+          height = Math.round(height * ratio);
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(img, 0, 0, width, height);
+
+        let quality = 0.8;
+        let dataUrl = canvas.toDataURL("image/jpeg", quality);
+
+        while (dataUrl.length > maxBase64Length && quality > 0.1) {
+          quality -= 0.1;
+          dataUrl = canvas.toDataURL("image/jpeg", quality);
+        }
+
+        if (dataUrl.length > maxBase64Length) {
+          canvas.width = Math.round(width / 1.5);
+          canvas.height = Math.round(height / 1.5);
+          ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+          quality = 0.7;
+          dataUrl = canvas.toDataURL("image/jpeg", quality);
+
+          while (dataUrl.length > maxBase64Length && quality > 0.1) {
+            quality -= 0.1;
+            dataUrl = canvas.toDataURL("image/jpeg", quality);
+          }
+        }
+
+        resolve(dataUrl);
+      };
+      img.onerror = reject;
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
 function validateStep1(data: SignupForm): string | null {
   if (!data.fullName || data.fullName.length < 2) return "Full name must be at least 2 characters";
   if (!data.mobile || data.mobile.length < 10) return "Enter a valid mobile number";
@@ -1471,7 +1525,9 @@ function SignupPage() {
       return;
     }
     try {
-      const base64 = await readFileAsBase64(file);
+      const maxSize =
+        field === "profilePic" ? 14000 : 21000;
+      const base64 = await compressImage(file, maxSize);
       setTutorData((prev) => ({ ...prev, [field]: base64 }));
     } catch {
       toast.error("Failed to process image");
