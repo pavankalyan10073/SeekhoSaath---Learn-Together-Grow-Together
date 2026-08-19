@@ -75,7 +75,7 @@ function BlogDetailPage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-background text-foreground pb-safe pt-20 sm:pt-24">
+      <main className="min-h-screen bg-background text-foreground pb-safe pt-10 sm:pt-12">
       <Navbar />
 
       <div className="fixed inset-x-0 top-0 z-[9998] h-1 bg-border">

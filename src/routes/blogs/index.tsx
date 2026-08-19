@@ -96,10 +96,10 @@ function BlogsPage() {
   const recent = getRecentBlogs(20);
 
   return (
-    <main className="min-h-screen bg-background text-foreground pb-safe pt-20 sm:pt-24">
+      <main className="min-h-screen bg-background text-foreground pb-safe pt-10 sm:pt-12">
       <Navbar />
 
-      <section className="relative overflow-hidden pt-24 pb-10 sm:pt-28 sm:pb-12 md:pt-32 md:pb-14">
+      <section className="relative overflow-hidden pt-12 pb-10 sm:pt-16 sm:pb-12 md:pt-20 md:pb-14">
         <div className="bg-mesh absolute inset-0 -z-10" />
         <div
           aria-hidden
