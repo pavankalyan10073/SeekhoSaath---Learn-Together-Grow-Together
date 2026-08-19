@@ -534,7 +534,7 @@ export function Pricing() {
       </div>
 
       <Dialog open={freeOpen} onOpenChange={setFreeOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="w-[calc(100vw-1.5rem)] max-w-sm mx-auto rounded-2xl sm:max-w-md sm:rounded-2xl z-[10000]">
           <DialogHeader>
             <DialogTitle>Get started with the Free plan</DialogTitle>
             <DialogDescription>
@@ -572,7 +572,7 @@ export function Pricing() {
       </Dialog>
 
       <Dialog open={!!paymentPlan} onOpenChange={(open) => !open && setPaymentPlan(null)}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="w-[calc(100vw-1.5rem)] max-w-sm mx-auto rounded-2xl sm:max-w-md sm:rounded-2xl z-[10000]">
           <DialogHeader>
             <DialogTitle>Complete your subscription</DialogTitle>
             <DialogDescription>
