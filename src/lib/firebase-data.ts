@@ -97,6 +97,7 @@ export interface Booking {
   amount: number;
   paymentId?: string;
   razorpayOrderId?: string;
+  orderId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -246,6 +247,14 @@ export async function getBookingById(bookingId: string): Promise<Booking | null>
   const docSnap = await getDoc(ref);
   if (!docSnap.exists()) return null;
   return { id: docSnap.id, ...docSnap.data() } as Booking;
+}
+
+export async function getBookingByOrderId(orderId: string): Promise<Booking | null> {
+  const q = query(collection(db, "bookings"), where("orderId", "==", orderId));
+  const querySnap = await getDocs(q);
+  if (querySnap.empty) return null;
+  const doc = querySnap.docs[0];
+  return { id: doc.id, ...doc.data() } as Booking;
 }
 
 export async function updateBookingStatus(bookingId: string, status: Booking["status"], paymentStatus: Booking["paymentStatus"]): Promise<void> {

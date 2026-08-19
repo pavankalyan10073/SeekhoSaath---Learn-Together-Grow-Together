@@ -1,8 +1,18 @@
 import { Link } from "@tanstack/react-router";
+import { useState } from "react";
 import tutor1 from "@/assets/tutor-1.jpg";
 import tutor2 from "@/assets/tutor-2.jpg";
 import tutor3 from "@/assets/tutor-3.jpg";
 import tutor4 from "@/assets/tutor-4.jpg";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 export function LogoMarquee() {
   const items = [
@@ -406,14 +416,19 @@ export function Testimonials() {
 }
 
 export function Pricing() {
+  const [freeOpen, setFreeOpen] = useState(false);
+  const [paymentPlan, setPaymentPlan] = useState<{ name: string; amount: number } | null>(null);
+
   const tiers = [
     {
       name: "Starter",
       price: "Free",
+      per: null,
       desc: "For students just exploring.",
       features: ["Browse all tutors", "1 free 15-min discovery call", "Basic progress tracking"],
       cta: "Get started",
       popular: false,
+      action: "free",
     },
     {
       name: "Learner",
@@ -428,6 +443,8 @@ export function Pricing() {
       ],
       cta: "Start learning",
       popular: true,
+      action: "paid",
+      amount: 149900,
     },
     {
       name: "Mastery",
@@ -437,8 +454,19 @@ export function Pricing() {
       features: ["30 sessions/month", "Top 1% tutors", "1:1 mentor & study plan", "24/7 support"],
       cta: "Start mastering",
       popular: false,
+      action: "paid",
+      amount: 249900,
     },
   ];
+
+  const handlePlanClick = (tier: typeof tiers[0]) => {
+    if (tier.action === "free") {
+      setFreeOpen(true);
+    } else if (tier.action === "paid" && tier.amount) {
+      setPaymentPlan({ name: tier.name, amount: tier.amount });
+    }
+  };
+
   return (
     <section id="pricing" className="container-px mx-auto max-w-7xl py-10 sm:py-14 md:py-20">
       <SectionHeader
@@ -447,7 +475,7 @@ export function Pricing() {
         subtitle="Cancel anytime. No hidden fees. Money-back guaranteed."
       />
       <div className="mt-8 grid gap-3 sm:mt-10 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {tiers.map((t, i) => (
+        {tiers.map((t) => (
           <div
             key={t.name}
             className={`relative rounded-2xl border-2 p-5 transition-all duration-500 hover:-translate-y-1 sm:rounded-3xl sm:p-7 ${
@@ -492,6 +520,7 @@ export function Pricing() {
               ))}
             </ul>
             <button
+              onClick={() => handlePlanClick(t)}
               className={`mt-5 w-full rounded-full px-5 py-2.5 text-sm font-bold transition-all duration-300 hover:-translate-y-0.5 sm:mt-6 sm:py-3 sm:text-base ${
                 t.popular
                   ? "bg-white text-crimson shadow-lg hover:shadow-xl"
@@ -503,6 +532,105 @@ export function Pricing() {
           </div>
         ))}
       </div>
+
+      <Dialog open={freeOpen} onOpenChange={setFreeOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Get started with the Free plan</DialogTitle>
+            <DialogDescription>
+              Choose how you&apos;d like to begin. You can browse tutors now or book a free 15-minute discovery call.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-3">
+            <Link to="/tutors" onClick={() => setFreeOpen(false)}>
+              <Button className="w-full justify-between" variant="secondary">
+                <span>Browse all tutors</span>
+                <span aria-hidden className="text-base">
+                  →
+                </span>
+              </Button>
+            </Link>
+            <Button
+              className="w-full justify-between"
+              variant="default"
+              onClick={() => {
+                window.location.href = "tel:9391485316";
+              }}
+            >
+              <span>1 free 15-min discovery call</span>
+              <span aria-hidden className="text-base">
+                📞
+              </span>
+            </Button>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setFreeOpen(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!paymentPlan} onOpenChange={(open) => !open && setPaymentPlan(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Complete your subscription</DialogTitle>
+            <DialogDescription>
+              {paymentPlan
+                ? `You selected the ${paymentPlan.name} plan. Complete payment to activate your subscription.`
+                : "Choose a plan to continue."}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-3">
+            <Button
+              className="w-full"
+              onClick={async () => {
+                if (!paymentPlan) return;
+                try {
+                  const response = await fetch("/api/payments/cashfree-order", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      planName: paymentPlan.name,
+                      amount: paymentPlan.amount,
+                    }),
+                  });
+
+                  if (!response.ok) throw new Error("Failed to create payment order");
+
+                  const result = await response.json();
+
+                  if (result.data?.payment_session_id) {
+                    const cashfree = await loadCashfree();
+                    if (cashfree) {
+                      cashfree.checkout({
+                        paymentSessionId: result.data.payment_session_id,
+                        redirectTarget: "_self",
+                      });
+                    } else {
+                      throw new Error("Failed to load payment gateway");
+                    }
+                  } else {
+                    throw new Error("Payment session not created");
+                  }
+                } catch (error) {
+                  console.error("Payment error:", error);
+                  alert("Payment initialization failed. Please try again.");
+                }
+              }}
+            >
+              Pay with Cashfree
+            </Button>
+            <Button
+              variant="ghost"
+              className="w-full"
+              onClick={() => setPaymentPlan(null)}
+            >
+              Cancel
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
