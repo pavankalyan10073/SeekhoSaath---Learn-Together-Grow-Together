@@ -20,7 +20,7 @@ export function Hero() {
   };
 
   return (
-    <section className="relative overflow-hidden pt-16 pb-10 sm:pt-20 sm:pb-14 md:pt-24 md:pb-16 lg:pt-28 lg:pb-20">
+    <section className="relative overflow-hidden pt-6 pb-10 sm:pt-8 sm:pb-14 md:pt-10 md:pb-16 lg:pt-12 lg:pb-20">
       <div className="bg-mesh absolute inset-0 -z-10 opacity-80" />
       <div
         aria-hidden
