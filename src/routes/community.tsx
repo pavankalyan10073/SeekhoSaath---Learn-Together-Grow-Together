@@ -17,7 +17,7 @@ export const Route = createFileRoute("/community")({
 
 function CommunityPage() {
   return (
-    <main className="min-h-screen bg-background text-foreground pb-safe">
+    <main className="min-h-screen bg-background text-foreground pb-safe pt-20 sm:pt-24">
       <Navbar />
 
       <section className="container-px mx-auto max-w-3xl py-8 sm:py-10 md:py-14">

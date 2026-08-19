@@ -97,7 +97,7 @@ function BlogsPage() {
   const recent = getRecentBlogs(20);
 
   return (
-    <main className="min-h-screen bg-background text-foreground pb-safe">
+    <main className="min-h-screen bg-background text-foreground pb-safe pt-20 sm:pt-24">
       <Navbar />
 
       <section className="relative overflow-hidden pt-24 pb-10 sm:pt-28 sm:pb-12 md:pt-32 md:pb-14">
