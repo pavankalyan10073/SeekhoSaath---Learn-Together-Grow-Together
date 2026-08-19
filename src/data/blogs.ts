@@ -166,7 +166,7 @@ At SeekhoSaath, we offer both online and hybrid options, so you can switch modes
 
 The best choice is the one that fits your lifestyle and learning preferences.
     `,
-    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b0?w=800&q=80",
+    image: "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=800&q=80",
     category: "Education",
     author: "Dev Patel",
     date: "2025-01-12",
@@ -438,7 +438,7 @@ A programming tutor can accelerate your learning by:
 
 At SeekhoSaath, our coding tutors specialize in Python, Java, JavaScript, and more. Start coding today — your future self will thank you.
     `,
-    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b0?w=800&q=80",
+    image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&q=80",
     category: "Programming",
     author: "Arjun Nair",
     date: "2025-01-07",
@@ -846,7 +846,7 @@ At SeekhoSaath, our young coding tutors specialize in making programming fun and
 
 The future belongs to those who can create with technology. Give your child a head start today.
     `,
-    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b0?w=800&q=80",
+    image: "https://images.unsplash.com/photo-1588072432836-e10032774350?w=800&q=80",
     category: "Coding",
     author: "Arjun Nair",
     date: "2024-12-31",
@@ -1189,7 +1189,7 @@ A great tutor welcomes questions. They create a safe space where curiosity is ce
 
 Questions are the seeds of knowledge. Nurture them, and watch your understanding grow.
     `,
-    image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80",
+    image: "https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=800&q=80",
     category: "Learning",
     author: "Kavita Joshi",
     date: "2024-12-25",
@@ -1579,7 +1579,7 @@ A dedicated English tutor provides:
 
 At SeekhoSaath, our spoken English tutors have helped thousands find their voice. Start with one conversation. It could change everything.
     `,
-    image: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800&q=80",
+    image: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&q=80",
     category: "Language",
     author: "Dev Patel",
     date: "2024-12-19",
