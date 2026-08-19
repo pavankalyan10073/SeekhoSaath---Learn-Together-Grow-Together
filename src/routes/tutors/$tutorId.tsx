@@ -4,8 +4,28 @@ import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { tutors as staticTutors } from "@/data/tutors";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Sections";
-import { BookSessionDialog, MeetingDialog } from "@/components/site/BookingDialogs";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+
+function ClientOnlyDialogs({ tutor, bookOpen, setBookOpen, meetingOpen, setMeetingOpen }: { tutor: { name: string; subj: string }; bookOpen: boolean; setBookOpen: (open: boolean) => void; meetingOpen: boolean; setMeetingOpen: (open: boolean) => void }) {
+  const [ready, setReady] = useState(false);
+  const [Dialogs, setDialogs] = useState<{ BookSessionDialog: React.ComponentType<{ open: boolean; onOpenChange: (open: boolean) => void; tutor: { name: string; subj: string } }>; MeetingDialog: React.ComponentType<{ open: boolean; onOpenChange: (open: boolean) => void; tutor: { name: string; subj: string } }> } | null>(null);
+
+  useEffect(() => {
+    import("@/components/site/BookingDialogs").then((mod) => {
+      setDialogs({ BookSessionDialog: mod.BookSessionDialog, MeetingDialog: mod.MeetingDialog });
+      setReady(true);
+    });
+  }, []);
+
+  if (!ready || !Dialogs) return null;
+
+  return (
+    <>
+      <Dialogs.BookSessionDialog open={bookOpen} onOpenChange={setBookOpen} tutor={tutor} />
+      <Dialogs.MeetingDialog open={meetingOpen} onOpenChange={setMeetingOpen} tutor={tutor} />
+    </>
+  );
+}
 
 export const Route = createFileRoute("/tutors/$tutorId")({
   head: () => ({
@@ -170,8 +190,7 @@ function TutorDetailPage() {
         </div>
       </section>
 
-      <BookSessionDialog open={bookOpen} onOpenChange={setBookOpen} tutor={{ name: tutor.name, subj: tutor.subj }} />
-      <MeetingDialog open={meetingOpen} onOpenChange={setMeetingOpen} tutor={{ name: tutor.name, subj: tutor.subj }} />
+      <ClientOnlyDialogs tutor={{ name: tutor.name, subj: tutor.subj }} bookOpen={bookOpen} setBookOpen={setBookOpen} meetingOpen={meetingOpen} setMeetingOpen={setMeetingOpen} />
       <Footer />
     </main>
   );
