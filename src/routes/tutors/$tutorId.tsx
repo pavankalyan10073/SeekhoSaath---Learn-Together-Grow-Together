@@ -1,3 +1,5 @@
+"use client";
+
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { tutors as staticTutors } from "@/data/tutors";
 import { Navbar } from "@/components/site/Navbar";
@@ -28,7 +30,7 @@ function TutorDetailPage() {
   const otherTutors = staticTutors.filter(
     (t) =>
       t.id !== tutor.id &&
-      (t.subj === tutor.subj || tutor.specializations.some((s) => tutor.specializations.includes(s))),
+      (t.subj === tutor.subj || t.specializations.some((s) => tutor.specializations.includes(s))),
   );
 
   return (
