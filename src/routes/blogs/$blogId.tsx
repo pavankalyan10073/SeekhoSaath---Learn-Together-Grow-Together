@@ -34,6 +34,7 @@ function formatDate(dateString: string): string {
 function BlogDetailPage() {
   const blog = Route.useLoaderData() as Awaited<ReturnType<typeof Route.loader>>;
   const [readTimeLeft, setReadTimeLeft] = useState(0);
+  const [imgError, setImgError] = useState(false);
 
   const relatedBlogs = blogs.filter((b) => b.category === blog.category && b.id !== blog.id).slice(0, 3);
 
@@ -110,9 +111,10 @@ function BlogDetailPage() {
 
         <div className="mt-6 sm:mt-8 overflow-hidden rounded-2xl border-2 border-border sm:rounded-3xl">
           <img
-            src={blog.image}
+            src={imgError ? "/hero-tutor-rounded.jpg" : blog.image}
             alt={blog.title}
             className="aspect-video w-full object-cover"
+            onError={() => setImgError(true)}
           />
         </div>
 

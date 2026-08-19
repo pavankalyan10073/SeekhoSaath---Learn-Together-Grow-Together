@@ -1189,7 +1189,7 @@ A great tutor welcomes questions. They create a safe space where curiosity is ce
 
 Questions are the seeds of knowledge. Nurture them, and watch your understanding grow.
     `,
-    image: "https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=800&q=80",
+    image: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&q=80",
     category: "Learning",
     author: "Kavita Joshi",
     date: "2024-12-25",
@@ -1260,7 +1260,7 @@ Biology isn't just about becoming a doctor. It's about understanding life itself
 
 At SeekhoSaath, our biology tutors help students discover their passion and prepare for the right career path.
     `,
-    image: "https://images.unsplash.com/photo-1579154204601-01588f351e67?w=800&q=80",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80",
     category: "Career",
     author: "Priya Sharma",
     date: "2024-12-24",
@@ -1397,7 +1397,7 @@ At SeekhoSaath, we use everyday examples to teach physics concepts. Our tutors h
 
 Start noticing. Start questioning. Start understanding.
     `,
-    image: "https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?w=800&q=80",
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=800&q=80",
     category: "Physics",
     author: "Vikram Singh",
     date: "2024-12-22",
@@ -1517,7 +1517,7 @@ Our primary education tutors use proven methodologies to make learning engaging 
 
 Invest in the foundation. It supports everything that comes after.
     `,
-    image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80",
+    image: "https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?w=800&q=80",
     category: "Primary Education",
     author: "Suresh Kumar",
     date: "2024-12-20",
@@ -1793,7 +1793,7 @@ Education isn't about filling a bucket. It's about lighting a fire. Critical thi
 
 Invest in thinking skills, and they'll serve you for life.
     `,
-    image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&q=80",
+    image: "https://images.unsplash.com/photo-1523240794352-4a9a0a8f4b3e?w=800&q=80",
     category: "Learning",
     author: "Karthik Subramaniam",
     date: "2024-12-16",
