@@ -590,10 +590,10 @@ export function CTA() {
 
 export function Footer() {
   const cols = [
-    { t: "Product", l: [{ name: "Features", href: "/#features" }, { name: "Pricing", href: "/#pricing" }, { name: "Tutors", href: "/tutors" }, { name: "Subjects", href: "/subjects" }, { name: "Mobile app", href: "/#" }] },
-    { t: "Company", l: [{ name: "About", href: "/#" }, { name: "Careers", href: "/#" }, { name: "Blog", href: "/blogs" }, { name: "Press", href: "/#" }, { name: "Contact", href: "/#" }] },
-    { t: "Resources", l: [{ name: "Help center", href: "/#" }, { name: "Become a tutor", href: "/signup" }, { name: "Community", href: "/#" }, { name: "Trust & safety", href: "/#" }] },
-    { t: "Legal", l: [{ name: "Privacy", href: "/privacy-policy" }, { name: "Terms", href: "/terms" }, { name: "Cookies", href: "/#" }, { name: "Refunds", href: "/refund-policy" }] },
+    { t: "Product", l: [{ name: "Features", href: "/#features" }, { name: "Pricing", href: "/#pricing" }, { name: "Tutors", href: "/tutors" }, { name: "Subjects", href: "/subjects" }, { name: "Mobile app", href: "/mobile-app" }] },
+    { t: "Company", l: [{ name: "About", href: "/about" }, { name: "Careers", href: "/careers" }, { name: "Blog", href: "/blogs" }, { name: "Press", href: "/press" }, { name: "Contact", href: "/contact" }] },
+    { t: "Resources", l: [{ name: "Help center", href: "/help-center" }, { name: "Become a tutor", href: "/signup" }, { name: "Community", href: "/community" }, { name: "Trust & safety", href: "/trust-safety" }] },
+    { t: "Legal", l: [{ name: "Privacy", href: "/privacy-policy" }, { name: "Terms", href: "/terms" }, { name: "Cookies", href: "/cookies" }, { name: "Refunds", href: "/refund-policy" }] },
   ];
   return (
     <footer className="border-t-2 border-border bg-gradient-to-b from-card/40 to-card/80">

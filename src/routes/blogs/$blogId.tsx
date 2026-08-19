@@ -71,7 +71,7 @@ function BlogDetailPage() {
           ← All blogs
         </Link>
 
-        <header className="mt-4 sm:mt-5">
+        <header className="mt-4 sm:mt-5 mb-6 sm:mb-8">
           <span className="text-[10px] font-bold uppercase tracking-wider text-crimson sm:text-xs">{blog.category}</span>
           <h1 className="mt-2 font-display text-2xl font-extrabold tracking-tight sm:text-3xl md:text-4xl">{blog.title}</h1>
           <p className="mt-2 text-base text-muted-foreground sm:text-lg">{blog.excerpt}</p>
