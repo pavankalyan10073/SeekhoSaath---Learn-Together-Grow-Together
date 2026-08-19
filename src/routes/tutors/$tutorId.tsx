@@ -30,7 +30,7 @@ function TutorDetailPage() {
   const otherTutors = staticTutors.filter(
     (t) =>
       t.id !== tutor.id &&
-      (t.subj === tutor.subj || t.specializations.some((s) => tutor.specializations.includes(s))),
+      (t.subj === tutor.subj || tutor.specializations.some((s) => t.specializations.includes(s))),
   );
 
   return (
