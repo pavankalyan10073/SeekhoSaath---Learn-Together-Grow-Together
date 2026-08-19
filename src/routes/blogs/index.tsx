@@ -1,8 +1,10 @@
+"use client";
+
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Sections";
 import { blogs, getTrendingBlogs, getRecentBlogs } from "@/data/blogs";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export const Route = createFileRoute("/blogs/")({
   head: () => ({
@@ -48,6 +50,24 @@ function LiveTimeIndicator({ dateString }: { dateString: string }) {
 function BlogCard({ blog }: { blog: (typeof blogs)[0] }) {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    const img = imgRef.current;
+    if (!img) return;
+    if (img.complete && img.naturalWidth !== 0) {
+      setLoaded(true);
+    } else {
+      const handleLoad = () => setLoaded(true);
+      const handleError = () => setError(true);
+      img.addEventListener("load", handleLoad);
+      img.addEventListener("error", handleError);
+      return () => {
+        img.removeEventListener("load", handleLoad);
+        img.removeEventListener("error", handleError);
+      };
+    }
+  }, []);
 
   return (
     <Link
@@ -59,10 +79,9 @@ function BlogCard({ blog }: { blog: (typeof blogs)[0] }) {
           <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-muted to-muted/60" />
         )}
         <img
+          ref={imgRef}
           src={error ? "/hero-tutor-rounded.jpg" : blog.image}
           alt={blog.title}
-          onLoad={() => setLoaded(true)}
-          onError={() => setError(true)}
           className={`h-full w-full object-cover transition-all duration-700 group-hover:scale-105 ${loaded ? "opacity-100" : "opacity-0"}`}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />

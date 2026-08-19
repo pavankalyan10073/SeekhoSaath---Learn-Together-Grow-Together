@@ -1,8 +1,10 @@
+"use client";
+
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Sections";
 import { getBlogById, blogs } from "@/data/blogs";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 export const Route = createFileRoute("/blogs/$blogId")({
   head: () => ({
@@ -34,6 +36,24 @@ function formatDate(dateString: string): string {
 function RelatedImage({ blog }: { blog: (typeof blogs)[0] }) {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    const img = imgRef.current;
+    if (!img) return;
+    if (img.complete && img.naturalWidth !== 0) {
+      setLoaded(true);
+    } else {
+      const handleLoad = () => setLoaded(true);
+      const handleError = () => setError(true);
+      img.addEventListener("load", handleLoad);
+      img.addEventListener("error", handleError);
+      return () => {
+        img.removeEventListener("load", handleLoad);
+        img.removeEventListener("error", handleError);
+      };
+    }
+  }, []);
 
   return (
     <>
@@ -41,10 +61,9 @@ function RelatedImage({ blog }: { blog: (typeof blogs)[0] }) {
         <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-muted to-muted/60" />
       )}
       <img
+        ref={imgRef}
         src={error ? "/hero-tutor-rounded.jpg" : blog.image}
         alt={blog.title}
-        onLoad={() => setLoaded(true)}
-        onError={() => setError(true)}
         className={`h-full w-full object-cover transition-all duration-700 group-hover:scale-105 ${loaded ? "opacity-100" : "opacity-0"}`}
       />
     </>
@@ -56,8 +75,26 @@ function BlogDetailPage() {
   const [readTimeLeft, setReadTimeLeft] = useState(0);
   const [imgError, setImgError] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
+  const mainImgRef = useRef<HTMLImageElement>(null);
 
   const relatedBlogs = blogs.filter((b) => b.category === blog.category && b.id !== blog.id).slice(0, 3);
+
+  useEffect(() => {
+    const img = mainImgRef.current;
+    if (!img) return;
+    if (img.complete && img.naturalWidth !== 0) {
+      setImgLoaded(true);
+    } else {
+      const handleLoad = () => setImgLoaded(true);
+      const handleError = () => setImgError(true);
+      img.addEventListener("load", handleLoad);
+      img.addEventListener("error", handleError);
+      return () => {
+        img.removeEventListener("load", handleLoad);
+        img.removeEventListener("error", handleError);
+      };
+    }
+  }, []);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -135,11 +172,10 @@ function BlogDetailPage() {
             <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-muted to-muted/60" />
           )}
           <img
+            ref={mainImgRef}
             src={imgError ? "/hero-tutor-rounded.jpg" : blog.image}
             alt={blog.title}
             className={`aspect-video w-full object-cover transition-opacity duration-500 ${imgLoaded || imgError ? "opacity-100" : "opacity-0"}`}
-            onLoad={() => setImgLoaded(true)}
-            onError={() => setImgError(true)}
           />
         </div>
 
