@@ -1,9 +1,10 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
-import { tutors } from "@/data/tutors";
+import { tutors as staticTutors } from "@/data/tutors";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Sections";
 import { BookSessionDialog, MeetingDialog } from "@/components/site/BookingDialogs";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getTutorById, getApprovedTutors, type Tutor } from "@/lib/firebase-data";
 
 export const Route = createFileRoute("/tutors/$tutorId")({
   head: () => ({
@@ -12,20 +13,68 @@ export const Route = createFileRoute("/tutors/$tutorId")({
       { name: "description", content: "View tutor profile, specializations, and book a session." },
     ],
   }),
-  loader: ({ params }) => {
-    const tutor = tutors.find((t) => t.id === params.tutorId);
-    if (!tutor) throw notFound();
-    return tutor;
-  },
   component: TutorDetailPage,
 });
 
 function TutorDetailPage() {
-  const tutor = Route.useLoaderData();
+  const params = Route.useParams();
+  const [tutor, setTutor] = useState<Tutor | null>(null);
+  const [loading, setLoading] = useState(true);
   const [bookOpen, setBookOpen] = useState(false);
   const [meetingOpen, setMeetingOpen] = useState(false);
 
-  const otherTutors = tutors.filter(
+  useEffect(() => {
+    const loadTutor = async () => {
+      try {
+        const dbTutor = await getTutorById(params.tutorId);
+        if (dbTutor) {
+          setTutor(dbTutor);
+        } else {
+          const staticTutor = staticTutors.find((t) => t.id === params.tutorId);
+          if (staticTutor) {
+            setTutor(staticTutor as Tutor);
+          } else {
+            setTutor(null);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load tutor:", error);
+        const staticTutor = staticTutors.find((t) => t.id === params.tutorId);
+        setTutor(staticTutor as Tutor | null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadTutor();
+  }, [params.tutorId]);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-background text-foreground pb-safe">
+        <Navbar />
+        <div className="container-px mx-auto max-w-7xl py-20 text-center">
+          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-crimson border-t-transparent"></div>
+          <p className="mt-4 text-sm text-muted-foreground">Loading tutor profile...</p>
+        </div>
+      </main>
+    );
+  }
+
+  if (!tutor) {
+    return (
+      <main className="min-h-screen bg-background text-foreground pb-safe">
+        <Navbar />
+        <div className="container-px mx-auto max-w-7xl py-20 text-center">
+          <h1 className="font-display text-2xl font-bold">Tutor not found</h1>
+          <Link to="/tutors" className="mt-4 inline-flex items-center gap-2 text-crimson hover:underline">
+            ← Back to tutors
+          </Link>
+        </div>
+      </main>
+    );
+  }
+
+  const otherTutors = staticTutors.filter(
     (t) =>
       t.id !== tutor.id &&
       (t.subj === tutor.subj || t.specializations.some((s) => tutor.specializations.includes(s))),
