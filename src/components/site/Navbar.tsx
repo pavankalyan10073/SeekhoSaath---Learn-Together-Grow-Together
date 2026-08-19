@@ -76,12 +76,12 @@ export function Navbar() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
-        scrolled ? "py-2 sm:py-2.5" : "py-2.5 sm:py-3"
+        scrolled ? "py-1.5 sm:py-2" : "py-2 sm:py-2.5"
       }`}
     >
       <div className="container-px mx-auto max-w-7xl">
         <nav
-          className={`flex items-center justify-between rounded-full px-3.5 py-2 transition-all duration-500 sm:px-5 sm:py-2.5 ${
+          className={`flex items-center justify-between rounded-full px-3 py-1.5 transition-all duration-500 sm:px-4 sm:py-2 ${
             scrolled
               ? "glass shadow-[var(--shadow-card)] border border-border/60"
               : "bg-transparent"
