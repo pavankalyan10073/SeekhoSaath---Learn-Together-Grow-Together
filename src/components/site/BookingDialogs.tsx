@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const GOOGLE_SHEET_WEBHOOK = import.meta.env.VITE_GOOGLE_SHEET_WEBHOOK || "";
 const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER || "";
@@ -281,19 +280,21 @@ export function MeetingDialog({
           </div>
           <div>
             <Label htmlFor="tuition-type">Type of Tuition</Label>
-            <Select value={formData.tuitionType} onValueChange={(value) => setFormData({ ...formData, tuitionType: value })}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select tuition type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="online">Online Tutoring</SelectItem>
-                <SelectItem value="offline">Offline Tutoring</SelectItem>
-                <SelectItem value="hybrid">Hybrid Tutoring</SelectItem>
-                <SelectItem value="home">Home Tuition</SelectItem>
-                <SelectItem value="group">Group Coaching</SelectItem>
-                <SelectItem value="crash">Crash Course</SelectItem>
-              </SelectContent>
-            </Select>
+            <select
+              id="tuition-type"
+              value={formData.tuitionType}
+              onChange={(e) => setFormData({ ...formData, tuitionType: e.target.value })}
+              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+              required
+            >
+              <option value="">Select tuition type</option>
+              <option value="online">Online Tutoring</option>
+              <option value="offline">Offline Tutoring</option>
+              <option value="hybrid">Hybrid Tutoring</option>
+              <option value="home">Home Tuition</option>
+              <option value="group">Group Coaching</option>
+              <option value="crash">Crash Course</option>
+            </select>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
