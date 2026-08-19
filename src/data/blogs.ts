@@ -41,7 +41,7 @@ Our platform uses AI-powered matching to connect you with tutors who fit your sp
 
 The right tutor isn't just about credentials — it's about connection. Start your search today and find the tutor who makes learning click.
     `,
-    image: "https://placehold.co/800x400/2563eb/ffffff?text=Online+Tutoring",
+    image: "/blog-images/how-to-find-best-tutor-online.jpg",
     category: "Study Tips",
     author: "Priya Sharma",
     date: "2025-01-15",
@@ -78,7 +78,7 @@ Individual attention helps build confidence, especially in challenging subjects.
 
 Ready to experience the difference? Book a session with one of our top tutors today.
     `,
-    image: "https://placehold.co/800x400/7c3aed/ffffff?text=1-on-1+Learning",
+    image: "/blog-images/benefits-of-1-on-1-tutoring.jpg",
     category: "Education",
     author: "Rahul Mehta",
     date: "2025-01-14",
@@ -125,7 +125,7 @@ Don't struggle alone. A good tutor can provide structured guidance and keep you 
 
 Implement these habits consistently, and watch your preparation transform.
     `,
-    image: "https://placehold.co/800x400/059669/ffffff?text=Study+Habits",
+    image: "/blog-images/effective-study-habits.jpg",
     category: "Exam Prep",
     author: "Sara Khanna",
     date: "2025-01-13",
@@ -166,7 +166,7 @@ At SeekhoSaath, we offer both online and hybrid options, so you can switch modes
 
 The best choice is the one that fits your lifestyle and learning preferences.
     `,
-    image: "https://placehold.co/800x400/d97706/ffffff?text=Online+vs+Offline",
+    image: "/blog-images/online-vs-offline-tutoring.jpg",
     category: "Education",
     author: "Dev Patel",
     date: "2025-01-12",
@@ -213,7 +213,7 @@ A dedicated English tutor can correct pronunciation, suggest vocabulary, and pro
 
 Start today. Consistency beats intensity.
     `,
-    image: "https://placehold.co/800x400/dc2626/ffffff?text=English+Speaking",
+    image: "/blog-images/improve-english-speaking.jpg",
     category: "Language",
     author: "Dev Patel",
     date: "2025-01-11",
@@ -258,7 +258,7 @@ A patient tutor provides a safe space to make mistakes and ask questions. They b
 
 You don't have to love math — you just need to understand it well enough to succeed. With the right support, you can do just that.
     `,
-    image: "https://placehold.co/800x400/4b5563/ffffff?text=Math+Help",
+    image: "/blog-images/math-anxiety-tips.jpg",
     category: "Study Tips",
     author: "Rahul Mehta",
     date: "2025-01-10",
@@ -317,7 +317,7 @@ Our NEET specialists at SeekhoSaath have helped hundreds of students score 300+.
 
 Start early, stay consistent, and believe in yourself. Your medical seat awaits.
     `,
-    image: "https://placehold.co/800x400/059669/ffffff?text=NEET+Biology",
+    image: "/blog-images/neet-biology-tips.jpg",
     category: "NEET",
     author: "Sara Khanna",
     date: "2025-01-09",
@@ -379,7 +379,7 @@ Our IIT-JEE qualified tutors provide:
 
 With the right guidance and dedication, a top rank is within your reach.
     `,
-    image: "https://placehold.co/800x400/2563eb/ffffff?text=JEE+Prep",
+    image: "/blog-images/jee-advanced-preparation.jpg",
     category: "JEE",
     author: "Aanya Rajput",
     date: "2025-01-08",
@@ -438,7 +438,7 @@ A programming tutor can accelerate your learning by:
 
 At SeekhoSaath, our coding tutors specialize in Python, Java, JavaScript, and more. Start coding today — your future self will thank you.
     `,
-    image: "https://placehold.co/800x400/1f2937/ffffff?text=Programming",
+    image: "/blog-images/learning-programming.jpg",
     category: "Programming",
     author: "Arjun Nair",
     date: "2025-01-07",
@@ -490,7 +490,7 @@ Support, don't pressure. Encourage, don't compare. Your child needs a safe space
 
 At SeekhoSaath, we believe in the triangle of success: Student + Parent + Tutor. Together, we can achieve amazing results.
     `,
-    image: "https://placehold.co/800x400/dc2626/ffffff?text=Parenting",
+    image: "/blog-images/parenting-education-tips.jpg",
     category: "Parenting",
     author: "Meera Krishnan",
     date: "2025-01-06",
@@ -546,7 +546,7 @@ Start each day by:
 
 Time management is a skill that improves with practice. Start small, be consistent, and adjust as needed.
     `,
-    image: "https://placehold.co/800x400/d97706/ffffff?text=Time+Management",
+    image: "/blog-images/time-management-students.jpg",
     category: "Study Tips",
     author: "Vikram Singh",
     date: "2025-01-05",
@@ -608,7 +608,7 @@ After each experiment, discuss:
 
 For more guided experiments and science projects, connect with our science tutors at SeekhoSaath.
     `,
-    image: "https://placehold.co/800x400/059669/ffffff?text=Science+Experiments",
+    image: "/blog-images/science-experiments-home.jpg",
     category: "Science",
     author: "Kavita Joshi",
     date: "2025-01-04",
@@ -671,7 +671,7 @@ A language tutor provides:
 
 Start small, stay consistent, and celebrate progress. Every fluent speaker was once a beginner.
     `,
-    image: "https://placehold.co/800x400/7c3aed/ffffff?text=Language+Learning",
+    image: "/blog-images/language-learning-tips.jpg",
     category: "Language",
     author: "Pooja Agarwal",
     date: "2025-01-03",
@@ -737,7 +737,7 @@ If you're struggling with specific subjects, consider joining a board prep cours
 
 Remember, board exams are important, but they don't define your worth. Give your best, stay positive, and the results will follow.
     `,
-    image: "https://placehold.co/800x400/dc2626/ffffff?text=Board+Exams",
+    image: "/blog-images/board-exam-strategies.jpg",
     category: "Board Exams",
     author: "Ananya Reddy",
     date: "2025-01-02",
@@ -789,7 +789,7 @@ Whether you want to pursue music professionally or simply enjoy it as a hobby, t
 
 Let music be your secret weapon for academic success.
     `,
-    image: "https://placehold.co/800x400/7c3aed/ffffff?text=Music+Learning",
+    image: "/blog-images/music-learning-benefits.jpg",
     category: "Music",
     author: "Swati Bose",
     date: "2025-01-01",
@@ -846,7 +846,7 @@ At SeekhoSaath, our young coding tutors specialize in making programming fun and
 
 The future belongs to those who can create with technology. Give your child a head start today.
     `,
-    image: "https://placehold.co/800x400/1f2937/ffffff?text=Coding+for+Kids",
+    image: "/blog-images/coding-for-kids.jpg",
     category: "Coding",
     author: "Arjun Nair",
     date: "2024-12-31",
@@ -890,7 +890,7 @@ A good physics tutor doesn't just teach formulas — they tell stories. Stories 
 
 At SeekhoSaath, our physics tutors make complex topics accessible. From Class 6 to IIT-JEE level, we've got you covered.
     `,
-    image: "https://placehold.co/800x400/2563eb/ffffff?text=Physics+Made+Easy",
+    image: "/blog-images/physics-concepts-made-easy.jpg",
     category: "Physics",
     author: "Aanya Rajput",
     date: "2024-12-30",
@@ -938,7 +938,7 @@ Our chemistry tutors at SeekhoSaath use real-life examples to make abstract conc
 
 Look around you — chemistry is everywhere. Once you start seeing it, you'll never stop.
     `,
-    image: "https://placehold.co/800x400/059669/ffffff?text=Chemistry+in+Life",
+    image: "/blog-images/chemistry-daily-life.jpg",
     category: "Chemistry",
     author: "Sara Khanna",
     date: "2024-12-29",
@@ -1005,7 +1005,7 @@ A data science mentor can guide your learning path, review your projects, and he
 
 Start today. The world needs more data-driven thinkers.
     `,
-    image: "https://placehold.co/800x400/7c3aed/ffffff?text=Data+Science",
+    image: "/blog-images/data-science-career.jpg",
     category: "Data Science",
     author: "Rajesh Yadav",
     date: "2024-12-28",
@@ -1065,7 +1065,7 @@ Our social science tutors make subjects like History, Geography, and Economics e
 
 The world needs thinkers, not just technicians. Social sciences give you the tools to understand and shape the world.
     `,
-    image: "https://placehold.co/800x400/d97706/ffffff?text=Social+Science",
+    image: "/blog-images/social-science-careers.jpg",
     category: "Social Science",
     author: "Aditya Mishra",
     date: "2024-12-27",
@@ -1126,7 +1126,7 @@ Sometimes, the best motivation comes from external accountability. A study partn
 
 At SeekhoSaath, our tutors don't just teach — they mentor and motivate. Book a session and experience the difference.
     `,
-    image: "https://placehold.co/800x400/059669/ffffff?text=Study+Motivation",
+    image: "/blog-images/study-motivation-tips.jpg",
     category: "Study Tips",
     author: "Deepa Menon",
     date: "2024-12-26",
@@ -1189,7 +1189,7 @@ A great tutor welcomes questions. They create a safe space where curiosity is ce
 
 Questions are the seeds of knowledge. Nurture them, and watch your understanding grow.
     `,
-    image: "https://placehold.co/800x400/2563eb/ffffff?text=Asking+Questions",
+    image: "/blog-images/importance-of-asking-questions.jpg",
     category: "Learning",
     author: "Kavita Joshi",
     date: "2024-12-25",
@@ -1260,7 +1260,7 @@ Biology isn't just about becoming a doctor. It's about understanding life itself
 
 At SeekhoSaath, our biology tutors help students discover their passion and prepare for the right career path.
     `,
-    image: "https://placehold.co/800x400/059669/ffffff?text=Biology+Careers",
+    image: "/blog-images/biology-career-options.jpg",
     category: "Career",
     author: "Priya Sharma",
     date: "2024-12-24",
@@ -1328,7 +1328,7 @@ Our social science tutors use storytelling and real-world connections to make hi
 
 History isn't about memorizing the past. It's about understanding our world.
     `,
-    image: "https://placehold.co/800x400/d97706/ffffff?text=History+%26+Civics",
+    image: "/blog-images/history-civics-learning.jpg",
     category: "Social Science",
     author: "Aditya Mishra",
     date: "2024-12-23",
@@ -1397,7 +1397,7 @@ At SeekhoSaath, we use everyday examples to teach physics concepts. Our tutors h
 
 Start noticing. Start questioning. Start understanding.
     `,
-    image: "https://placehold.co/800x400/2563eb/ffffff?text=Physics+Everyday",
+    image: "/blog-images/physics-everyday.jpg",
     category: "Physics",
     author: "Vikram Singh",
     date: "2024-12-22",
@@ -1451,7 +1451,7 @@ At SeekhoSaath, our economics tutors make complex concepts accessible. From Clas
 
 Economics isn't just about graphs and formulas. It's about understanding how the world works.
     `,
-    image: "https://placehold.co/800x400/4b5563/ffffff?text=Economics",
+    image: "/blog-images/economics-students.jpg",
     category: "Economics",
     author: "Rohan Desai",
     date: "2024-12-21",
@@ -1517,7 +1517,7 @@ Our primary education tutors use proven methodologies to make learning engaging 
 
 Invest in the foundation. It supports everything that comes after.
     `,
-    image: "https://placehold.co/800x400/dc2626/ffffff?text=Primary+Education",
+    image: "/blog-images/primary-education-tips.jpg",
     category: "Primary Education",
     author: "Suresh Kumar",
     date: "2024-12-20",
@@ -1579,7 +1579,7 @@ A dedicated English tutor provides:
 
 At SeekhoSaath, our spoken English tutors have helped thousands find their voice. Start with one conversation. It could change everything.
     `,
-    image: "https://placehold.co/800x400/dc2626/ffffff?text=Spoken+English",
+    image: "/blog-images/spoken-english-confidence.jpg",
     category: "Language",
     author: "Dev Patel",
     date: "2024-12-19",
@@ -1664,7 +1664,7 @@ Combine digital tools with expert tutoring for the best results. At SeekhoSaath,
 
 Explore, experiment, and find what works for you.
     `,
-    image: "https://placehold.co/800x400/7c3aed/ffffff?text=Digital+Tools",
+    image: "/blog-images/digital-learning-tools.jpg",
     category: "Technology",
     author: "Amit Verma",
     date: "2024-12-18",
@@ -1725,7 +1725,7 @@ Don't let myths hold you back. With the right approach, you can achieve your goa
 
 Stay focused, stay consistent, and trust the process.
     `,
-    image: "https://placehold.co/800x400/dc2626/ffffff?text=Competitive+Exams",
+    image: "/blog-images/cracking-competitive-exams.jpg",
     category: "Exam Prep",
     author: "Priya Sharma",
     date: "2024-12-17",
@@ -1793,7 +1793,7 @@ Education isn't about filling a bucket. It's about lighting a fire. Critical thi
 
 Invest in thinking skills, and they'll serve you for life.
     `,
-    image: "https://placehold.co/800x400/1f2937/ffffff?text=Critical+Thinking",
+    image: "/blog-images/critical-thinking-education.jpg",
     category: "Learning",
     author: "Karthik Subramaniam",
     date: "2024-12-16",
@@ -1857,7 +1857,7 @@ At SeekhoSaath, we encourage reading across all subjects. Our tutors recommend b
 
 Pick up a book today. Your future self will thank you.
     `,
-    image: "https://placehold.co/800x400/059669/ffffff?text=Reading+Benefits",
+    image: "/blog-images/benefits-of-reading.jpg",
     category: "Reading",
     author: "Ananya Reddy",
     date: "2024-12-15",
@@ -1924,7 +1924,7 @@ Whether you're a student needing academic support or a professional looking to a
 
 Embrace the language. Connect with a world of culture and opportunity.
     `,
-    image: "https://placehold.co/800x400/dc2626/ffffff?text=Hindi+Language",
+    image: "/blog-images/hindi-language-importance.jpg",
     category: "Language",
     author: "Pooja Agarwal",
     date: "2024-12-14",
