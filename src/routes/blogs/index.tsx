@@ -61,7 +61,6 @@ function BlogCard({ blog }: { blog: (typeof blogs)[0] }) {
         <img
           src={error ? "/hero-tutor-rounded.jpg" : blog.image}
           alt={blog.title}
-          loading="lazy"
           onLoad={() => setLoaded(true)}
           onError={() => setError(true)}
           className={`h-full w-full object-cover transition-all duration-700 group-hover:scale-105 ${loaded ? "opacity-100" : "opacity-0"}`}
