@@ -3,8 +3,8 @@ import { tutors as staticTutors } from "@/data/tutors";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Sections";
 import { BookSessionDialog, MeetingDialog } from "@/components/site/BookingDialogs";
-import { useState, useEffect } from "react";
-import { getTutorById, getApprovedTutors, type Tutor } from "@/lib/firebase-data";
+import { useState } from "react";
+import { getTutorById, type Tutor } from "@/lib/firebase-data";
 
 export const Route = createFileRoute("/tutors/$tutorId")({
   head: () => ({
@@ -13,78 +13,35 @@ export const Route = createFileRoute("/tutors/$tutorId")({
       { name: "description", content: "View tutor profile, specializations, and book a session." },
     ],
   }),
+  loader: async ({ params }) => {
+    try {
+      const dbTutor = await getTutorById(params.tutorId);
+      if (dbTutor) return dbTutor;
+    } catch (error) {
+      console.error("Failed to load tutor from Firestore:", error);
+    }
+    const staticTutor = staticTutors.find((t) => t.id === params.tutorId);
+    if (!staticTutor) throw notFound();
+    return staticTutor as Tutor;
+  },
   component: TutorDetailPage,
 });
 
 function TutorDetailPage() {
-  const params = Route.useParams();
-  const [tutor, setTutor] = useState<Tutor | null>(null);
-  const [loading, setLoading] = useState(true);
+  const tutor = Route.useLoaderData<Tutor>();
   const [bookOpen, setBookOpen] = useState(false);
   const [meetingOpen, setMeetingOpen] = useState(false);
-
-  useEffect(() => {
-    const loadTutor = async () => {
-      try {
-        const dbTutor = await getTutorById(params.tutorId);
-        if (dbTutor) {
-          setTutor(dbTutor);
-        } else {
-          const staticTutor = staticTutors.find((t) => t.id === params.tutorId);
-          if (staticTutor) {
-            setTutor(staticTutor as Tutor);
-          } else {
-            setTutor(null);
-          }
-        }
-      } catch (error) {
-        console.error("Failed to load tutor:", error);
-        const staticTutor = staticTutors.find((t) => t.id === params.tutorId);
-        setTutor(staticTutor as Tutor | null);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadTutor();
-  }, [params.tutorId]);
-
-  if (loading) {
-    return (
-      <main className="min-h-screen bg-background text-foreground pb-safe">
-        <Navbar />
-        <div className="container-px mx-auto max-w-7xl py-20 text-center">
-          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-crimson border-t-transparent"></div>
-          <p className="mt-4 text-sm text-muted-foreground">Loading tutor profile...</p>
-        </div>
-      </main>
-    );
-  }
-
-  if (!tutor) {
-    return (
-      <main className="min-h-screen bg-background text-foreground pb-safe">
-        <Navbar />
-        <div className="container-px mx-auto max-w-7xl py-20 text-center">
-          <h1 className="font-display text-2xl font-bold">Tutor not found</h1>
-          <Link to="/tutors" className="mt-4 inline-flex items-center gap-2 text-crimson hover:underline">
-            ← Back to tutors
-          </Link>
-        </div>
-      </main>
-    );
-  }
 
   const otherTutors = staticTutors.filter(
     (t) =>
       t.id !== tutor.id &&
-      (t.subj === tutor.subj || t.specializations.some((s) => tutor.specializations.includes(s))),
+      (t.subj === tutor.subj || tutor.specializations.some((s) => tutor.specializations.includes(s))),
   );
 
   return (
     <main className="min-h-screen bg-background text-foreground pb-safe">
       <Navbar />
 
-      {/* Hero */}
       <section className="relative overflow-hidden pt-24 pb-10 sm:pt-28 sm:pb-12 md:pt-32 md:pb-14">
         <div className="bg-mesh absolute inset-0 -z-10" />
         <div
@@ -103,7 +60,6 @@ function TutorDetailPage() {
 
           <div className="mt-4 sm:mt-5">
             <div className="grid gap-6 md:grid-cols-[280px_1fr] lg:grid-cols-[340px_1fr] md:gap-8 lg:gap-10">
-              {/* Image */}
               <div className="relative mx-auto w-full max-w-[280px] md:max-w-none">
                 <div className="overflow-hidden rounded-2xl border-2 border-border sm:rounded-3xl shadow-[var(--shadow-float)]">
                   <img
@@ -119,7 +75,6 @@ function TutorDetailPage() {
                 </div>
               </div>
 
-              {/* Info */}
               <div>
                 <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
                   <span className="inline-flex items-center gap-2 rounded-full bg-mint/15 px-2.5 py-1 text-xs font-bold text-mint sm:px-3 sm:py-1.5 sm:text-sm">
@@ -145,37 +100,21 @@ function TutorDetailPage() {
                   <div className="rounded-xl border-2 border-border bg-card px-3 py-2 text-center sm:px-4 sm:py-3">
                     <div className="font-display text-lg font-bold sm:text-xl">
                       {tutor.price}
-                      <span className="text-xs font-normal text-muted-foreground sm:text-sm">
-                        /Session
-                      </span>
+                      <span className="text-xs font-normal text-muted-foreground sm:text-sm">/Session</span>
                     </div>
-                    <div className="text-[10px] text-muted-foreground sm:text-xs mt-0.5">
-                      Per session
-                    </div>
+                    <div className="text-[10px] text-muted-foreground sm:text-xs mt-0.5">Per session</div>
                   </div>
                   <div className="rounded-xl border-2 border-border bg-card px-3 py-2 text-center sm:px-4 sm:py-3">
-                    <div className="font-display text-lg font-bold sm:text-xl">
-                      {tutor.sessions}+
-                    </div>
-                    <div className="text-[10px] text-muted-foreground sm:text-xs mt-0.5">
-                      Sessions done
-                    </div>
+                    <div className="font-display text-lg font-bold sm:text-xl">{tutor.sessions}+</div>
+                    <div className="text-[10px] text-muted-foreground sm:text-xs mt-0.5">Sessions done</div>
                   </div>
                   <div className="rounded-xl border-2 border-border bg-card px-3 py-2 text-center sm:px-4 sm:py-3">
-                    <div className="font-display text-lg font-bold sm:text-xl">
-                      {tutor.experience}
-                    </div>
-                    <div className="text-[10px] text-muted-foreground sm:text-xs mt-0.5">
-                      Experience
-                    </div>
+                    <div className="font-display text-lg font-bold sm:text-xl">{tutor.experience}</div>
+                    <div className="text-[10px] text-muted-foreground sm:text-xs mt-0.5">Experience</div>
                   </div>
                   <div className="rounded-xl border-2 border-border bg-card px-3 py-2 text-center sm:px-4 sm:py-3">
-                    <div className="font-display text-lg font-bold sm:text-xl">
-                      {tutor.responseTime}
-                    </div>
-                    <div className="text-[10px] text-muted-foreground sm:text-xs mt-0.5">
-                      Response time
-                    </div>
+                    <div className="font-display text-lg font-bold sm:text-xl">{tutor.responseTime}</div>
+                    <div className="text-[10px] text-muted-foreground sm:text-xs mt-0.5">Response time</div>
                   </div>
                 </div>
 
@@ -199,23 +138,14 @@ function TutorDetailPage() {
         </div>
       </section>
 
-      {/* Details */}
       <section className="container-px mx-auto max-w-7xl py-8 sm:py-10 md:py-14">
         <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {/* About */}
-          <div
-            className="rounded-2xl border-2 border-border bg-card p-5 sm:rounded-3xl sm:p-6 col-span-2 md:col-span-2 lg:col-span-1"
-          >
+          <div className="rounded-2xl border-2 border-border bg-card p-5 sm:rounded-3xl sm:p-6 col-span-2 md:col-span-2 lg:col-span-1">
             <h2 className="font-display text-base font-bold sm:text-lg">About</h2>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:mt-3 sm:text-base">
-              {tutor.bio}
-            </p>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:mt-3 sm:text-base">{tutor.bio}</p>
           </div>
 
-          {/* Education */}
-          <div
-            className="rounded-2xl border-2 border-border bg-card p-5 sm:rounded-3xl sm:p-6"
-          >
+          <div className="rounded-2xl border-2 border-border bg-card p-5 sm:rounded-3xl sm:p-6">
             <h2 className="font-display text-base font-bold sm:text-lg">Education</h2>
             <div className="mt-3 flex items-start gap-3 sm:mt-4">
               <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-crimson/10 to-ember/10 text-lg sm:h-11 sm:w-11 sm:rounded-2xl sm:text-xl">
@@ -227,15 +157,10 @@ function TutorDetailPage() {
               </div>
             </div>
             <div className="mt-4">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground sm:text-sm">
-                Languages
-              </h3>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground sm:text-sm">Languages</h3>
               <div className="mt-2 flex flex-wrap gap-1.5 sm:mt-3 sm:gap-2">
                 {tutor.languages.map((l) => (
-                  <span
-                    key={l}
-                    className="rounded-full border-2 border-border bg-background px-2.5 py-1 text-xs font-semibold sm:px-3 sm:py-1.5"
-                  >
+                  <span key={l} className="rounded-full border-2 border-border bg-background px-2.5 py-1 text-xs font-semibold sm:px-3 sm:py-1.5">
                     {l}
                   </span>
                 ))}
@@ -243,17 +168,11 @@ function TutorDetailPage() {
             </div>
           </div>
 
-          {/* Specializations */}
-          <div
-            className="rounded-2xl border-2 border-border bg-card p-5 sm:rounded-3xl sm:p-6"
-          >
+          <div className="rounded-2xl border-2 border-border bg-card p-5 sm:rounded-3xl sm:p-6">
             <h2 className="font-display text-base font-bold sm:text-lg">Specializations</h2>
             <div className="mt-3 flex flex-wrap gap-1.5 sm:mt-4 sm:gap-2">
               {tutor.specializations.map((s) => (
-                <span
-                  key={s}
-                  className="rounded-full bg-gradient-to-r from-crimson/10 to-ember/10 px-3 py-1.5 text-xs font-bold text-crimson sm:px-3.5 sm:py-2 sm:text-sm"
-                >
+                <span key={s} className="rounded-full bg-gradient-to-r from-crimson/10 to-ember/10 px-3 py-1.5 text-xs font-bold text-crimson sm:px-3.5 sm:py-2 sm:text-sm">
                   {s}
                 </span>
               ))}
@@ -262,75 +181,50 @@ function TutorDetailPage() {
         </div>
       </section>
 
-      {/* Other tutors */}
       {otherTutors.length > 0 && (
         <section className="container-px mx-auto max-w-7xl py-8 sm:py-10 md:py-14">
-          <div>
-            <div className="flex items-center justify-between gap-4">
-              <h2 className="font-display text-xl font-bold sm:text-2xl md:text-3xl">
-                Similar Tutors
-              </h2>
+          <div className="flex items-center justify-between gap-4">
+            <h2 className="font-display text-xl font-bold sm:text-2xl md:text-3xl">Similar Tutors</h2>
+            <Link to="/tutors" className="shrink-0 rounded-full border-2 border-border bg-card px-3 py-1.5 text-xs font-bold hover:border-crimson transition-colors sm:px-4 sm:py-2 sm:text-sm">
+              View all →
+            </Link>
+          </div>
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+            {otherTutors.slice(0, 3).map((t) => (
               <Link
-                to="/tutors"
-                className="shrink-0 rounded-full border-2 border-border bg-card px-3 py-1.5 text-xs font-bold hover:border-crimson transition-colors sm:px-4 sm:py-2 sm:text-sm"
+                key={t.id}
+                to="/tutors/$tutorId"
+                params={{ tutorId: t.id }}
+                className="group block overflow-hidden rounded-2xl border-2 border-border bg-card transition-all duration-500 hover:-translate-y-1 hover:border-crimson/30 hover:shadow-[var(--shadow-premium)] sm:rounded-3xl"
               >
-                View all →
-              </Link>
-            </div>
-            <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
-              {otherTutors.slice(0, 3).map((t, i) => (
-                <div
-                  key={t.id}
-                  className=""
-                >
-                  <Link
-                    to="/tutors/$tutorId"
-                    params={{ tutorId: t.id }}
-                    className="group block overflow-hidden rounded-2xl border-2 border-border bg-card transition-all duration-500 hover:-translate-y-1 hover:border-crimson/30 hover:shadow-[var(--shadow-premium)] sm:rounded-3xl"
-                  >
-                    <div className="relative aspect-[3/4] overflow-hidden sm:aspect-[4/5]">
-                      <img
-                        src={t.img}
-                        alt={t.name}
-                        loading="lazy"
-                        width={400}
-                        height={500}
-                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                      <div className="absolute left-2.5 top-2.5 rounded-full bg-background/95 px-2.5 py-1 text-[11px] font-bold backdrop-blur sm:left-3 sm:top-3 sm:px-3 sm:py-1.5 sm:text-xs shadow-lg">
-                        ★ {t.rating}
-                      </div>
-                      <div className="absolute bottom-0 inset-x-0 p-3 translate-y-2 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 sm:p-4">
-                        <span className="inline-flex w-full items-center justify-center rounded-full bg-white/95 px-4 py-2.5 text-sm font-bold text-foreground backdrop-blur transition-all hover:bg-white sm:text-base">
-                          View profile →
-                        </span>
-                      </div>
-                    </div>
-                    <div className="p-3.5 sm:p-4">
-                      <h3 className="font-display text-base font-bold sm:text-lg">{t.name}</h3>
-                      <p className="text-xs text-muted-foreground sm:text-sm">{t.subj}</p>
-                      <div className="mt-2.5 flex items-center justify-between border-t border-border pt-2.5 sm:mt-3 sm:pt-3">
-                        <div>
-                          <div className="font-display text-base font-bold sm:text-lg">
-                            {t.price}
-                            <span className="text-xs font-normal text-muted-foreground sm:text-sm">
-                              /Session
-                            </span>
-                          </div>
-                          <div className="text-[10px] text-muted-foreground sm:text-xs">
-                            {t.sessions}+ sessions
-                          </div>
-                        </div>
-                        <span className="rounded-full bg-navy px-3 py-2 text-[11px] font-bold text-white transition-all hover:bg-crimson hover:text-white sm:px-4 sm:py-2.5 sm:text-xs">
-                          Book
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
+                <div className="relative aspect-[3/4] overflow-hidden sm:aspect-[4/5]">
+                  <img src={t.img} alt={t.name} loading="lazy" width={400} height={500} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                  <div className="absolute left-2.5 top-2.5 rounded-full bg-background/95 px-2.5 py-1 text-[11px] font-bold backdrop-blur sm:left-3 sm:top-3 sm:px-3 sm:py-1.5 sm:text-xs shadow-lg">
+                    ★ {t.rating}
+                  </div>
+                  <div className="absolute bottom-0 inset-x-0 p-3 translate-y-2 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 sm:p-4">
+                    <span className="inline-flex w-full items-center justify-center rounded-full bg-white/95 px-4 py-2.5 text-sm font-bold text-foreground backdrop-blur transition-all hover:bg-white sm:text-base">
+                      View profile →
+                    </span>
+                  </div>
                 </div>
-              ))}
-            </div>
+                <div className="p-3.5 sm:p-4">
+                  <h3 className="font-display text-base font-bold sm:text-lg">{t.name}</h3>
+                  <p className="text-xs text-muted-foreground sm:text-sm">{t.subj}</p>
+                  <div className="mt-2.5 flex items-center justify-between border-t border-border pt-2.5 sm:mt-3 sm:pt-3">
+                    <div>
+                      <div className="font-display text-base font-bold sm:text-lg">
+                        {t.price}
+                        <span className="text-xs font-normal text-muted-foreground sm:text-sm">/Session</span>
+                      </div>
+                      <div className="text-[10px] text-muted-foreground sm:text-xs">{t.sessions}+ sessions</div>
+                    </div>
+                    <span className="rounded-full bg-navy px-3 py-2 text-[11px] font-bold text-white transition-all hover:bg-crimson hover:text-white sm:px-4 sm:py-2.5 sm:text-xs">Book</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
           </div>
         </section>
       )}
