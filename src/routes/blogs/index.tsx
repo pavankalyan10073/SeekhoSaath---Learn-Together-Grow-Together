@@ -45,6 +45,53 @@ function LiveTimeIndicator({ dateString }: { dateString: string }) {
   return <span className="text-[10px] text-muted-foreground sm:text-xs">{timeAgo}</span>;
 }
 
+function BlogCard({ blog }: { blog: (typeof blogs)[0] }) {
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
+
+  return (
+    <Link
+      to={`/blogs/${blog.id}`}
+      className="group block overflow-hidden rounded-2xl border-2 border-border bg-card transition-all duration-500 hover:-translate-y-1 hover:border-crimson/30 hover:shadow-[var(--shadow-premium)] sm:rounded-3xl"
+    >
+      <div className="relative aspect-[16/10] overflow-hidden sm:aspect-[16/9] bg-muted">
+        {!loaded && !error && (
+          <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-muted to-muted/60" />
+        )}
+        <img
+          src={error ? "/hero-tutor-rounded.jpg" : blog.image}
+          alt={blog.title}
+          loading="lazy"
+          onLoad={() => setLoaded(true)}
+          onError={() => setError(true)}
+          className={`h-full w-full object-cover transition-all duration-700 group-hover:scale-105 ${loaded ? "opacity-100" : "opacity-0"}`}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+        {blog.trending && (
+          <div className="absolute left-2.5 top-2.5 rounded-full bg-crimson px-2.5 py-1 text-[10px] font-bold text-white sm:left-3 sm:top-3 sm:px-3 sm:py-1.5 sm:text-xs">
+            Trending
+          </div>
+        )}
+      </div>
+      <div className="p-3.5 sm:p-4">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-crimson sm:text-xs">{blog.category}</span>
+        <h3 className="mt-1 font-display text-base font-bold sm:text-lg">{blog.title}</h3>
+        <p className="mt-1.5 text-xs text-muted-foreground sm:text-sm line-clamp-2">{blog.excerpt}</p>
+        <div className="mt-2.5 flex items-center justify-between border-t border-border pt-2.5 sm:mt-3 sm:pt-3">
+          <div className="flex items-center gap-2">
+            <div className="h-6 w-6 rounded-full bg-gradient-to-br from-crimson to-ember sm:h-7 sm:w-7"></div>
+            <span className="text-[10px] font-bold text-muted-foreground sm:text-xs">{blog.author}</span>
+          </div>
+          <div className="text-right">
+            <LiveTimeIndicator dateString={blog.date} />
+            <div className="text-[10px] text-muted-foreground sm:text-xs">{blog.readTime}</div>
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
 function BlogsPage() {
   const trending = getTrendingBlogs();
   const recent = getRecentBlogs(20);
@@ -86,40 +133,7 @@ function BlogsPage() {
           </div>
           <div className="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
             {trending.map((blog) => (
-              <Link
-                key={blog.id}
-                to={`/blogs/${blog.id}`}
-                className="group block overflow-hidden rounded-2xl border-2 border-border bg-card transition-all duration-500 hover:-translate-y-1 hover:border-crimson/30 hover:shadow-[var(--shadow-premium)] sm:rounded-3xl"
-              >
-                <div className="relative aspect-[16/10] overflow-hidden sm:aspect-[16/9]">
-                  <img
-                    src={blog.image}
-                    alt={blog.title}
-                    loading="lazy"
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    onError={(e) => { (e.target as HTMLImageElement).src = "/hero-tutor-rounded.jpg"; }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                  <div className="absolute left-2.5 top-2.5 rounded-full bg-crimson px-2.5 py-1 text-[10px] font-bold text-white sm:left-3 sm:top-3 sm:px-3 sm:py-1.5 sm:text-xs">
-                    Trending
-                  </div>
-                </div>
-                <div className="p-3.5 sm:p-4">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-crimson sm:text-xs">{blog.category}</span>
-                  <h3 className="mt-1 font-display text-base font-bold sm:text-lg">{blog.title}</h3>
-                  <p className="mt-1.5 text-xs text-muted-foreground sm:text-sm line-clamp-2">{blog.excerpt}</p>
-                  <div className="mt-2.5 flex items-center justify-between border-t border-border pt-2.5 sm:mt-3 sm:pt-3">
-                    <div className="flex items-center gap-2">
-                      <div className="h-6 w-6 rounded-full bg-gradient-to-br from-crimson to-ember sm:h-7 sm:w-7"></div>
-                      <span className="text-[10px] font-bold text-muted-foreground sm:text-xs">{blog.author}</span>
-                    </div>
-                    <div className="text-right">
-                      <LiveTimeIndicator dateString={blog.date} />
-                      <div className="text-[10px] text-muted-foreground sm:text-xs">{blog.readTime}</div>
-                    </div>
-                  </div>
-                </div>
-              </Link>
+              <BlogCard key={blog.id} blog={blog} />
             ))}
           </div>
         </section>
@@ -130,42 +144,7 @@ function BlogsPage() {
         <h2 className="font-display text-xl font-bold sm:text-2xl md:text-3xl mb-4 sm:mb-6">All Articles</h2>
         <div className="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
           {recent.map((blog) => (
-            <Link
-              key={blog.id}
-              to={`/blogs/${blog.id}`}
-              className="group block overflow-hidden rounded-2xl border-2 border-border bg-card transition-all duration-500 hover:-translate-y-1 hover:border-crimson/30 hover:shadow-[var(--shadow-premium)] sm:rounded-3xl"
-            >
-              <div className="relative aspect-[16/10] overflow-hidden sm:aspect-[16/9]">
-                <img
-                  src={blog.image}
-                  alt={blog.title}
-                  loading="lazy"
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  onError={(e) => { (e.target as HTMLImageElement).src = "/hero-tutor-rounded.jpg"; }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                {blog.trending && (
-                  <div className="absolute left-2.5 top-2.5 rounded-full bg-crimson px-2.5 py-1 text-[10px] font-bold text-white sm:left-3 sm:top-3 sm:px-3 sm:py-1.5 sm:text-xs">
-                    Trending
-                  </div>
-                )}
-              </div>
-              <div className="p-3.5 sm:p-4">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-crimson sm:text-xs">{blog.category}</span>
-                <h3 className="mt-1 font-display text-base font-bold sm:text-lg">{blog.title}</h3>
-                <p className="mt-1.5 text-xs text-muted-foreground sm:text-sm line-clamp-2">{blog.excerpt}</p>
-                <div className="mt-2.5 flex items-center justify-between border-t border-border pt-2.5 sm:mt-3 sm:pt-3">
-                  <div className="flex items-center gap-2">
-                    <div className="h-6 w-6 rounded-full bg-gradient-to-br from-crimson to-ember sm:h-7 sm:w-7"></div>
-                    <span className="text-[10px] font-bold text-muted-foreground sm:text-xs">{blog.author}</span>
-                  </div>
-                  <div className="text-right">
-                    <LiveTimeIndicator dateString={blog.date} />
-                    <div className="text-[10px] text-muted-foreground sm:text-xs">{blog.readTime}</div>
-                  </div>
-                </div>
-              </div>
-            </Link>
+            <BlogCard key={blog.id} blog={blog} />
           ))}
         </div>
       </section>

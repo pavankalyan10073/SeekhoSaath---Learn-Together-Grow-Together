@@ -31,10 +31,32 @@ function formatDate(dateString: string): string {
   });
 }
 
+function RelatedImage({ blog }: { blog: (typeof blogs)[0] }) {
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
+
+  return (
+    <>
+      {!loaded && !error && (
+        <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-muted to-muted/60" />
+      )}
+      <img
+        src={error ? "/hero-tutor-rounded.jpg" : blog.image}
+        alt={blog.title}
+        loading="lazy"
+        onLoad={() => setLoaded(true)}
+        onError={() => setError(true)}
+        className={`h-full w-full object-cover transition-all duration-700 group-hover:scale-105 ${loaded ? "opacity-100" : "opacity-0"}`}
+      />
+    </>
+  );
+}
+
 function BlogDetailPage() {
   const blog = Route.useLoaderData() as Awaited<ReturnType<typeof Route.loader>>;
   const [readTimeLeft, setReadTimeLeft] = useState(0);
   const [imgError, setImgError] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
 
   const relatedBlogs = blogs.filter((b) => b.category === blog.category && b.id !== blog.id).slice(0, 3);
 
@@ -109,11 +131,15 @@ function BlogDetailPage() {
           </div>
         </header>
 
-        <div className="mt-6 sm:mt-8 overflow-hidden rounded-2xl border-2 border-border sm:rounded-3xl">
+        <div className="mt-6 sm:mt-8 overflow-hidden rounded-2xl border-2 border-border sm:rounded-3xl bg-muted relative">
+          {!imgLoaded && !imgError && (
+            <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-muted to-muted/60" />
+          )}
           <img
             src={imgError ? "/hero-tutor-rounded.jpg" : blog.image}
             alt={blog.title}
-            className="aspect-video w-full object-cover"
+            className={`aspect-video w-full object-cover transition-opacity duration-500 ${imgLoaded || imgError ? "opacity-100" : "opacity-0"}`}
+            onLoad={() => setImgLoaded(true)}
             onError={() => setImgError(true)}
           />
         </div>
@@ -203,13 +229,8 @@ function BlogDetailPage() {
                 to={`/blogs/${related.id}`}
                 className="group block overflow-hidden rounded-2xl border-2 border-border bg-card transition-all duration-500 hover:-translate-y-1 hover:border-crimson/30 hover:shadow-[var(--shadow-premium)] sm:rounded-3xl"
               >
-                <div className="relative aspect-[16/10] overflow-hidden sm:aspect-[16/9]">
-                  <img
-                    src={related.image}
-                    alt={related.title}
-                    loading="lazy"
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
+                <div className="relative aspect-[16/10] overflow-hidden sm:aspect-[16/9] bg-muted">
+                  <RelatedImage blog={related} />
                 </div>
                 <div className="p-3.5 sm:p-4">
                   <h3 className="font-display text-base font-bold sm:text-lg">{related.title}</h3>
