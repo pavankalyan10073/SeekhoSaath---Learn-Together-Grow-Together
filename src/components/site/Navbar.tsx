@@ -41,6 +41,7 @@ export function Navbar() {
   const links = [
     { label: "Tutors", to: "/tutors" },
     { label: "Subjects", to: "/subjects" },
+    { label: "Blog", to: "/blogs" },
     { label: "How it works", href: "#how" },
     { label: "Pricing", href: "#pricing" },
   ];

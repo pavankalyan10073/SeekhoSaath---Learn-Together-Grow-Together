@@ -9,18 +9,38 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TutorsIndexRouteImport } from './routes/tutors/index'
 import { Route as SubjectsIndexRouteImport } from './routes/subjects/index'
+import { Route as BlogsIndexRouteImport } from './routes/blogs/index'
 import { Route as TutorsTutorIdRouteImport } from './routes/tutors/$tutorId'
 import { Route as SubjectsSubjectIdRouteImport } from './routes/subjects/$subjectId'
+import { Route as BlogsBlogIdRouteImport } from './routes/blogs/$blogId'
 
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RefundPolicyRoute = RefundPolicyRouteImport.update({
+  id: '/refund-policy',
+  path: '/refund-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -48,6 +68,11 @@ const SubjectsIndexRoute = SubjectsIndexRouteImport.update({
   path: '/subjects/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogsIndexRoute = BlogsIndexRouteImport.update({
+  id: '/blogs/',
+  path: '/blogs/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TutorsTutorIdRoute = TutorsTutorIdRouteImport.update({
   id: '/tutors/$tutorId',
   path: '/tutors/$tutorId',
@@ -58,14 +83,24 @@ const SubjectsSubjectIdRoute = SubjectsSubjectIdRouteImport.update({
   path: '/subjects/$subjectId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogsBlogIdRoute = BlogsBlogIdRouteImport.update({
+  id: '/blogs/$blogId',
+  path: '/blogs/$blogId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/login': typeof LoginRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/refund-policy': typeof RefundPolicyRoute
   '/signup': typeof SignupRoute
+  '/terms': typeof TermsRoute
+  '/blogs/$blogId': typeof BlogsBlogIdRoute
   '/subjects/$subjectId': typeof SubjectsSubjectIdRoute
   '/tutors/$tutorId': typeof TutorsTutorIdRoute
+  '/blogs/': typeof BlogsIndexRoute
   '/subjects/': typeof SubjectsIndexRoute
   '/tutors/': typeof TutorsIndexRoute
 }
@@ -73,9 +108,14 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/login': typeof LoginRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/refund-policy': typeof RefundPolicyRoute
   '/signup': typeof SignupRoute
+  '/terms': typeof TermsRoute
+  '/blogs/$blogId': typeof BlogsBlogIdRoute
   '/subjects/$subjectId': typeof SubjectsSubjectIdRoute
   '/tutors/$tutorId': typeof TutorsTutorIdRoute
+  '/blogs': typeof BlogsIndexRoute
   '/subjects': typeof SubjectsIndexRoute
   '/tutors': typeof TutorsIndexRoute
 }
@@ -84,9 +124,14 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/login': typeof LoginRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/refund-policy': typeof RefundPolicyRoute
   '/signup': typeof SignupRoute
+  '/terms': typeof TermsRoute
+  '/blogs/$blogId': typeof BlogsBlogIdRoute
   '/subjects/$subjectId': typeof SubjectsSubjectIdRoute
   '/tutors/$tutorId': typeof TutorsTutorIdRoute
+  '/blogs/': typeof BlogsIndexRoute
   '/subjects/': typeof SubjectsIndexRoute
   '/tutors/': typeof TutorsIndexRoute
 }
@@ -96,9 +141,14 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/login'
+    | '/privacy-policy'
+    | '/refund-policy'
     | '/signup'
+    | '/terms'
+    | '/blogs/$blogId'
     | '/subjects/$subjectId'
     | '/tutors/$tutorId'
+    | '/blogs/'
     | '/subjects/'
     | '/tutors/'
   fileRoutesByTo: FileRoutesByTo
@@ -106,9 +156,14 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/login'
+    | '/privacy-policy'
+    | '/refund-policy'
     | '/signup'
+    | '/terms'
+    | '/blogs/$blogId'
     | '/subjects/$subjectId'
     | '/tutors/$tutorId'
+    | '/blogs'
     | '/subjects'
     | '/tutors'
   id:
@@ -116,9 +171,14 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/login'
+    | '/privacy-policy'
+    | '/refund-policy'
     | '/signup'
+    | '/terms'
+    | '/blogs/$blogId'
     | '/subjects/$subjectId'
     | '/tutors/$tutorId'
+    | '/blogs/'
     | '/subjects/'
     | '/tutors/'
   fileRoutesById: FileRoutesById
@@ -127,20 +187,46 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountRoute: typeof AccountRoute
   LoginRoute: typeof LoginRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
+  RefundPolicyRoute: typeof RefundPolicyRoute
   SignupRoute: typeof SignupRoute
+  TermsRoute: typeof TermsRoute
+  BlogsBlogIdRoute: typeof BlogsBlogIdRoute
   SubjectsSubjectIdRoute: typeof SubjectsSubjectIdRoute
   TutorsTutorIdRoute: typeof TutorsTutorIdRoute
+  BlogsIndexRoute: typeof BlogsIndexRoute
   SubjectsIndexRoute: typeof SubjectsIndexRoute
   TutorsIndexRoute: typeof TutorsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/refund-policy': {
+      id: '/refund-policy'
+      path: '/refund-policy'
+      fullPath: '/refund-policy'
+      preLoaderRoute: typeof RefundPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -178,6 +264,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SubjectsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blogs/': {
+      id: '/blogs/'
+      path: '/blogs'
+      fullPath: '/blogs/'
+      preLoaderRoute: typeof BlogsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tutors/$tutorId': {
       id: '/tutors/$tutorId'
       path: '/tutors/$tutorId'
@@ -192,6 +285,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SubjectsSubjectIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blogs/$blogId': {
+      id: '/blogs/$blogId'
+      path: '/blogs/$blogId'
+      fullPath: '/blogs/$blogId'
+      preLoaderRoute: typeof BlogsBlogIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -199,9 +299,14 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRoute,
   LoginRoute: LoginRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
+  RefundPolicyRoute: RefundPolicyRoute,
   SignupRoute: SignupRoute,
+  TermsRoute: TermsRoute,
+  BlogsBlogIdRoute: BlogsBlogIdRoute,
   SubjectsSubjectIdRoute: SubjectsSubjectIdRoute,
   TutorsTutorIdRoute: TutorsTutorIdRoute,
+  BlogsIndexRoute: BlogsIndexRoute,
   SubjectsIndexRoute: SubjectsIndexRoute,
   TutorsIndexRoute: TutorsIndexRoute,
 }

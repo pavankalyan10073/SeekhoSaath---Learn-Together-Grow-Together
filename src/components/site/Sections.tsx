@@ -590,10 +590,10 @@ export function CTA() {
 
 export function Footer() {
   const cols = [
-    { t: "Product", l: ["Features", "Pricing", "Tutors", "Subjects", "Mobile app"] },
-    { t: "Company", l: ["About", "Careers", "Blog", "Press", "Contact"] },
-    { t: "Resources", l: ["Help center", "Become a tutor", "Community", "Trust & safety"] },
-    { t: "Legal", l: ["Privacy", "Terms", "Cookies", "Refunds"] },
+    { t: "Product", l: [{ name: "Features", href: "/#features" }, { name: "Pricing", href: "/#pricing" }, { name: "Tutors", href: "/tutors" }, { name: "Subjects", href: "/subjects" }, { name: "Mobile app", href: "/#" }] },
+    { t: "Company", l: [{ name: "About", href: "/#" }, { name: "Careers", href: "/#" }, { name: "Blog", href: "/blogs" }, { name: "Press", href: "/#" }, { name: "Contact", href: "/#" }] },
+    { t: "Resources", l: [{ name: "Help center", href: "/#" }, { name: "Become a tutor", href: "/signup" }, { name: "Community", href: "/#" }, { name: "Trust & safety", href: "/#" }] },
+    { t: "Legal", l: [{ name: "Privacy", href: "/privacy-policy" }, { name: "Terms", href: "/terms" }, { name: "Cookies", href: "/#" }, { name: "Refunds", href: "/refund-policy" }] },
   ];
   return (
     <footer className="border-t-2 border-border bg-gradient-to-b from-card/40 to-card/80">
@@ -621,12 +621,12 @@ export function Footer() {
                 <h4 className="font-display text-xs font-bold sm:text-sm">{c.t}</h4>
                 <ul className="mt-2 space-y-1.5 sm:mt-3 sm:space-y-2">
                   {c.l.map((it) => (
-                    <li key={it}>
+                    <li key={it.name}>
                       <a
-                        href="#"
+                        href={it.href}
                         className="text-xs text-muted-foreground transition-colors hover:text-crimson sm:text-sm"
                       >
-                        {it}
+                        {it.name}
                       </a>
                     </li>
                   ))}
