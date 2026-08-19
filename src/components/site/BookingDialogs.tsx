@@ -110,14 +110,14 @@ export function BookSessionDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="w-[calc(100vw-1.5rem)] max-w-sm mx-auto rounded-2xl sm:max-w-md sm:rounded-2xl z-[10000]">
         <DialogHeader>
           <DialogTitle>Book a Session</DialogTitle>
           <DialogDescription>
             Book a session with {tutor.name} ({tutor.subj})
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
           <div>
             <Label htmlFor="book-name">Full Name</Label>
             <Input
@@ -239,14 +239,14 @@ export function MeetingDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="w-[calc(100vw-1.5rem)] max-w-sm mx-auto rounded-2xl sm:max-w-md sm:rounded-2xl z-[10000]">
         <DialogHeader>
           <DialogTitle>Schedule a Meeting</DialogTitle>
           <DialogDescription>
             Schedule a meeting with {tutor.name} ({tutor.subj})
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
           <div>
             <Label htmlFor="meet-name">Full Name</Label>
             <Input
