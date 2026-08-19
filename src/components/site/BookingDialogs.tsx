@@ -10,6 +10,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const GOOGLE_SHEET_WEBHOOK = import.meta.env.VITE_GOOGLE_SHEET_WEBHOOK || "";
 const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER || "";
+const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID || "";
 
 const API_BASE = typeof window !== "undefined" ? "" : "";
 const MAX_RETRIES = 3;
@@ -48,6 +49,49 @@ function validateIndianPhone(phone: string): boolean {
   return /^[6-9]\d{9}$/.test(phone.replace(/\s/g, ""));
 }
 
+declare global {
+  interface Window {
+    Razorpay: new (options: {
+      key: string;
+      amount: number;
+      currency: string;
+      name: string;
+      description: string;
+      order_id: string;
+      handler: (response: {
+        razorpay_order_id: string;
+        razorpay_payment_id: string;
+        razorpay_signature: string;
+      }) => void;
+      prefill?: {
+        name?: string;
+        email?: string;
+        contact?: string;
+      };
+      theme?: {
+        color: string;
+      };
+      modal?: {
+        ondismiss?: () => void;
+      };
+    }) => {
+      open: () => void;
+      close: () => void;
+    };
+  }
+}
+
+async function loadRazorpayScript(): Promise<boolean> {
+  if (typeof window === "undefined" || window.Razorpay) return true;
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.head.appendChild(script);
+  });
+}
+
 export function BookSessionDialog({
   open,
   onOpenChange,
@@ -64,6 +108,8 @@ export function BookSessionDialog({
     mode: "online" as "online" | "offline" | "hybrid",
   });
   const [loading, setLoading] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
+  const [bookingId, setBookingId] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,33 +125,108 @@ export function BookSessionDialog({
     setLoading(true);
     try {
       const payload = {
-        ...formData,
+        tutorId: tutor.name,
         tutorName: tutor.name,
         tutorSubject: tutor.subj,
-        type: "book_session",
-        timestamp: new Date().toISOString(),
+        studentName: formData.fullName,
+        studentPhone: formData.phone,
+        studentEmail: formData.email,
+        mode: formData.mode,
+        amount: 49900,
       };
 
-      try {
-        await submitWithRetry("/api/booking", payload);
-      } catch {
-        if (GOOGLE_SHEET_WEBHOOK) {
-          await submitWithRetry(GOOGLE_SHEET_WEBHOOK, payload);
-        }
-      }
+      const res = await fetch("/api/payments/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-      const message = `Hi SeekhoSaath,%0AI would like to book a session with ${tutor.name} (${tutor.subj}).%0A%0AName: ${encodeURIComponent(formData.fullName)}%0APhone: ${formData.phone}%0AEmail: ${formData.email}%0AMode: ${formData.mode}`;
-      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, "_blank");
-
-      toast.success("Session request submitted! Redirecting to WhatsApp...");
-      onOpenChange(false);
-      setFormData({ fullName: "", phone: "", email: "", mode: "online" });
+      if (!res.ok) throw new Error("Failed to create booking");
+      const result = await res.json();
+      setBookingId(result.data.bookingId);
+      setShowPayment(true);
     } catch (error) {
       toast.error("Failed to submit. Please try again.");
     } finally {
       setLoading(false);
     }
   };
+
+  const handlePaymentSuccess = async (response: {
+    razorpay_order_id: string;
+    razorpay_payment_id: string;
+    razorpay_signature: string;
+  }) => {
+    if (!bookingId) return;
+    try {
+      const res = await fetch("/api/payments/razorpay-webhook", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+          bookingId,
+          method: "razorpay",
+        }),
+      });
+
+      if (!res.ok) throw new Error("Payment verification failed");
+      
+      toast.success("Payment successful! Your session has been booked.");
+      onOpenChange(false);
+      setFormData({ fullName: "", phone: "", email: "", mode: "online" });
+      setShowPayment(false);
+      setBookingId(null);
+    } catch (error) {
+      toast.error("Payment verification failed. Please contact support.");
+    }
+  };
+
+  const initializePayment = async () => {
+    if (!bookingId || !RAZORPAY_KEY_ID) {
+      toast.error("Payment gateway not configured");
+      return;
+    }
+
+    const loaded = await loadRazorpayScript();
+    if (!loaded) {
+      toast.error("Failed to load payment gateway");
+      return;
+    }
+
+    const options = {
+      key: RAZORPAY_KEY_ID,
+      amount: 49900,
+      currency: "INR",
+      name: "SeekhoSaath",
+      description: `Session with ${tutor.name}`,
+      order_id: bookingId,
+      handler: handlePaymentSuccess,
+      prefill: {
+        name: formData.fullName,
+        email: formData.email,
+        contact: formData.phone,
+      },
+      theme: {
+        color: "#dc2626",
+      },
+      modal: {
+        ondismiss: () => {
+          toast.info("Payment cancelled");
+        },
+      },
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+  };
+
+  useEffect(() => {
+    if (showPayment && bookingId) {
+      initializePayment();
+    }
+  }, [showPayment, bookingId]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -116,60 +237,68 @@ export function BookSessionDialog({
             Book a session with {tutor.name} ({tutor.subj})
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
-          <div>
-            <Label htmlFor="book-name">Full Name</Label>
-            <Input
-              id="book-name"
-              value={formData.fullName}
-              onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-              placeholder="Enter your full name"
-              required
-            />
+        {!showPayment ? (
+          <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+            <div>
+              <Label htmlFor="book-name">Full Name</Label>
+              <Input
+                id="book-name"
+                value={formData.fullName}
+                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                placeholder="Enter your full name"
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="book-phone">Phone Number</Label>
+              <Input
+                id="book-phone"
+                type="tel"
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                placeholder="Enter your phone number"
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="book-email">Email</Label>
+              <Input
+                id="book-email"
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+            <div>
+              <Label>Preferred Mode</Label>
+              <RadioGroup value={formData.mode} onValueChange={(value: "online" | "offline" | "hybrid") => setFormData({ ...formData, mode: value })}>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="online" id="online" />
+                  <Label htmlFor="online">Online</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="offline" id="offline" />
+                  <Label htmlFor="offline">Offline</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="hybrid" id="hybrid" />
+                  <Label htmlFor="hybrid">Hybrid</Label>
+                </div>
+              </RadioGroup>
+            </div>
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Processing..." : "Proceed to Payment"}
+            </Button>
+          </form>
+        ) : (
+          <div className="py-8 text-center">
+            <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-crimson border-t-transparent"></div>
+            <p className="text-sm text-muted-foreground">Initializing secure payment...</p>
+            <p className="text-xs text-muted-foreground mt-1">Please do not close this window</p>
           </div>
-          <div>
-            <Label htmlFor="book-phone">Phone Number</Label>
-            <Input
-              id="book-phone"
-              type="tel"
-              value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              placeholder="Enter your phone number"
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="book-email">Email</Label>
-            <Input
-              id="book-email"
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              placeholder="Enter your email"
-              required
-            />
-          </div>
-          <div>
-            <Label>Preferred Mode</Label>
-            <RadioGroup value={formData.mode} onValueChange={(value: "online" | "offline" | "hybrid") => setFormData({ ...formData, mode: value })}>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="online" id="online" />
-                <Label htmlFor="online">Online</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="offline" id="offline" />
-                <Label htmlFor="offline">Offline</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="hybrid" id="hybrid" />
-                <Label htmlFor="hybrid">Hybrid</Label>
-              </div>
-            </RadioGroup>
-          </div>
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Submitting..." : "Submit Booking"}
-          </Button>
-        </form>
+        )}
       </DialogContent>
     </Dialog>
   );
@@ -326,3 +455,4 @@ export function MeetingDialog({
     </Dialog>
   );
 }
+

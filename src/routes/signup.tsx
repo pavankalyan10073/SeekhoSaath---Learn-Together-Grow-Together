@@ -3,6 +3,7 @@ import { useState, useMemo, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { auth } from "@/lib/firebase";
 import {
   Eye,
   EyeOff,
@@ -57,7 +58,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
-import { saveTutorApplication } from "@/lib/firebase-data";
+import { saveTutorApplication, updateUserRole } from "@/lib/firebase-data";
 import { subjectCategories, type Subject } from "@/data/subjects";
 
 type Role = "student" | "tutor" | null;
@@ -1457,16 +1458,21 @@ function SignupPage() {
         ),
       ]);
 
+      const user = auth.currentUser;
       const applicationId = `tutor-app-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
       
-      const application: TutorFormData & { id: string; applicationDate: string; verified: boolean } = {
+      const application: TutorFormData & { id: string; applicationDate: string; verified: boolean; userId: string } = {
         ...tutorData,
         id: applicationId,
+        userId: user?.uid || "",
         applicationDate: new Date().toISOString(),
         verified: false,
       };
 
       await saveTutorApplication(application);
+      if (user?.uid) {
+        await updateUserRole(user.uid, "tutor");
+      }
 
       toast.success("Your tutor application has been submitted for review!");
       navigate({ to: "/" });

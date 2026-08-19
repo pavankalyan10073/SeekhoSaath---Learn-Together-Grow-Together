@@ -16,6 +16,7 @@ import {
   type User,
 } from "firebase/auth";
 import { auth, googleProvider } from "./firebase";
+import { getUserRole } from "@/lib/firebase-data";
 
 interface AuthContextType {
   user: User | null;
@@ -29,6 +30,8 @@ interface AuthContextType {
   updateProfileEmail: (currentPassword: string, newEmail: string) => Promise<void>;
   sendPhoneOTP: (phoneNumber: string) => Promise<{ confirmationResult: any; verificationId: string }>;
   verifyPhoneOTP: (verificationId: string, otp: string) => Promise<any>;
+  userRole: string | null;
+  refreshUserRole: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -36,11 +39,26 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [userRole, setUserRole] = useState<string | null>(null);
   const recaptchaContainerRef = useRef<HTMLDivElement>(null);
 
+  const refreshUserRole = async (uid: string) => {
+    try {
+      const role = await getUserRole(uid);
+      setUserRole(role);
+    } catch {
+      setUserRole(null);
+    }
+  };
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setUser(firebaseUser);
+      if (firebaseUser) {
+        await refreshUserRole(firebaseUser.uid);
+      } else {
+        setUserRole(null);
+      }
       setLoading(false);
     });
     return unsubscribe;
@@ -116,6 +134,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         updateProfileEmail,
         sendPhoneOTP,
         verifyPhoneOTP,
+        userRole,
+        refreshUserRole,
       }}
     >
       {children}

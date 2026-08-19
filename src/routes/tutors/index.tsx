@@ -1,9 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Link } from "@tanstack/react-router";
-import { tutors } from "@/data/tutors";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { tutors as staticTutors } from "@/data/tutors";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Sections";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getApprovedTutors, type Tutor } from "@/lib/firebase-data";
 
 export const Route = createFileRoute("/tutors/")({
   head: () => ({
@@ -11,19 +11,37 @@ export const Route = createFileRoute("/tutors/")({
       { title: "All Tutors — SeekhoSaath" },
       {
         name: "description",
-        content: "Browse all 20+ verified expert tutors. Find the perfect tutor for any subject.",
+        content: "Browse all verified expert tutors. Find the perfect tutor for any subject.",
       },
     ],
   }),
   component: TutorsPage,
 });
 
-const ALL_SUBJECTS = [...new Set(tutors.map((t) => t.subj.split("•")[0].trim()))];
+const ALL_SUBJECTS = [...new Set(staticTutors.map((t) => t.subj.split("•")[0].trim()))];
 
 function TutorsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("all");
   const [sortBy, setSortBy] = useState<"rating" | "sessions" | "price">("rating");
+  const [dbTutors, setDbTutors] = useState<Tutor[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadTutors = async () => {
+      try {
+        const approved = await getApprovedTutors();
+        setDbTutors(approved);
+      } catch (error) {
+        console.error("Failed to load tutors from Firestore:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadTutors();
+  }, []);
+
+  const tutors = dbTutors.length > 0 ? dbTutors : staticTutors;
 
   const filtered = tutors
     .filter((t) => {
@@ -123,8 +141,7 @@ function TutorsPage() {
           </div>
         </div>
         <p className="mt-2.5 text-xs text-muted-foreground sm:mt-3 sm:text-sm">
-          Showing <span className="font-extrabold text-foreground">{filtered.length}</span> of{" "}
-          <span className="font-extrabold text-foreground">{tutors.length}</span> tutors
+          {loading ? "Loading tutors..." : <>Showing <span className="font-extrabold text-foreground">{filtered.length}</span> of{" "}<span className="font-extrabold text-foreground">{tutors.length}</span> tutors</>}
         </p>
       </section>
 

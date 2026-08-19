@@ -31,6 +31,7 @@ export interface Tutor {
   verified?: boolean;
   applicationDate?: string;
   userId?: string;
+  status?: "pending" | "approved" | "rejected";
 }
 
 export interface TutorApplication {
@@ -56,6 +57,7 @@ export interface TutorApplication {
   aadharNumber: string;
   applicationDate: string;
   verified: boolean;
+  status: "pending" | "approved" | "rejected";
 }
 
 export const tutors: Tutor[] = [
