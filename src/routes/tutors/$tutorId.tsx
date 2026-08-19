@@ -4,7 +4,7 @@ import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { tutors as staticTutors } from "@/data/tutors";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Sections";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 function ClientOnlyDialogs({ tutor, bookOpen, setBookOpen, meetingOpen, setMeetingOpen }: { tutor: { name: string; subj: string }; bookOpen: boolean; setBookOpen: (open: boolean) => void; meetingOpen: boolean; setMeetingOpen: (open: boolean) => void }) {
   const [ready, setReady] = useState(false);
