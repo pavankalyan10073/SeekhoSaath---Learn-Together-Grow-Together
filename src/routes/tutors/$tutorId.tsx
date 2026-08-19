@@ -27,12 +27,6 @@ function TutorDetailPage() {
   const [bookOpen, setBookOpen] = useState(false);
   const [meetingOpen, setMeetingOpen] = useState(false);
 
-  const otherTutors = staticTutors.filter(
-    (t) =>
-      t.id !== tutor.id &&
-      (t.subj === tutor.subj || tutor.specializations.some((s) => t.specializations.includes(s))),
-  );
-
   return (
     <main className="min-h-screen bg-background text-foreground pb-safe">
       <Navbar />
@@ -175,54 +169,6 @@ function TutorDetailPage() {
           </div>
         </div>
       </section>
-
-      {otherTutors.length > 0 && (
-        <section className="container-px mx-auto max-w-7xl py-8 sm:py-10 md:py-14">
-          <div className="flex items-center justify-between gap-4">
-            <h2 className="font-display text-xl font-bold sm:text-2xl md:text-3xl">Similar Tutors</h2>
-            <Link to="/tutors" className="shrink-0 rounded-full border-2 border-border bg-card px-3 py-1.5 text-xs font-bold hover:border-crimson transition-colors sm:px-4 sm:py-2 sm:text-sm">
-              View all →
-            </Link>
-          </div>
-          <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
-            {otherTutors.slice(0, 3).map((t) => (
-              <Link
-                key={t.id}
-                to="/tutors/$tutorId"
-                params={{ tutorId: t.id }}
-                className="group block overflow-hidden rounded-2xl border-2 border-border bg-card transition-all duration-500 hover:-translate-y-1 hover:border-crimson/30 hover:shadow-[var(--shadow-premium)] sm:rounded-3xl"
-              >
-                <div className="relative aspect-[3/4] overflow-hidden sm:aspect-[4/5]">
-                  <img src={t.img} alt={t.name} loading="lazy" width={400} height={500} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                  <div className="absolute left-2.5 top-2.5 rounded-full bg-background/95 px-2.5 py-1 text-[11px] font-bold backdrop-blur sm:left-3 sm:top-3 sm:px-3 sm:py-1.5 sm:text-xs shadow-lg">
-                    ★ {t.rating}
-                  </div>
-                  <div className="absolute bottom-0 inset-x-0 p-3 translate-y-2 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 sm:p-4">
-                    <span className="inline-flex w-full items-center justify-center rounded-full bg-white/95 px-4 py-2.5 text-sm font-bold text-foreground backdrop-blur transition-all hover:bg-white sm:text-base">
-                      View profile →
-                    </span>
-                  </div>
-                </div>
-                <div className="p-3.5 sm:p-4">
-                  <h3 className="font-display text-base font-bold sm:text-lg">{t.name}</h3>
-                  <p className="text-xs text-muted-foreground sm:text-sm">{t.subj}</p>
-                  <div className="mt-2.5 flex items-center justify-between border-t border-border pt-2.5 sm:mt-3 sm:pt-3">
-                    <div>
-                      <div className="font-display text-base font-bold sm:text-lg">
-                        {t.price}
-                        <span className="text-xs font-normal text-muted-foreground sm:text-sm">/Session</span>
-                      </div>
-                      <div className="text-[10px] text-muted-foreground sm:text-xs">{t.sessions}+ sessions</div>
-                    </div>
-                    <span className="rounded-full bg-navy px-3 py-2 text-[11px] font-bold text-white transition-all hover:bg-crimson hover:text-white sm:px-4 sm:py-2.5 sm:text-xs">Book</span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
 
       <BookSessionDialog open={bookOpen} onOpenChange={setBookOpen} tutor={{ name: tutor.name, subj: tutor.subj }} />
       <MeetingDialog open={meetingOpen} onOpenChange={setMeetingOpen} tutor={{ name: tutor.name, subj: tutor.subj }} />
