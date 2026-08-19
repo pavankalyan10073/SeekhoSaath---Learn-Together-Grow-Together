@@ -4,7 +4,6 @@ import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Sections";
 import { BookSessionDialog, MeetingDialog } from "@/components/site/BookingDialogs";
 import { useState } from "react";
-import { getTutorById, type Tutor } from "@/lib/firebase-data";
 
 export const Route = createFileRoute("/tutors/$tutorId")({
   head: () => ({
@@ -13,22 +12,16 @@ export const Route = createFileRoute("/tutors/$tutorId")({
       { name: "description", content: "View tutor profile, specializations, and book a session." },
     ],
   }),
-  loader: async ({ params }) => {
-    try {
-      const dbTutor = await getTutorById(params.tutorId);
-      if (dbTutor) return dbTutor;
-    } catch (error) {
-      console.error("Failed to load tutor from Firestore:", error);
-    }
-    const staticTutor = staticTutors.find((t) => t.id === params.tutorId);
-    if (!staticTutor) throw notFound();
-    return staticTutor as Tutor;
+  loader: ({ params }) => {
+    const tutor = staticTutors.find((t) => t.id === params.tutorId);
+    if (!tutor) throw notFound();
+    return tutor;
   },
   component: TutorDetailPage,
 });
 
 function TutorDetailPage() {
-  const tutor = Route.useLoaderData<Tutor>();
+  const tutor = Route.useLoaderData<typeof staticTutors[number]>();
   const [bookOpen, setBookOpen] = useState(false);
   const [meetingOpen, setMeetingOpen] = useState(false);
 
