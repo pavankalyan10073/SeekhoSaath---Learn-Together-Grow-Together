@@ -2,6 +2,8 @@ import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { tutors } from "@/data/tutors";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Sections";
+import { BookSessionDialog, MeetingDialog } from "@/components/site/BookingDialogs";
+import { useState } from "react";
 
 export const Route = createFileRoute("/tutors/$tutorId")({
   head: () => ({
@@ -20,6 +22,8 @@ export const Route = createFileRoute("/tutors/$tutorId")({
 
 function TutorDetailPage() {
   const tutor = Route.useLoaderData();
+  const [bookOpen, setBookOpen] = useState(false);
+  const [meetingOpen, setMeetingOpen] = useState(false);
 
   const otherTutors = tutors.filter(
     (t) =>
@@ -127,11 +131,17 @@ function TutorDetailPage() {
                 </div>
 
                 <div className="mt-4 flex flex-wrap gap-2 sm:mt-5">
-                  <button className="rounded-full bg-gradient-to-r from-crimson to-ember px-5 py-2.5 text-sm font-bold text-white shadow-[var(--shadow-glow)] transition-all hover:-translate-y-0.5 sm:px-6 sm:py-3 sm:text-base">
+                  <button
+                    onClick={() => setBookOpen(true)}
+                    className="rounded-full bg-gradient-to-r from-crimson to-ember px-5 py-2.5 text-sm font-bold text-white shadow-[var(--shadow-glow)] transition-all hover:-translate-y-0.5 sm:px-6 sm:py-3 sm:text-base"
+                  >
                     Book a session →
                   </button>
-                  <button className="rounded-full border-2 border-border bg-card px-5 py-2.5 text-sm font-bold transition-all hover:border-crimson hover:text-crimson sm:px-6 sm:py-3 sm:text-base">
-                    Message
+                  <button
+                    onClick={() => setMeetingOpen(true)}
+                    className="rounded-full border-2 border-border bg-card px-5 py-2.5 text-sm font-bold transition-all hover:border-crimson hover:text-crimson sm:px-6 sm:py-3 sm:text-base"
+                  >
+                    Meeting
                   </button>
                 </div>
               </div>
@@ -276,6 +286,8 @@ function TutorDetailPage() {
         </section>
       )}
 
+      <BookSessionDialog open={bookOpen} onOpenChange={setBookOpen} tutor={{ name: tutor.name, subj: tutor.subj }} />
+      <MeetingDialog open={meetingOpen} onOpenChange={setMeetingOpen} tutor={{ name: tutor.name, subj: tutor.subj }} />
       <Footer />
     </main>
   );

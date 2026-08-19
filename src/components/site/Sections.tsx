@@ -421,7 +421,7 @@ export function Pricing() {
       per: "/mo",
       desc: "Most loved by serious students.",
       features: [
-        "8 sessions/month",
+        "15 sessions/month",
         "Priority matching",
         "Weekly progress reports",
         "Switch tutors anytime",
@@ -431,11 +431,11 @@ export function Pricing() {
     },
     {
       name: "Mastery",
-      price: "₹3,999",
+      price: "₹2,499",
       per: "/mo",
-      desc: "Unlimited learning, top tutors.",
-      features: ["Unlimited sessions", "Top 1% tutors", "1:1 mentor & study plan", "24/7 support"],
-      cta: "Go unlimited",
+      desc: "Advanced learning, top tutors.",
+      features: ["30 sessions/month", "Top 1% tutors", "1:1 mentor & study plan", "24/7 support"],
+      cta: "Start mastering",
       popular: false,
     },
   ];
