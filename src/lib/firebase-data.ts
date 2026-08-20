@@ -13,7 +13,6 @@ import {
   orderBy,
   limit,
 } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export interface TutorApplication {
   id: string;
@@ -319,11 +318,4 @@ export async function saveUserProfile(uid: string, data: Record<string, unknown>
     uid,
     updatedAt: serverTimestamp(),
   }, { merge: true });
-}
-
-export async function uploadImage(file: File, path: string): Promise<string> {
-  const storageRef = ref(storage, path);
-  await uploadBytes(storageRef, file);
-  const downloadURL = await getDownloadURL(storageRef);
-  return downloadURL;
 }

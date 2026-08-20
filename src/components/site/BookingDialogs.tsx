@@ -99,7 +99,7 @@ export function BookSessionDialog({
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  tutor: { name: string; subj: string };
+  tutor: { id: string; name: string; subj: string };
 }) {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -125,7 +125,7 @@ export function BookSessionDialog({
     setLoading(true);
     try {
       const payload = {
-        tutorId: tutor.name,
+        tutorId: tutor.id,
         tutorName: tutor.name,
         tutorSubject: tutor.subj,
         studentName: formData.fullName,
@@ -315,7 +315,7 @@ export function MeetingDialog({
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  tutor: { name: string; subj: string };
+  tutor: { id: string; name: string; subj: string };
 }) {
   const [formData, setFormData] = useState({
     fullName: "",

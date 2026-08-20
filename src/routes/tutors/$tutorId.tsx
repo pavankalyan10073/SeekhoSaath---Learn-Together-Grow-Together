@@ -6,9 +6,9 @@ import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Sections";
 import { useState, useEffect } from "react";
 
-function ClientOnlyDialogs({ tutor, bookOpen, setBookOpen, meetingOpen, setMeetingOpen }: { tutor: { name: string; subj: string }; bookOpen: boolean; setBookOpen: (open: boolean) => void; meetingOpen: boolean; setMeetingOpen: (open: boolean) => void }) {
+function ClientOnlyDialogs({ tutor, bookOpen, setBookOpen, meetingOpen, setMeetingOpen }: { tutor: { id: string; name: string; subj: string }; bookOpen: boolean; setBookOpen: (open: boolean) => void; meetingOpen: boolean; setMeetingOpen: (open: boolean) => void }) {
   const [ready, setReady] = useState(false);
-  const [Dialogs, setDialogs] = useState<{ BookSessionDialog: React.ComponentType<{ open: boolean; onOpenChange: (open: boolean) => void; tutor: { name: string; subj: string } }>; MeetingDialog: React.ComponentType<{ open: boolean; onOpenChange: (open: boolean) => void; tutor: { name: string; subj: string } }> } | null>(null);
+  const [Dialogs, setDialogs] = useState<{ BookSessionDialog: React.ComponentType<{ open: boolean; onOpenChange: (open: boolean) => void; tutor: { id: string; name: string; subj: string } }>; MeetingDialog: React.ComponentType<{ open: boolean; onOpenChange: (open: boolean) => void; tutor: { id: string; name: string; subj: string } }> } | null>(null);
 
   useEffect(() => {
     import("@/components/site/BookingDialogs").then((mod) => {
@@ -190,7 +190,7 @@ function TutorDetailPage() {
         </div>
       </section>
 
-      <ClientOnlyDialogs tutor={{ name: tutor.name, subj: tutor.subj }} bookOpen={bookOpen} setBookOpen={setBookOpen} meetingOpen={meetingOpen} setMeetingOpen={setMeetingOpen} />
+      <ClientOnlyDialogs tutor={{ id: tutor.id, name: tutor.name, subj: tutor.subj }} bookOpen={bookOpen} setBookOpen={setBookOpen} meetingOpen={meetingOpen} setMeetingOpen={setMeetingOpen} />
       <Footer />
     </main>
   );
