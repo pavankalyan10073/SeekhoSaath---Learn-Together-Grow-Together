@@ -419,6 +419,10 @@ export function Pricing() {
   const [freeOpen, setFreeOpen] = useState(false);
   const [paymentPlan, setPaymentPlan] = useState<{ name: string; amount: number } | null>(null);
 
+  const CASHFREE_LINKS: Record<string, string> = {
+    Learner: "https://payments.cashfree.com/links?code=aasn3aveig6g_AAAAAAARyD0",
+  };
+
   const tiers = [
     {
       name: "Starter",
@@ -464,6 +468,16 @@ export function Pricing() {
       setFreeOpen(true);
     } else if (tier.action === "paid" && tier.amount) {
       setPaymentPlan({ name: tier.name, amount: tier.amount });
+    }
+  };
+
+  const handlePayment = () => {
+    if (!paymentPlan) return;
+    const link = CASHFREE_LINKS[paymentPlan.name];
+    if (link) {
+      window.location.href = link;
+    } else {
+      alert("Payment link not configured for this plan yet.");
     }
   };
 
@@ -584,42 +598,7 @@ export function Pricing() {
           <div className="grid gap-3">
             <Button
               className="w-full"
-              onClick={async () => {
-                if (!paymentPlan) return;
-                try {
-                  const response = await fetch("/api/payments/cashfree-order", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      planName: paymentPlan.name,
-                      amount: paymentPlan.amount,
-                    }),
-                  });
-
-                  if (!response.ok) throw new Error("Failed to create payment order");
-
-                  const result = await response.json();
-
-                  if (result.data?.paymentUrl) {
-                    window.location.href = result.data.paymentUrl;
-                  } else if (result.data?.paymentSessionId) {
-                    const cashfree = await loadCashfree();
-                    if (cashfree) {
-                      cashfree.checkout({
-                        paymentSessionId: result.data.paymentSessionId,
-                        redirectTarget: "_self",
-                      });
-                    } else {
-                      throw new Error("Failed to load payment gateway");
-                    }
-                  } else {
-                    throw new Error("Payment session not created");
-                  }
-                } catch (error) {
-                  console.error("Payment error:", error);
-                  alert("Payment initialization failed. Please try again.");
-                }
-              }}
+              onClick={handlePayment}
             >
               Pay with Cashfree
             </Button>
