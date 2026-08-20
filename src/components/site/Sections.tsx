@@ -600,11 +600,13 @@ export function Pricing() {
 
                   const result = await response.json();
 
-                  if (result.data?.payment_session_id) {
+                  if (result.data?.paymentUrl) {
+                    window.location.href = result.data.paymentUrl;
+                  } else if (result.data?.paymentSessionId) {
                     const cashfree = await loadCashfree();
                     if (cashfree) {
                       cashfree.checkout({
-                        paymentSessionId: result.data.payment_session_id,
+                        paymentSessionId: result.data.paymentSessionId,
                         redirectTarget: "_self",
                       });
                     } else {

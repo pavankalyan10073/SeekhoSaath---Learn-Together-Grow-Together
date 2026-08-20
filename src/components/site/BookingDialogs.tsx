@@ -11,6 +11,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 const GOOGLE_SHEET_WEBHOOK = import.meta.env.VITE_GOOGLE_SHEET_WEBHOOK || "";
 const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER || "";
 const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID || "";
+const CASHFREE_ORDER_API = "/api/payments/cashfree-order";
 
 const API_BASE = typeof window !== "undefined" ? "" : "";
 const MAX_RETRIES = 3;
@@ -191,42 +192,47 @@ export function BookSessionDialog({
   };
 
   const initializePayment = async () => {
-    if (!bookingId || !RAZORPAY_KEY_ID) {
-      toast.error("Payment gateway not configured");
+    if (!bookingId) {
+      toast.error("Payment not initialized");
       return;
     }
 
-    const loaded = await loadRazorpayScript();
-    if (!loaded) {
-      toast.error("Failed to load payment gateway");
-      return;
+    try {
+      const response = await fetch(CASHFREE_ORDER_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          planName: `Session with ${tutor.name}`,
+          amount: 49900,
+          customerName: formData.fullName,
+          customerEmail: formData.email,
+          customerPhone: formData.phone,
+        }),
+      });
+
+      if (!response.ok) throw new Error("Failed to create payment order");
+
+      const result = await response.json();
+
+      if (result.data?.paymentUrl) {
+        window.location.href = result.data.paymentUrl;
+      } else if (result.data?.paymentSessionId) {
+        const cashfree = await loadCashfree();
+        if (cashfree) {
+          cashfree.checkout({
+            paymentSessionId: result.data.paymentSessionId,
+            redirectTarget: "_self",
+          });
+        } else {
+          throw new Error("Failed to load payment gateway");
+        }
+      } else {
+        throw new Error("Payment session not created");
+      }
+    } catch (error) {
+      console.error("Payment error:", error);
+      toast.error("Payment initialization failed. Please try again.");
     }
-
-    const options = {
-      key: RAZORPAY_KEY_ID,
-      amount: 49900,
-      currency: "INR",
-      name: "SeekhoSaath",
-      description: `Session with ${tutor.name}`,
-      order_id: bookingId,
-      handler: handlePaymentSuccess,
-      prefill: {
-        name: formData.fullName,
-        email: formData.email,
-        contact: formData.phone,
-      },
-      theme: {
-        color: "#dc2626",
-      },
-      modal: {
-        ondismiss: () => {
-          toast.info("Payment cancelled");
-        },
-      },
-    };
-
-    const rzp = new window.Razorpay(options);
-    rzp.open();
   };
 
   useEffect(() => {

@@ -95,6 +95,7 @@ export default defineEventHandler(async (event) => {
         orderId: orderResponse.order_id,
         paymentSessionId: orderResponse.payment_session_id,
         bookingId: booking.id,
+        paymentUrl: orderResponse.payment_link || `${process.env.VITE_APP_URL || "https://seekhosaath.com"}/payment/success?order_id=${orderResponse.order_id}`,
       },
     };
   } catch (error: unknown) {
