@@ -1563,14 +1563,12 @@ function SignupPage() {
       return;
     }
     try {
-      const user = auth.currentUser;
-      const uid = user?.uid || "guest";
-      const timestamp = Date.now();
-      const path = `tutor-applications/${uid}/${field}-${timestamp}.jpg`;
-      const downloadURL = await uploadImage(file, path);
-      setTutorData((prev) => ({ ...prev, [field]: downloadURL }));
+      const maxSize =
+        field === "profilePic" ? 14000 : 21000;
+      const base64 = await compressImage(file, maxSize);
+      setTutorData((prev) => ({ ...prev, [field]: base64 }));
     } catch {
-      toast.error("Failed to upload image");
+      toast.error("Failed to process image");
     }
   };
 

@@ -31,6 +31,7 @@ import { Route as SubjectsIndexRouteImport } from './routes/subjects/index'
 import { Route as BlogsIndexRouteImport } from './routes/blogs/index'
 import { Route as TutorsTutorIdRouteImport } from './routes/tutors/$tutorId'
 import { Route as SubjectsSubjectIdRouteImport } from './routes/subjects/$subjectId'
+import { Route as PaymentSuccessRouteImport } from './routes/payment/success'
 import { Route as BlogsBlogIdRouteImport } from './routes/blogs/$blogId'
 
 const TrustSafetyRoute = TrustSafetyRouteImport.update({
@@ -143,6 +144,11 @@ const SubjectsSubjectIdRoute = SubjectsSubjectIdRouteImport.update({
   path: '/subjects/$subjectId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PaymentSuccessRoute = PaymentSuccessRouteImport.update({
+  id: '/payment/success',
+  path: '/payment/success',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogsBlogIdRoute = BlogsBlogIdRouteImport.update({
   id: '/blogs/$blogId',
   path: '/blogs/$blogId',
@@ -168,6 +174,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/trust-safety': typeof TrustSafetyRoute
   '/blogs/$blogId': typeof BlogsBlogIdRoute
+  '/payment/success': typeof PaymentSuccessRoute
   '/subjects/$subjectId': typeof SubjectsSubjectIdRoute
   '/tutors/$tutorId': typeof TutorsTutorIdRoute
   '/blogs/': typeof BlogsIndexRoute
@@ -193,6 +200,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/trust-safety': typeof TrustSafetyRoute
   '/blogs/$blogId': typeof BlogsBlogIdRoute
+  '/payment/success': typeof PaymentSuccessRoute
   '/subjects/$subjectId': typeof SubjectsSubjectIdRoute
   '/tutors/$tutorId': typeof TutorsTutorIdRoute
   '/blogs': typeof BlogsIndexRoute
@@ -219,6 +227,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/trust-safety': typeof TrustSafetyRoute
   '/blogs/$blogId': typeof BlogsBlogIdRoute
+  '/payment/success': typeof PaymentSuccessRoute
   '/subjects/$subjectId': typeof SubjectsSubjectIdRoute
   '/tutors/$tutorId': typeof TutorsTutorIdRoute
   '/blogs/': typeof BlogsIndexRoute
@@ -246,6 +255,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/trust-safety'
     | '/blogs/$blogId'
+    | '/payment/success'
     | '/subjects/$subjectId'
     | '/tutors/$tutorId'
     | '/blogs/'
@@ -271,6 +281,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/trust-safety'
     | '/blogs/$blogId'
+    | '/payment/success'
     | '/subjects/$subjectId'
     | '/tutors/$tutorId'
     | '/blogs'
@@ -296,6 +307,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/trust-safety'
     | '/blogs/$blogId'
+    | '/payment/success'
     | '/subjects/$subjectId'
     | '/tutors/$tutorId'
     | '/blogs/'
@@ -322,6 +334,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   TrustSafetyRoute: typeof TrustSafetyRoute
   BlogsBlogIdRoute: typeof BlogsBlogIdRoute
+  PaymentSuccessRoute: typeof PaymentSuccessRoute
   SubjectsSubjectIdRoute: typeof SubjectsSubjectIdRoute
   TutorsTutorIdRoute: typeof TutorsTutorIdRoute
   BlogsIndexRoute: typeof BlogsIndexRoute
@@ -485,6 +498,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SubjectsSubjectIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/payment/success': {
+      id: '/payment/success'
+      path: '/payment/success'
+      fullPath: '/payment/success'
+      preLoaderRoute: typeof PaymentSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blogs/$blogId': {
       id: '/blogs/$blogId'
       path: '/blogs/$blogId'
@@ -514,6 +534,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   TrustSafetyRoute: TrustSafetyRoute,
   BlogsBlogIdRoute: BlogsBlogIdRoute,
+  PaymentSuccessRoute: PaymentSuccessRoute,
   SubjectsSubjectIdRoute: SubjectsSubjectIdRoute,
   TutorsTutorIdRoute: TutorsTutorIdRoute,
   BlogsIndexRoute: BlogsIndexRoute,
