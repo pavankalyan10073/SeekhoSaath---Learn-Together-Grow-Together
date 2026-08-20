@@ -143,13 +143,16 @@ export function BookSessionDialog({
 
       if (!res.ok) {
         const text = await res.text();
+        console.error("Booking creation failed:", res.status, text);
         throw new Error(text || "Failed to create booking");
       }
       const result = await res.json();
+      console.log("Booking created:", result);
       setBookingId(result.data.bookingId);
       setShowPayment(true);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Failed to submit. Please try again.";
+      console.error("Booking submit error:", error);
       toast.error(message);
     } finally {
       setLoading(false);

@@ -11,10 +11,14 @@ function ClientOnlyDialogs({ tutor, bookOpen, setBookOpen, meetingOpen, setMeeti
   const [Dialogs, setDialogs] = useState<{ BookSessionDialog: React.ComponentType<{ open: boolean; onOpenChange: (open: boolean) => void; tutor: { id: string; name: string; subj: string } }>; MeetingDialog: React.ComponentType<{ open: boolean; onOpenChange: (open: boolean) => void; tutor: { id: string; name: string; subj: string } }> } | null>(null);
 
   useEffect(() => {
-    import("@/components/site/BookingDialogs").then((mod) => {
-      setDialogs({ BookSessionDialog: mod.BookSessionDialog, MeetingDialog: mod.MeetingDialog });
-      setReady(true);
-    });
+    import("@/components/site/BookingDialogs")
+      .then((mod) => {
+        setDialogs({ BookSessionDialog: mod.BookSessionDialog, MeetingDialog: mod.MeetingDialog });
+        setReady(true);
+      })
+      .catch((error) => {
+        console.error("Failed to load booking dialogs:", error);
+      });
   }, []);
 
   if (!ready || !Dialogs) return null;
@@ -46,6 +50,8 @@ function TutorDetailPage() {
   const tutor = Route.useLoaderData<typeof staticTutors[number]>();
   const [bookOpen, setBookOpen] = useState(false);
   const [meetingOpen, setMeetingOpen] = useState(false);
+
+  console.log("TutorDetailPage loaded tutor:", tutor?.id, tutor?.name);
 
   return (
     <main className="min-h-screen bg-background text-foreground pb-safe">
