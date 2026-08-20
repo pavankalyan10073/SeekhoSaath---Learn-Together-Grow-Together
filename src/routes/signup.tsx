@@ -58,7 +58,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
-import { saveTutorApplication, updateUserRole } from "@/lib/firebase-data";
+import { saveTutorApplication, updateUserRole, uploadImage, saveUserProfile } from "@/lib/firebase-data";
 import { subjectCategories, type Subject } from "@/data/subjects";
 
 type Role = "student" | "tutor" | null;
@@ -1414,7 +1414,15 @@ function SignupPage() {
   const handleStudentSubmit = async (data: SignupForm) => {
     setIsLoading(true);
     try {
-      await signUp(data.email, data.password, data.fullName);
+      const user = await signUp(data.email, data.password, data.fullName);
+      if (user?.uid) {
+        await saveUserProfile(user.uid, {
+          email: data.email,
+          fullName: data.fullName,
+          mobile: data.mobile,
+          role: "student",
+        });
+      }
       toast.success("Account created successfully!");
       navigate({ to: "/" });
     } catch (err: unknown) {
@@ -1472,6 +1480,30 @@ function SignupPage() {
       await saveTutorApplication(application);
       if (user?.uid) {
         await updateUserRole(user.uid, "tutor");
+        await saveUserProfile(user.uid, {
+          email: step1Data.email,
+          fullName: step1Data.fullName,
+          mobile: tutorData.mobile || step1Data.mobile,
+          role: "tutor",
+          profilePic: tutorData.profilePic,
+          bio: tutorData.bio,
+          experience: tutorData.experience,
+          degree: tutorData.degree,
+          college: tutorData.college,
+          yearOfPassing: tutorData.yearOfPassing,
+          specializations: tutorData.specializations,
+          subjectsToTeach: tutorData.subjectsToTeach,
+          chargePerSession: tutorData.chargePerSession,
+          teachingMode: tutorData.teachingMode,
+          state: tutorData.state,
+          district: tutorData.district,
+          city: tutorData.city,
+          pinCode: tutorData.pinCode,
+          fullAddress: tutorData.fullAddress,
+          languages: tutorData.languages,
+          aadharFront: tutorData.aadharFront,
+          aadharBack: tutorData.aadharBack,
+        });
       }
 
       toast.success("Your tutor application has been submitted for review!");
@@ -1531,12 +1563,14 @@ function SignupPage() {
       return;
     }
     try {
-      const maxSize =
-        field === "profilePic" ? 14000 : 21000;
-      const base64 = await compressImage(file, maxSize);
-      setTutorData((prev) => ({ ...prev, [field]: base64 }));
+      const user = auth.currentUser;
+      const uid = user?.uid || "guest";
+      const timestamp = Date.now();
+      const path = `tutor-applications/${uid}/${field}-${timestamp}.jpg`;
+      const downloadURL = await uploadImage(file, path);
+      setTutorData((prev) => ({ ...prev, [field]: downloadURL }));
     } catch {
-      toast.error("Failed to process image");
+      toast.error("Failed to upload image");
     }
   };
 
