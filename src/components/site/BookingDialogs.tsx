@@ -141,12 +141,16 @@ export function BookSessionDialog({
         body: JSON.stringify(payload),
       });
 
-      if (!res.ok) throw new Error("Failed to create booking");
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || "Failed to create booking");
+      }
       const result = await res.json();
       setBookingId(result.data.bookingId);
       setShowPayment(true);
     } catch (error) {
-      toast.error("Failed to submit. Please try again.");
+      const message = error instanceof Error ? error.message : "Failed to submit. Please try again.";
+      toast.error(message);
     } finally {
       setLoading(false);
     }
