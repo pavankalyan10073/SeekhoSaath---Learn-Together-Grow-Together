@@ -41,6 +41,8 @@ import {
   Activity,
   BarChart3,
   CheckCheck,
+  MessageSquare,
+  HelpCircle,
 } from "lucide-react";
 
 export const Route = createFileRoute("/account")({
@@ -533,11 +535,143 @@ function AccountPage() {
     </motion.div>
   );
 
+  const SettingsContent = () => (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="space-y-4"
+    >
+      <div className="grid gap-3 sm:gap-4">
+        <div className="rounded-2xl border border-border/80 bg-card overflow-hidden">
+          <div className="divide-y divide-border/60">
+            <button
+              onClick={() => openEdit("name")}
+              className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5"
+            >
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="rounded-xl bg-gradient-to-br from-crimson/10 to-ember/10 p-2.5">
+                  <User className="h-4 w-4 text-crimson sm:h-5 sm:w-5" />
+                </div>
+                <div className="text-left">
+                  <div className="text-sm font-extrabold text-foreground sm:text-base">Full Name</div>
+                  <div className="text-xs text-muted-foreground sm:text-sm">{displayName}</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              </div>
+            </button>
+            <button
+              onClick={() => openEdit("email")}
+              className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5"
+            >
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="rounded-xl bg-gradient-to-br from-mint/10 to-mint/20 p-2.5">
+                  <Mail className="h-4 w-4 text-mint sm:h-5 sm:w-5" />
+                </div>
+                <div className="text-left">
+                  <div className="text-sm font-extrabold text-foreground sm:text-base">Email Address</div>
+                  <div className="text-xs text-muted-foreground sm:text-sm">{user?.email}</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              </div>
+            </button>
+            <button
+              onClick={() => openEdit("phone")}
+              className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5"
+            >
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="rounded-xl bg-gradient-to-br from-navy/10 to-blue-500/10 p-2.5">
+                  <Phone className="h-4 w-4 text-navy sm:h-5 sm:w-5" />
+                </div>
+                <div className="text-left">
+                  <div className="text-sm font-extrabold text-foreground sm:text-base">Phone Number</div>
+                  <div className="text-xs text-muted-foreground sm:text-sm">{user?.phoneNumber || "+91 98765 43210"}</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              </div>
+            </button>
+            <button className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="rounded-xl bg-gradient-to-br from-ember/10 to-amber-500/10 p-2.5">
+                  <Shield className="h-4 w-4 text-ember sm:h-5 sm:w-5" />
+                </div>
+                <div className="text-left">
+                  <div className="text-sm font-extrabold text-foreground sm:text-base">Privacy & Security</div>
+                  <div className="text-xs text-muted-foreground sm:text-sm">Password, 2FA, and data settings</div>
+                </div>
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            </button>
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-border/80 bg-card overflow-hidden">
+          <div className="divide-y divide-border/60">
+            <button className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="rounded-xl bg-gradient-to-br from-blue-500/10 to-indigo-500/10 p-2.5">
+                  <Settings className="h-4 w-4 text-blue-600 sm:h-5 sm:w-5" />
+                </div>
+                <div className="text-left">
+                  <div className="text-sm font-extrabold text-foreground sm:text-base">Preferences</div>
+                  <div className="text-xs text-muted-foreground sm:text-sm">Notifications, privacy, and app settings</div>
+                </div>
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            </button>
+            <button className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 p-2.5">
+                  <MessageSquare className="h-4 w-4 text-emerald-600 sm:h-5 sm:w-5" />
+                </div>
+                <div className="text-left">
+                  <div className="text-sm font-extrabold text-foreground sm:text-base">Support</div>
+                  <div className="text-xs text-muted-foreground sm:text-sm">Help center and contact support</div>
+                </div>
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            </button>
+            <button className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 p-2.5">
+                  <HelpCircle className="h-4 w-4 text-purple-600 sm:h-5 sm:w-5" />
+                </div>
+                <div className="text-left">
+                  <div className="text-sm font-extrabold text-foreground sm:text-base">About</div>
+                  <div className="text-xs text-muted-foreground sm:text-sm">Version 1.0.0 • SeekhoSaath</div>
+                </div>
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="pt-2">
+        <button
+          onClick={handleSignOut}
+          className="w-full flex items-center justify-center gap-2 rounded-2xl border-2 border-destructive/30 bg-destructive/5 px-4 py-3.5 text-sm font-extrabold text-destructive transition-all hover:bg-destructive/10 hover:border-destructive/40 sm:py-4"
+        >
+          <LogOut className="h-4 w-4" />
+          Sign Out
+        </button>
+      </div>
+    </motion.div>
+  );
+
   return (
     <main className="min-h-screen bg-background">
       <Navbar />
 
-      <section className="relative overflow-hidden pt-10 pb-8 sm:pt-14 sm:pb-12 md:pt-20 md:pb-16">
+      <section className="relative overflow-hidden pt-20 pb-8 sm:pt-24 sm:pb-12 md:pt-28 md:pb-16">
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <div className="absolute inset-0 bg-mesh opacity-30" />
           <div
@@ -666,7 +800,9 @@ function AccountPage() {
 
             {/* Content */}
             <div className="p-4 sm:p-6 md:p-8">
-              {loadingData ? (
+              {activeTab === "settings" ? (
+                <SettingsContent />
+              ) : loadingData ? (
                 <div className="flex flex-col items-center justify-center py-16">
                   <div className="relative">
                     <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full border-4 border-muted/30 border-t-crimson animate-spin" />
@@ -893,126 +1029,6 @@ function AccountPage() {
                           ))}
                         </div>
                       )}
-                    </motion.div>
-                  )}
-
-                  {activeTab === "settings" && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="space-y-4"
-                    >
-                      <div className="grid gap-3 sm:gap-4">
-                        <div className="rounded-2xl border border-border/80 bg-card overflow-hidden">
-                          <div className="divide-y divide-border/60">
-                            <button
-                              onClick={() => openEdit("name")}
-                              className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5"
-                            >
-                              <div className="flex items-center gap-3 sm:gap-4">
-                                <div className="rounded-xl bg-gradient-to-br from-crimson/10 to-ember/10 p-2.5">
-                                  <User className="h-4 w-4 text-crimson sm:h-5 sm:w-5" />
-                                </div>
-                                <div className="text-left">
-                                  <div className="text-sm font-extrabold text-foreground sm:text-base">Full Name</div>
-                                  <div className="text-xs text-muted-foreground sm:text-sm">{displayName}</div>
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-2 text-muted-foreground">
-                                <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                                <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                              </div>
-                            </button>
-                            <button
-                              onClick={() => openEdit("email")}
-                              className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5"
-                            >
-                              <div className="flex items-center gap-3 sm:gap-4">
-                                <div className="rounded-xl bg-gradient-to-br from-mint/10 to-mint/20 p-2.5">
-                                  <Mail className="h-4 w-4 text-mint sm:h-5 sm:w-5" />
-                                </div>
-                                <div className="text-left">
-                                  <div className="text-sm font-extrabold text-foreground sm:text-base">Email Address</div>
-                                  <div className="text-xs text-muted-foreground sm:text-sm">{user?.email}</div>
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-2 text-muted-foreground">
-                                <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                                <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                              </div>
-                            </button>
-                            <button
-                              onClick={() => openEdit("phone")}
-                              className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5"
-                            >
-                              <div className="flex items-center gap-3 sm:gap-4">
-                                <div className="rounded-xl bg-gradient-to-br from-navy/10 to-blue-500/10 p-2.5">
-                                  <Phone className="h-4 w-4 text-navy sm:h-5 sm:w-5" />
-                                </div>
-                                <div className="text-left">
-                                  <div className="text-sm font-extrabold text-foreground sm:text-base">Phone Number</div>
-                                  <div className="text-xs text-muted-foreground sm:text-sm">{user?.phoneNumber || "+91 98765 43210"}</div>
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-2 text-muted-foreground">
-                                <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                                <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                              </div>
-                            </button>
-                            <button className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5">
-                              <div className="flex items-center gap-3 sm:gap-4">
-                                <div className="rounded-xl bg-gradient-to-br from-ember/10 to-amber-500/10 p-2.5">
-                                  <Shield className="h-4 w-4 text-ember sm:h-5 sm:w-5" />
-                                </div>
-                                <div className="text-left">
-                                  <div className="text-sm font-extrabold text-foreground sm:text-base">Privacy & Security</div>
-                                  <div className="text-xs text-muted-foreground sm:text-sm">Password, 2FA, and data settings</div>
-                                </div>
-                              </div>
-                              <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                            </button>
-                          </div>
-                        </div>
-
-                        <div className="rounded-2xl border border-border/80 bg-card overflow-hidden">
-                          <div className="divide-y divide-border/60">
-                            <button className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5">
-                              <div className="flex items-center gap-3 sm:gap-4">
-                                <div className="rounded-xl bg-gradient-to-br from-blue-500/10 to-indigo-500/10 p-2.5">
-                                  <Settings className="h-4 w-4 text-blue-600 sm:h-5 sm:w-5" />
-                                </div>
-                                <div className="text-left">
-                                  <div className="text-sm font-extrabold text-foreground sm:text-base">Preferences</div>
-                                  <div className="text-xs text-muted-foreground sm:text-sm">Notifications, privacy, and app settings</div>
-                                </div>
-                              </div>
-                              <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                            </button>
-                            <button className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5">
-                              <div className="flex items-center gap-3 sm:gap-4">
-                                <div className="rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 p-2.5">
-                                  <MessageSquare className="h-4 w-4 text-emerald-600 sm:h-5 sm:w-5" />
-                                </div>
-                                <div className="text-left">
-                                  <div className="text-sm font-extrabold text-foreground sm:text-base">Support</div>
-                                  <div className="text-xs text-muted-foreground sm:text-sm">Help center and contact support</div>
-                                </div>
-                              </div>
-                              <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="pt-2">
-                        <button
-                          onClick={handleSignOut}
-                          className="w-full flex items-center justify-center gap-2 rounded-2xl border-2 border-destructive/30 bg-destructive/5 px-4 py-3.5 text-sm font-extrabold text-destructive transition-all hover:bg-destructive/10 hover:border-destructive/40 sm:py-4"
-                        >
-                          <LogOut className="h-4 w-4" />
-                          Sign Out
-                        </button>
-                      </div>
                     </motion.div>
                   )}
                 </>
