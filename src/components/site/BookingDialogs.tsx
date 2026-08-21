@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const GOOGLE_SHEET_WEBHOOK = import.meta.env.VITE_GOOGLE_SHEET_WEBHOOK || "";
-const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER || "";
+const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER || "9391485316";
 const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID || "";
 const CASHFREE_SESSION_FORM = "https://payments.cashfree.com/forms/tutor-session";
 
@@ -316,8 +316,8 @@ export function MeetingDialog({
         }
       }
 
-      const message = `Hi SeekhoSaath,%0AI would like to schedule a meeting with ${tutor.name} (${tutor.subj}).%0A%0AName: ${encodeURIComponent(formData.fullName)}%0APhone: ${formData.phone}%0AEmail: ${formData.email}%0ATuition Type: ${formData.tuitionType}%0ADate: ${formData.date}%0ATime: ${formData.time}`;
-      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, "_blank");
+      const message = `Hi SeekhoSaath,%0AI would like to schedule a meeting with ${tutor.name} (${tutor.subj}).%0A%0AName: ${encodeURIComponent(formData.fullName)}%0APhone: ${encodeURIComponent(formData.phone)}%0AEmail: ${encodeURIComponent(formData.email)}%0ATuition Type: ${encodeURIComponent(formData.tuitionType)}%0ADate: ${encodeURIComponent(formData.date)}%0ATime: ${encodeURIComponent(formData.time)}`;
+      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, "_blank", "noopener,noreferrer");
 
       toast.success("Meeting request submitted! Redirecting to WhatsApp...");
       onOpenChange(false);
