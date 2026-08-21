@@ -65,7 +65,7 @@ function TutorsPage() {
     });
 
   return (
-    <main className="min-h-screen bg-background text-foreground pb-safe">
+    <main className="min-h-screen bg-background text-foreground pb-safe pt-14 sm:pt-16">
       <Navbar />
 
       {/* Hero */}

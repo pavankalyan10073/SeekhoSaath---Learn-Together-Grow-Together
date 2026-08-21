@@ -59,7 +59,7 @@ function TutorDetailPage() {
   console.log("TutorDetailPage loaded tutor:", tutor?.id, tutor?.name);
 
   return (
-    <main className="min-h-screen bg-background text-foreground pb-safe">
+    <main className="min-h-screen bg-background text-foreground pb-safe pt-14 sm:pt-16">
       <Navbar />
 
       <section className="relative overflow-hidden pt-12 pb-10 sm:pt-16 sm:pb-12 md:pt-20 md:pb-14">

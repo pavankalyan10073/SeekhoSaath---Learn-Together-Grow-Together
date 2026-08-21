@@ -17,7 +17,7 @@ export const Route = createFileRoute("/careers")({
 
 function CareersPage() {
   return (
-      <main className="min-h-screen bg-background text-foreground pb-safe pt-10 sm:pt-12">
+      <main className="min-h-screen bg-background text-foreground pb-safe pt-14 sm:pt-16">
       <Navbar />
 
       <section className="container-px mx-auto max-w-3xl py-8 sm:py-10 md:py-14">

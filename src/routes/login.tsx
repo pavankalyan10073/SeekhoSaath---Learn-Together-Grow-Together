@@ -116,7 +116,7 @@ function LoginPage() {
   }
 
   return (
-    <div className="relative min-h-screen bg-background">
+    <div className="relative min-h-screen bg-background pt-16 sm:pt-20">
       <div className="absolute inset-0 bg-mesh opacity-60 pointer-events-none" />
 
       <header className="absolute inset-x-0 top-0 z-50 px-4 py-4 sm:px-6 lg:px-8">
