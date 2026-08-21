@@ -107,10 +107,12 @@ export function BookSessionDialog({
     phone: "",
     email: "",
     mode: "online" as "online" | "offline" | "hybrid",
+    amount: "49",
   });
   const [loading, setLoading] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
   const [bookingId, setBookingId] = useState<string | null>(null);
+  const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -133,7 +135,7 @@ export function BookSessionDialog({
         studentPhone: formData.phone,
         studentEmail: formData.email,
         mode: formData.mode,
-        amount: 49900,
+        amount: Number(formData.amount) * 100,
       };
 
       const res = await fetch("/api/payments/create-order", {
@@ -150,6 +152,7 @@ export function BookSessionDialog({
       const result = await res.json();
       console.log("Booking created:", result);
       setBookingId(result.data.bookingId);
+      setPaymentUrl(result.data.paymentUrl || null);
       setShowPayment(true);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Failed to submit. Please try again.";
@@ -197,7 +200,11 @@ export function BookSessionDialog({
       return;
     }
 
-    window.location.href = CASHFREE_SESSION_FORM;
+    if (paymentUrl) {
+      window.location.href = paymentUrl;
+    } else {
+      toast.error("Payment URL not received. Please try again.");
+    }
   };
 
   useEffect(() => {
@@ -248,6 +255,21 @@ export function BookSessionDialog({
                 placeholder="Enter your email"
                 required
               />
+            </div>
+            <div>
+              <Label htmlFor="book-amount">Session Price</Label>
+              <select
+                id="book-amount"
+                value={formData.amount}
+                onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                required
+              >
+                <option value="">Select amount</option>
+                <option value="49">₹49</option>
+                <option value="99">₹99</option>
+                <option value="199">₹199</option>
+              </select>
             </div>
             <div>
               <Label>Preferred Mode</Label>
