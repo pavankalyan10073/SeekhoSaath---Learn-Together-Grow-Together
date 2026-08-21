@@ -595,3 +595,307 @@ export async function createMeeting(data: {
 
   if (error) throw error;
 }
+
+export async function getStudentBookings(studentId: string): Promise<Booking[]> {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select(`
+      *,
+      tutors (
+        id,
+        name,
+        profile_pic,
+        subjects_to_teach,
+        charge_per_session
+      )
+    `)
+    .eq("user_id", studentId)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return (data || []).map((row: Record<string, unknown>) => ({
+    id: row.id as string,
+    userId: row.user_id as string,
+    tutorId: row.tutor_id as string,
+    tutorName: row.tutor_name as string,
+    tutorSubject: row.tutor_subject as string,
+    studentName: row.student_name as string,
+    studentPhone: row.student_phone as string,
+    studentEmail: row.student_email as string,
+    mode: row.mode as "online" | "offline" | "hybrid",
+    date: row.date as string | undefined,
+    time: row.time as string | undefined,
+    tuitionType: row.tuition_type as string | undefined,
+    status: row.status as "pending" | "confirmed" | "cancelled" | "completed",
+    paymentStatus: row.payment_status as "pending" | "paid" | "failed" | "refunded",
+    amount: row.amount as number,
+    paymentId: row.payment_id as string | undefined,
+    razorpayOrderId: row.razorpay_order_id as string | undefined,
+    orderId: row.order_id as string | undefined,
+    createdAt: new Date(row.created_at as string),
+    updatedAt: new Date(row.updated_at as string),
+  }));
+}
+
+export async function getTutorBookings(tutorId: string): Promise<Booking[]> {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select(`
+      *,
+      profiles!inner (
+        id,
+        full_name,
+        email
+      )
+    `)
+    .eq("tutor_id", tutorId)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return (data || []).map((row: Record<string, unknown>) => ({
+    id: row.id as string,
+    userId: row.user_id as string,
+    tutorId: row.tutor_id as string,
+    tutorName: row.tutor_name as string,
+    tutorSubject: row.tutor_subject as string,
+    studentName: row.student_name as string,
+    studentPhone: row.student_phone as string,
+    studentEmail: row.student_email as string,
+    mode: row.mode as "online" | "offline" | "hybrid",
+    date: row.date as string | undefined,
+    time: row.time as string | undefined,
+    tuitionType: row.tuition_type as string | undefined,
+    status: row.status as "pending" | "confirmed" | "cancelled" | "completed",
+    paymentStatus: row.payment_status as "pending" | "paid" | "failed" | "refunded",
+    amount: row.amount as number,
+    paymentId: row.payment_id as string | undefined,
+    razorpayOrderId: row.razorpay_order_id as string | undefined,
+    orderId: row.order_id as string | undefined,
+    createdAt: new Date(row.created_at as string),
+    updatedAt: new Date(row.updated_at as string),
+  }));
+}
+
+export async function getStudentStats(studentId: string): Promise<{
+  totalBookings: number;
+  completedSessions: number;
+  upcomingSessions: number;
+  totalSpent: number;
+  tutorsEngaged: number;
+  totalHours: number;
+  averageRating: number;
+}> {
+  const { data, error } = await supabase
+    .from("student_analytics")
+    .select("*")
+    .eq("student_id", studentId)
+    .single();
+
+  if (error || !data) {
+    return {
+      totalBookings: 0,
+      completedSessions: 0,
+      upcomingSessions: 0,
+      totalSpent: 0,
+      tutorsEngaged: 0,
+      totalHours: 0,
+      averageRating: 0,
+    };
+  }
+
+  const row = data as Record<string, unknown>;
+  return {
+    totalBookings: (row.total_bookings as number) || 0,
+    completedSessions: (row.completed_sessions as number) || 0,
+    upcomingSessions: (row.upcoming_sessions as number) || 0,
+    totalSpent: (row.total_spent as number) || 0,
+    tutorsEngaged: (row.tutors_engaged as number) || 0,
+    totalHours: Math.round((row.total_hours as number) || 0),
+    averageRating: Math.round((row.average_rating_given as number) || 0),
+  };
+}
+
+export async function getTutorStats(tutorId: string): Promise<{
+  totalBookings: number;
+  completedSessions: number;
+  pendingSessions: number;
+  totalEarnings: number;
+  averageRating: number;
+  totalRatings: number;
+  totalHours: number;
+}> {
+  const { data, error } = await supabase
+    .from("tutor_analytics")
+    .select("*")
+    .eq("tutor_id", tutorId)
+    .single();
+
+  if (error || !data) {
+    return {
+      totalBookings: 0,
+      completedSessions: 0,
+      pendingSessions: 0,
+      totalEarnings: 0,
+      averageRating: 0,
+      totalRatings: 0,
+      totalHours: 0,
+    };
+  }
+
+  const row = data as Record<string, unknown>;
+  return {
+    totalBookings: (row.total_bookings as number) || 0,
+    completedSessions: (row.completed_sessions as number) || 0,
+    pendingSessions: (row.pending_sessions as number) || 0,
+    totalEarnings: (row.total_earnings as number) || 0,
+    averageRating: Math.round((row.average_rating as number) || 0),
+    totalRatings: (row.total_ratings as number) || 0,
+    totalHours: Math.round((row.total_hours as number) || 0),
+  };
+}
+
+export async function getNotifications(userId: string, limit = 50): Promise<
+  Array<{
+    id: string;
+    type: string;
+    title: string;
+    message: string;
+    data: Record<string, unknown>;
+    read: boolean;
+    createdAt: Date;
+  }>
+> {
+  const { data, error } = await supabase
+    .from("notifications")
+    .select("*")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error) throw error;
+  return (data || []).map((row: Record<string, unknown>) => ({
+    id: row.id as string,
+    type: row.type as string,
+    title: row.title as string,
+    message: row.message as string,
+    data: (row.data as Record<string, unknown>) || {},
+    read: row.read as boolean,
+    createdAt: new Date(row.created_at as string),
+  }));
+}
+
+export async function markNotificationRead(notificationId: string): Promise<void> {
+  const { error } = await supabase
+    .from("notifications")
+    .update({ read: true })
+    .eq("id", notificationId);
+
+  if (error) throw error;
+}
+
+export async function markAllNotificationsRead(userId: string): Promise<void> {
+  const { error } = await supabase
+    .from("notifications")
+    .update({ read: true })
+    .eq("user_id", userId)
+    .eq("read", false);
+
+  if (error) throw error;
+}
+
+export async function getUnreadNotificationCount(userId: string): Promise<number> {
+  const { count, error } = await supabase
+    .from("notifications")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .eq("read", false);
+
+  if (error) return 0;
+  return count || 0;
+}
+
+export function subscribeToBookings(
+  userId: string,
+  callback: (payload: { eventType: string; new: Record<string, unknown>; old: Record<string, unknown> }) => void
+) {
+  return supabase
+    .channel(`bookings:user=${userId}`)
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "bookings",
+        filter: `user_id=eq.${userId}`,
+      },
+      callback
+    )
+    .subscribe();
+}
+
+export function subscribeToTutorBookings(
+  tutorId: string,
+  callback: (payload: { eventType: string; new: Record<string, unknown>; old: Record<string, unknown> }) => void
+) {
+  return supabase
+    .channel(`bookings:tutor=${tutorId}`)
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "bookings",
+        filter: `tutor_id=eq.${tutorId}`,
+      },
+      callback
+    )
+    .subscribe();
+}
+
+export function subscribeToNotifications(
+  userId: string,
+  callback: (payload: { eventType: string; new: Record<string, unknown>; old: Record<string, unknown> }) => void
+) {
+  return supabase
+    .channel(`notifications:user=${userId}`)
+    .on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "notifications",
+        filter: `user_id=eq.${userId}`,
+      },
+      callback
+    )
+    .subscribe();
+}
+
+export function subscribeToSessions(
+  userId: string,
+  callback: (payload: { eventType: string; new: Record<string, unknown>; old: Record<string, unknown> }) => void
+) {
+  return supabase
+    .channel(`sessions:user=${userId}`)
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "sessions",
+        filter: `student_id=eq.${userId}`,
+      },
+      callback
+    )
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "sessions",
+        filter: `tutor_id=eq.${userId}`,
+      },
+      callback
+    )
+    .subscribe();
+}
