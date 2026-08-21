@@ -5,6 +5,7 @@ import { tutors as staticTutors } from "@/data/tutors";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Sections";
 import { useState, useEffect } from "react";
+import { getTutorById } from "@/lib/supabase-data";
 
 function ClientOnlyDialogs({ tutor, bookOpen, setBookOpen, meetingOpen, setMeetingOpen }: { tutor: { id: string; name: string; subj: string }; bookOpen: boolean; setBookOpen: (open: boolean) => void; meetingOpen: boolean; setMeetingOpen: (open: boolean) => void }) {
   const [ready, setReady] = useState(false);
@@ -38,9 +39,13 @@ export const Route = createFileRoute("/tutors/$tutorId")({
       { name: "description", content: "View tutor profile, specializations, and book a session." },
     ],
   }),
-  loader: ({ params }) => {
-    const tutor = staticTutors.find((t) => t.id === params.tutorId);
-    if (!tutor) throw notFound();
+  loader: async ({ params }) => {
+    const tutor = await getTutorById(params.tutorId);
+    if (!tutor) {
+      const fallback = staticTutors.find((t) => t.id === params.tutorId);
+      if (!fallback) throw notFound();
+      return fallback;
+    }
     return tutor;
   },
   component: TutorDetailPage,

@@ -1,6 +1,5 @@
 import { defineEventHandler, createError, readBody, getHeader } from "h3";
-import { getBookingByOrderId, updateBookingStatus, createPayment, updatePaymentStatus } from "@/lib/firebase-data";
-import { syncPayment } from "@/lib/google-sheets";
+import { getBookingByOrderId, updateBookingStatus, createPayment, updatePaymentStatus } from "@/lib/supabase-data";
 import crypto from "node:crypto";
 
 export default defineEventHandler(async (event) => {
@@ -59,17 +58,6 @@ export default defineEventHandler(async (event) => {
 
       await updateBookingStatus(booking.id, "confirmed", "paid");
       await updatePaymentStatus(payment.id, "paid", paymentId || "", "", body.payment?.payment_method || "cashfree");
-
-      await syncPayment({
-        id: payment.id,
-        bookingId: booking.id,
-        tutorName: booking.tutorName,
-        studentName: booking.studentName,
-        amount: Number(amount),
-        status: "paid",
-        method: body.payment?.payment_method || "cashfree",
-        timestamp: new Date().toISOString(),
-      });
     }
 
     return { success: true };

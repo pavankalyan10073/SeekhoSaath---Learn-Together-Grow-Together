@@ -3,7 +3,6 @@ import { useState, useMemo, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { auth } from "@/lib/firebase";
 import {
   Eye,
   EyeOff,
@@ -58,7 +57,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
-import { saveTutorApplication, updateUserRole, uploadImage, saveUserProfile } from "@/lib/firebase-data";
+import { saveTutorApplication, updateUserRole, uploadImage, saveUserProfile } from "@/lib/supabase-data";
 import { subjectCategories, type Subject } from "@/data/subjects";
 
 type Role = "student" | "tutor" | null;
@@ -1459,28 +1458,22 @@ function SignupPage() {
         return;
       }
 
-      await Promise.race([
-        signUp(step1Data.email, step1Data.password, step1Data.fullName),
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("Sign up timed out. Please check your connection and try again.")), 15000)
-        ),
-      ]);
+      const supabaseUser = await signUp(step1Data.email, step1Data.password, step1Data.fullName);
 
-      const user = auth.currentUser;
       const applicationId = `tutor-app-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
       
       const application: TutorFormData & { id: string; applicationDate: string; verified: boolean; userId: string } = {
         ...tutorData,
         id: applicationId,
-        userId: user?.uid || "",
+        userId: supabaseUser?.id || "",
         applicationDate: new Date().toISOString(),
         verified: false,
       };
 
       await saveTutorApplication(application);
-      if (user?.uid) {
-        await updateUserRole(user.uid, "tutor");
-        await saveUserProfile(user.uid, {
+      if (supabaseUser?.id) {
+        await updateUserRole(supabaseUser.id, "tutor");
+        await saveUserProfile(supabaseUser.id, {
           email: step1Data.email,
           fullName: step1Data.fullName,
           mobile: tutorData.mobile || step1Data.mobile,

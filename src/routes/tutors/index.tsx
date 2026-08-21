@@ -5,7 +5,7 @@ import { tutors as staticTutors } from "@/data/tutors";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Sections";
 import { useState, useEffect } from "react";
-import { getApprovedTutors, type Tutor } from "@/lib/firebase-data";
+import { getApprovedTutors, type Tutor } from "@/lib/supabase-data";
 
 export const Route = createFileRoute("/tutors/")({
   head: () => ({

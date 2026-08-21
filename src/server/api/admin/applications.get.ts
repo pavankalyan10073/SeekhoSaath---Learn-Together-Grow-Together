@@ -1,6 +1,5 @@
 import { defineEventHandler, createError, readBody, getRouterParam } from "h3";
-import { getAllTutorApplications, approveTutorApplication, rejectTutorApplication } from "@/lib/firebase-data";
-import { syncTutorApplication } from "@/lib/google-sheets";
+import { getAllTutorApplications } from "@/lib/supabase-data";
 
 export default defineEventHandler(async (event) => {
   if (event.method !== "GET") {

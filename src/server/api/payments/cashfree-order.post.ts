@@ -1,6 +1,5 @@
 import { defineEventHandler, createError, readBody } from "h3";
-import { createBooking } from "@/lib/firebase-data";
-import { syncBooking } from "@/lib/google-sheets";
+import { createBooking } from "@/lib/supabase-data";
 
 export default defineEventHandler(async (event) => {
   if (event.method !== "POST") {
@@ -74,19 +73,6 @@ export default defineEventHandler(async (event) => {
       paymentStatus: "pending",
       amount: Number(amount),
       orderId,
-    });
-
-    await syncBooking({
-      id: booking.id,
-      tutorName: planName,
-      studentName: customerName,
-      studentPhone: customerPhone,
-      studentEmail: customerEmail,
-      mode: "online",
-      amount: Number(amount),
-      status: "pending",
-      paymentStatus: "pending",
-      timestamp: new Date().toISOString(),
     });
 
     return {

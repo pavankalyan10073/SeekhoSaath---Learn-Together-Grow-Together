@@ -1,10 +1,9 @@
 import { defineEventHandler, createError, readBody } from "h3";
-import { updateBookingStatus, getBookingById, createPayment, updatePaymentStatus } from "@/lib/firebase-data";
-import { syncPayment } from "@/lib/google-sheets";
+import { updateBookingStatus, getBookingById, createPayment, updatePaymentStatus } from "@/lib/supabase-data";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  
+
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature, bookingId } = body;
 
   if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !bookingId) {
@@ -32,17 +31,6 @@ export default defineEventHandler(async (event) => {
 
     await updateBookingStatus(bookingId, "confirmed", "paid");
     await updatePaymentStatus(payment.id, "paid", razorpay_payment_id, razorpay_signature, body.method);
-
-    await syncPayment({
-      id: payment.id,
-      bookingId,
-      tutorName: booking.tutorName,
-      studentName: booking.studentName,
-      amount: booking.amount,
-      status: "paid",
-      method: body.method || "unknown",
-      timestamp: new Date().toISOString(),
-    });
 
     return { success: true, message: "Payment verified successfully", data: { paymentId: payment.id } };
   } catch (error: unknown) {

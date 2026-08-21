@@ -1,6 +1,5 @@
 import { defineEventHandler, createError, readBody, getRouterParam } from "h3";
-import { approveTutorApplication, rejectTutorApplication } from "@/lib/firebase-data";
-import { syncTutorApplication } from "@/lib/google-sheets";
+import { approveTutorApplication, rejectTutorApplication } from "@/lib/supabase-data";
 
 export default defineEventHandler(async (event) => {
   if (event.method !== "PATCH") {
@@ -22,30 +21,12 @@ export default defineEventHandler(async (event) => {
   try {
     if (action === "approve") {
       const tutor = await approveTutorApplication(id, "admin");
-      await syncTutorApplication({
-        id: tutor.id,
-        name: tutor.name,
-        email: tutor.email,
-        mobile: tutor.mobile,
-        subjects: tutor.subjectsToTeach.join(", "),
-        specializations: tutor.specializations.join(", "),
-        location: tutor.location,
-        chargePerSession: tutor.chargePerSession,
-        status: "approved",
-        timestamp: new Date().toISOString(),
-      });
       return { success: true, message: "Tutor approved successfully", data: tutor };
     } else {
       if (!reason) {
         throw createError({ statusCode: 400, statusMessage: "Rejection reason is required" });
       }
       await rejectTutorApplication(id, reason);
-      await syncTutorApplication({
-        id,
-        status: "rejected",
-        reason,
-        timestamp: new Date().toISOString(),
-      });
       return { success: true, message: "Tutor application rejected" };
     }
   } catch (error: unknown) {

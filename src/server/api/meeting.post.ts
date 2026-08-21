@@ -1,5 +1,5 @@
 import { defineEventHandler, createError, readBody } from "h3";
-import { $fetch } from "ofetch";
+import { createMeeting } from "@/lib/supabase-data";
 
 export default defineEventHandler(async (event) => {
   if (event.method !== "POST") {
@@ -13,30 +13,20 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "Missing required fields" });
   }
 
-  const payload = {
-    fullName,
-    phone,
-    email,
-    tuitionType,
-    date,
-    time,
-    tutorName,
-    tutorSubject,
-    type: "meeting",
-    timestamp: new Date().toISOString(),
-  };
-
-  const webhook = process.env.VITE_GOOGLE_SHEET_WEBHOOK || process.env.GOOGLE_SHEET_WEBHOOK;
-  if (webhook) {
-    try {
-      await $fetch(webhook, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-    } catch (error) {
-      console.error("Failed to submit to Google Sheet:", error);
-    }
+  try {
+    await createMeeting({
+      fullName,
+      phone,
+      email,
+      tuitionType,
+      date,
+      time,
+      tutorName,
+      tutorSubject,
+    });
+  } catch (error) {
+    console.error("Failed to save meeting:", error);
+    throw createError({ statusCode: 500, statusMessage: "Failed to save meeting" });
   }
 
   return {
