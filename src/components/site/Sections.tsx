@@ -420,7 +420,8 @@ export function Pricing() {
   const [paymentPlan, setPaymentPlan] = useState<{ name: string; amount: number } | null>(null);
 
   const CASHFREE_LINKS: Record<string, string> = {
-    Learner: "https://payments.cashfree.com/links?code=aasn3aveig6g_AAAAAAARyD0",
+    Learner: "https://payments.cashfree.com/forms/seekhosaath-tutor-subscription",
+    Mastery: "https://payments.cashfree.com/forms/seekhosaath-tutor-subscription",
   };
 
   const tiers = [
