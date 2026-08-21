@@ -7,14 +7,14 @@ import tutor3 from "@/assets/tutor-3.jpg";
 import tutor4 from "@/assets/tutor-4.jpg";
 
 const SEARCH_TUTORS = [
-  { name: "Aanya R.", subject: "Physics", rating: 4.9, img: tutor1 },
-  { name: "Rahul M.", subject: "Math", rating: 4.8, img: tutor2 },
-  { name: "Sara K.", subject: "Chemistry", rating: 5.0, img: tutor3 },
-  { name: "Dev P.", subject: "English", rating: 4.9, img: tutor4 },
-  { name: "Priya S.", subject: "Biology", rating: 4.9, img: tutor1 },
-  { name: "Arjun N.", subject: "CS", rating: 4.8, img: tutor2 },
-  { name: "Meera K.", subject: "Math", rating: 5.0, img: tutor3 },
-  { name: "Vikram S.", subject: "Physics", rating: 4.7, img: tutor4 },
+  { id: "aanya-rajput", name: "Aanya R.", subject: "Physics", rating: 4.9, img: tutor1 },
+  { id: "rahul-mehta", name: "Rahul M.", subject: "Math", rating: 4.8, img: tutor2 },
+  { id: "sara-khanna", name: "Sara K.", subject: "Chemistry", rating: 5.0, img: tutor3 },
+  { id: "dev-patel", name: "Dev P.", subject: "English", rating: 4.9, img: tutor4 },
+  { id: "priya-sharma", name: "Priya S.", subject: "Biology", rating: 4.9, img: tutor1 },
+  { id: "arjun-nair", name: "Arjun N.", subject: "CS", rating: 4.8, img: tutor2 },
+  { id: "meera-krishnan", name: "Meera K.", subject: "Math", rating: 5.0, img: tutor3 },
+  { id: "vikram-singh", name: "Vikram S.", subject: "Physics", rating: 4.7, img: tutor4 },
 ];
 
 type Phase = "idle" | "searching" | "found";
@@ -201,7 +201,8 @@ export function SearchTutorModal({ open, onClose }: { open: boolean; onClose: ()
                     {/* Action buttons */}
                     <div className="mt-4 grid grid-cols-2 gap-2 sm:mt-5 sm:gap-3">
                       <Link
-                        to="/tutors"
+                        to="/tutors/$tutorId"
+                        params={{ tutorId: matchedTutor.id }}
                         onClick={onClose}
                         className="rounded-full bg-primary px-4 py-2.5 text-center text-xs font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5 sm:py-3 sm:text-sm"
                       >
