@@ -193,4 +193,4 @@ create policy "Meetings are viewable by everyone" on public.meetings for select 
 create policy "Avatar images are publicly accessible" on storage.objects for select using (bucket_id = 'tutor-images');
 create policy "Anyone can upload avatar images" on storage.objects for insert with check (bucket_id = 'tutor-images');
 create policy "Anyone can update avatar images" on storage.objects for update with check (bucket_id = 'tutor-images');
-create policy "Anyone can delete avatar images" on storage.objects for delete with check (bucket_id = 'tutor-images');
+create policy "Anyone can delete avatar images" on storage.objects for delete using (bucket_id = 'tutor-images');
