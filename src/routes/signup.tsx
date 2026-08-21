@@ -2141,19 +2141,19 @@ function SignupPage() {
                        </Select>
                      </div>
 
-                     <div className="space-y-2">
-                       <Label className="text-sm font-medium">Charge per Session (₹) <span className="text-destructive">*</span></Label>
-                       <div className="relative">
-                         <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                         <Input
-                           type="number"
-                           placeholder="e.g. 499"
-                           className="pl-10 h-11"
-                           value={tutorData.chargePerSession}
-                           onChange={(e) => setTutorData((p) => ({ ...p, chargePerSession: e.target.value }))}
-                         />
-                       </div>
-                     </div>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">Charge per Session (₹) <span className="text-destructive">*</span></Label>
+                        <Select value={tutorData.chargePerSession} onValueChange={(value) => setTutorData((p) => ({ ...p, chargePerSession: value }))}>
+                          <SelectTrigger className="h-11">
+                            <SelectValue placeholder="Select amount" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="49">₹49</SelectItem>
+                            <SelectItem value="99">₹99</SelectItem>
+                            <SelectItem value="199">₹199</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
 
                      <div className="space-y-2">
                        <Label className="text-sm font-medium">College / Institution Name <span className="text-destructive">*</span></Label>

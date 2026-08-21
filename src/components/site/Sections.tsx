@@ -421,7 +421,7 @@ export function Pricing() {
 
   const CASHFREE_LINKS: Record<string, string> = {
     Learner: "https://payments.cashfree.com/forms/seekhosaath-tutor-subscription",
-    Mastery: "https://payments.cashfree.com/forms/seekhosaath-tutor-subscription",
+    Mastery: "https://payments.cashfree.com/forms/seekhosaath-tutor-subscription-2",
   };
 
   const tiers = [
