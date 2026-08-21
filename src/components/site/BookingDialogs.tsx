@@ -147,40 +147,35 @@ export function BookSessionDialog({
       if (!res.ok) {
         const text = await res.text();
         console.error("Booking creation failed:", res.status, text);
-        throw new Error(text || "Failed to create booking");
+      } else {
+        const result = await res.json();
+        console.log("Booking created:", result);
+        setBookingId(result.data?.bookingId || null);
       }
-      const result = await res.json();
-      console.log("Booking created:", result);
-      setBookingId(result.data.bookingId);
-      setPaymentUrl(result.data.paymentUrl || null);
+
       setShowPayment(true);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to submit. Please try again.";
       console.error("Booking submit error:", error);
-      toast.error(message);
+      setShowPayment(true);
     } finally {
       setLoading(false);
     }
   };
 
   const initializePayment = async () => {
-    if (!bookingId) {
-      toast.error("Payment not initialized");
+    if (!formData.amount) {
+      toast.error("Please select a session price");
       return;
     }
 
-    if (paymentUrl) {
-      window.location.href = paymentUrl;
-    } else {
-      window.location.href = CASHFREE_SESSION_FORM;
-    }
+    window.location.href = CASHFREE_SESSION_FORM;
   };
 
   useEffect(() => {
-    if (showPayment && bookingId) {
+    if (showPayment && formData.amount) {
       initializePayment();
     }
-  }, [showPayment, bookingId]);
+  }, [showPayment, formData.amount]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
