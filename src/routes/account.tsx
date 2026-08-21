@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState, useMemo, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/lib/supabase";
@@ -10,10 +10,6 @@ import {
   getTutorStats,
   getNotifications,
   markAllNotificationsRead,
-  subscribeToBookings,
-  subscribeToTutorBookings,
-  subscribeToNotifications,
-  subscribeToSessions,
   type Booking,
 } from "@/lib/supabase-data";
 import { Navbar } from "@/components/site/Navbar";
@@ -45,10 +41,6 @@ import {
   Activity,
   BarChart3,
   CheckCheck,
-  Home,
-  Search,
-  Heart,
-  MessageSquare,
 } from "lucide-react";
 
 export const Route = createFileRoute("/account")({
@@ -65,7 +57,7 @@ export const Route = createFileRoute("/account")({
 type Tab = "overview" | "sessions" | "notifications" | "settings";
 
 function AccountPage() {
-  const { user, signOut, updateProfileName, updateProfileEmail, sendPhoneOTP, verifyPhoneOTP, userRole, refreshUserRole } = useAuth();
+  const { user, signOut, updateProfileName, updateProfileEmail, sendPhoneOTP, verifyPhoneOTP, userRole } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<Tab>("overview");
   const [editModal, setEditModal] = useState<"name" | "email" | "phone" | null>(null);
@@ -92,6 +84,8 @@ function AccountPage() {
     averageRating: 0,
     totalHours: 0,
     tutorsEngaged: 0,
+    pendingSessions: 0,
+    totalRatings: 0,
   });
   const [notifications, setNotifications] = useState<Array<{
     id: string;
@@ -104,9 +98,9 @@ function AccountPage() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [loadingData, setLoadingData] = useState(true);
   const [dataError, setDataError] = useState<string | null>(null);
+
   const mountedRef = useRef(true);
   const loadTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
-
   const isTutor = role === "tutor";
   const isAdmin = role === "admin";
 
@@ -117,130 +111,117 @@ function AccountPage() {
     if (userRole) setRole(userRole);
   }, [userRole]);
 
-  const loadData = useCallback(async () => {
-    if (!user?.id) return;
-    
-    setLoadingData(true);
-    setDataError(null);
-    
-    const timeoutPromise = new Promise<never>((_, reject) => {
-      loadTimeoutRef.current = setTimeout(() => {
-        reject(new Error("Loading timeout - please check your connection"));
-      }, 15000);
-    });
-
-    try {
-      await Promise.race([
-        (async () => {
-          if (isTutor) {
-            const { data: tutorRow } = await supabase
-              .from("tutors")
-              .select("id")
-              .eq("user_id", user.id)
-              .single();
-
-            if (tutorRow && mountedRef.current) {
-              setTutorId(tutorRow.id);
-              const [tutorBookings, tutorStats] = await Promise.all([
-                getTutorBookings(tutorRow.id),
-                getTutorStats(tutorRow.id),
-              ]);
-              if (mountedRef.current) {
-                setBookings(tutorBookings);
-                setStats((prev) => ({ ...prev, ...tutorStats, totalSpent: 0 }));
-              }
-            }
-          } else {
-            const [studentBookings, studentStats] = await Promise.all([
-              getStudentBookings(user.id),
-              getStudentStats(user.id),
-            ]);
-            if (mountedRef.current) {
-              setBookings(studentBookings);
-              setStats((prev) => ({ ...prev, ...studentStats, totalEarnings: 0 }));
-            }
-          }
-
-          const notifs = await getNotifications(user.id);
-          if (mountedRef.current) {
-            setNotifications(notifs);
-            setUnreadCount(notifs.filter((n) => !n.read).length);
-          }
-        })(),
-        timeoutPromise,
-      ]);
-    } catch (error) {
-      console.error("Failed to load account data:", error);
-      if (mountedRef.current) {
-        setDataError(error instanceof Error ? error.message : "Failed to load data");
-      }
-    } finally {
-      if (loadTimeoutRef.current) {
-        clearTimeout(loadTimeoutRef.current);
-      }
-      if (mountedRef.current) {
-        setLoadingData(false);
-      }
-    }
-  }, [user?.id, isTutor]);
-
   useEffect(() => {
     mountedRef.current = true;
+    let cancelled = false;
+
+    const loadData = async () => {
+      if (!user?.id) {
+        setLoadingData(false);
+        return;
+      }
+
+      setLoadingData(true);
+      setDataError(null);
+
+      const timeoutId = setTimeout(() => {
+        if (mountedRef.current && !cancelled) {
+          setDataError("Loading timed out. Please check your internet connection.");
+          setLoadingData(false);
+        }
+      }, 20000);
+      loadTimeoutRef.current = timeoutId;
+
+      try {
+        if (isTutor) {
+          const { data: tutorRow } = await supabase
+            .from("tutors")
+            .select("id")
+            .eq("user_id", user.id)
+            .single();
+
+          if (cancelled) return;
+
+          if (tutorRow) {
+            setTutorId(tutorRow.id);
+            const [tutorBookings, tutorStats] = await Promise.all([
+              getTutorBookings(tutorRow.id),
+              getTutorStats(tutorRow.id),
+            ]);
+            if (!cancelled && mountedRef.current) {
+              setBookings(tutorBookings);
+              setStats((prev) => ({ ...prev, ...tutorStats, totalSpent: 0 }));
+            }
+          }
+        } else {
+          const [studentBookings, studentStats] = await Promise.all([
+            getStudentBookings(user.id),
+            getStudentStats(user.id),
+          ]);
+          if (!cancelled && mountedRef.current) {
+            setBookings(studentBookings);
+            setStats((prev) => ({ ...prev, ...studentStats, totalEarnings: 0 }));
+          }
+        }
+
+        const notifs = await getNotifications(user.id);
+        if (!cancelled && mountedRef.current) {
+          setNotifications(notifs);
+          setUnreadCount(notifs.filter((n) => !n.read).length);
+        }
+      } catch (error) {
+        if (!cancelled && mountedRef.current) {
+          console.error("Failed to load account data:", error);
+          setDataError(error instanceof Error ? error.message : "Failed to load data");
+        }
+      } finally {
+        clearTimeout(timeoutId);
+        if (!cancelled && mountedRef.current) {
+          setLoadingData(false);
+        }
+      }
+    };
+
     loadData();
+
     return () => {
+      cancelled = true;
       mountedRef.current = false;
       if (loadTimeoutRef.current) {
         clearTimeout(loadTimeoutRef.current);
       }
     };
-  }, [loadData]);
+  }, [user?.id, isTutor]);
 
-  useEffect(() => {
+  const refreshData = useCallback(async () => {
     if (!user?.id) return;
-    const unsubscribes: (() => void)[] = [];
-
-    if (isTutor && tutorId) {
-      const unsub1 = subscribeToTutorBookings(tutorId, (payload) => {
-        if (payload.eventType === "INSERT") {
-          toast.success("New booking received!");
-        }
-        getTutorBookings(tutorId).then(setBookings);
-        getTutorStats(tutorId).then(setStats);
-      });
-      unsubscribes.push(unsub1);
-    } else if (!isTutor) {
-      const unsub2 = subscribeToBookings(user.id, (payload) => {
-        if (payload.eventType === "INSERT") {
-          toast.success("Booking confirmed!");
-        }
-        getStudentBookings(user.id).then(setBookings);
-        getStudentStats(user.id).then(setStats);
-      });
-      unsubscribes.push(unsub2);
-    }
-
-    const unsub3 = subscribeToNotifications(user.id, (payload) => {
-      if (payload.eventType === "INSERT") {
-        setUnreadCount((c) => c + 1);
-        toast.success("New notification");
-      }
-    });
-    unsubscribes.push(unsub3);
-
-    const unsub4 = subscribeToSessions(user.id, () => {
+    setLoadingData(true);
+    setDataError(null);
+    try {
       if (isTutor && tutorId) {
-        getTutorBookings(tutorId).then(setBookings);
-        getTutorStats(tutorId).then(setStats);
+        const [tutorBookings, tutorStats] = await Promise.all([
+          getTutorBookings(tutorId),
+          getTutorStats(tutorId),
+        ]);
+        setBookings(tutorBookings);
+        setStats((prev) => ({ ...prev, ...tutorStats, totalSpent: 0 }));
       } else if (!isTutor) {
-        getStudentBookings(user.id).then(setBookings);
-        getStudentStats(user.id).then(setStats);
+        const [studentBookings, studentStats] = await Promise.all([
+          getStudentBookings(user.id),
+          getStudentStats(user.id),
+        ]);
+        setBookings(studentBookings);
+        setStats((prev) => ({ ...prev, ...studentStats, totalEarnings: 0 }));
       }
-    });
-    unsubscribes.push(unsub4);
-
-    return () => {
-      unsubscribes.forEach((fn) => fn());
-    };
+      const notifs = await getNotifications(user.id);
+      setNotifications(notifs);
+      setUnreadCount(notifs.filter((n) => !n.read).length);
+    } catch (error) {
+      console.error("Failed to refresh account data:", error);
+      setDataError(error instanceof Error ? error.message : "Failed to refresh data");
+    } finally {
+      setLoadingData(false);
+    }
   }, [user?.id, isTutor, tutorId]);
 
   const handleSignOut = async () => {
@@ -707,7 +688,7 @@ function AccountPage() {
                   </h3>
                   <p className="mt-1 text-xs text-muted-foreground sm:text-sm">{dataError}</p>
                   <button
-                    onClick={loadData}
+                    onClick={refreshData}
                     className="mt-4 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-crimson to-ember px-5 py-2.5 text-xs font-extrabold text-white shadow-[var(--shadow-glow)] transition-all hover:shadow-lg hover:-translate-y-0.5 sm:text-sm"
                   >
                     <RefreshCw className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
@@ -998,7 +979,7 @@ function AccountPage() {
                             <button className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5">
                               <div className="flex items-center gap-3 sm:gap-4">
                                 <div className="rounded-xl bg-gradient-to-br from-blue-500/10 to-indigo-500/10 p-2.5">
-                                  <Home className="h-4 w-4 text-blue-600 sm:h-5 sm:w-5" />
+                                  <Settings className="h-4 w-4 text-blue-600 sm:h-5 sm:w-5" />
                                 </div>
                                 <div className="text-left">
                                   <div className="text-sm font-extrabold text-foreground sm:text-base">Preferences</div>
