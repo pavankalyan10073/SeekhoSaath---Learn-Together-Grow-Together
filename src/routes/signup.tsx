@@ -1458,22 +1458,22 @@ function SignupPage() {
         return;
       }
 
-      const supabaseUser = await signUp(step1Data.email, step1Data.password, step1Data.fullName);
+      const user = await signUp(step1Data.email, step1Data.password, step1Data.fullName);
 
       const applicationId = `tutor-app-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
       
       const application: TutorFormData & { id: string; applicationDate: string; verified: boolean; userId: string } = {
         ...tutorData,
         id: applicationId,
-        userId: supabaseUser?.id || "",
+        userId: user?.uid || "",
         applicationDate: new Date().toISOString(),
         verified: false,
       };
 
       await saveTutorApplication(application);
-      if (supabaseUser?.id) {
-        await updateUserRole(supabaseUser.id, "tutor");
-        await saveUserProfile(supabaseUser.id, {
+      if (user?.uid) {
+        await updateUserRole(user.uid, "tutor");
+        await saveUserProfile(user.uid, {
           email: step1Data.email,
           fullName: step1Data.fullName,
           mobile: tutorData.mobile || step1Data.mobile,
