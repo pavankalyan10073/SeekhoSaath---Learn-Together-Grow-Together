@@ -17,7 +17,7 @@ export const Route = createFileRoute("/trust-safety")({
 
 function TrustSafetyPage() {
   return (
-      <main className="min-h-screen bg-background text-foreground pb-safe pt-14 sm:pt-16">
+      <main className="min-h-screen bg-background text-foreground pb-safe pt-5 sm:pt-6">
       <Navbar />
 
       <section className="container-px mx-auto max-w-3xl py-8 sm:py-10 md:py-14">

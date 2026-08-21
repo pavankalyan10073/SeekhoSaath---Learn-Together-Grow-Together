@@ -671,7 +671,7 @@ function AccountPage() {
     <main className="min-h-screen bg-background">
       <Navbar />
 
-      <section className="relative overflow-hidden pt-20 pb-8 sm:pt-24 sm:pb-12 md:pt-28 md:pb-16">
+      <section className="relative overflow-hidden pt-5 pb-4 sm:pt-6 sm:pb-6">
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <div className="absolute inset-0 bg-mesh opacity-30" />
           <div

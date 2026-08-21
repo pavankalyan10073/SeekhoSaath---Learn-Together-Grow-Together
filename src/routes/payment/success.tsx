@@ -27,7 +27,7 @@ function PaymentSuccess() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-background text-foreground pb-safe pt-14 sm:pt-16">
+    <main className="min-h-screen bg-background text-foreground pb-safe pt-5 sm:pt-6">
       <Navbar />
       <section className="container-px mx-auto max-w-7xl py-10 sm:py-14 md:py-20">
         <div className="mx-auto max-w-2xl text-center">

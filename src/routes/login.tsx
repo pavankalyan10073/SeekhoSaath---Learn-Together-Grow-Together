@@ -116,10 +116,10 @@ function LoginPage() {
   }
 
   return (
-    <div className="relative min-h-screen bg-background pt-16 sm:pt-20">
+    <div className="relative min-h-screen bg-background">
       <div className="absolute inset-0 bg-mesh opacity-60 pointer-events-none" />
 
-      <header className="absolute inset-x-0 top-0 z-50 px-4 py-4 sm:px-6 lg:px-8">
+      <header className="absolute inset-x-0 top-0 z-50 px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
         <div className="flex flex-col items-start gap-3">
           <Link to="/" className="inline-flex items-center gap-2">
             <img src="/hero-tutor-rounded.jpg" alt="SeekhoSaath" className="h-9 w-9 rounded-full object-cover" />
@@ -137,9 +137,9 @@ function LoginPage() {
         </div>
       </header>
 
-      <main className="relative z-10 flex items-center justify-center px-4 py-12 min-h-screen">
+      <main className="relative z-10 flex items-start justify-center px-4 pt-12 sm:pt-16 pb-4 sm:pb-5 min-h-screen">
         <Card className="w-full max-w-md border-border shadow-[var(--shadow-card)]">
-          <CardHeader className="text-center pb-2">
+          <CardHeader className="text-center pb-1">
             <CardTitle className="font-display text-2xl font-bold tracking-tight">
               Welcome back
             </CardTitle>
@@ -148,9 +148,9 @@ function LoginPage() {
             </CardDescription>
           </CardHeader>
 
-          <CardContent className="space-y-5 pt-4">
+          <CardContent className="space-y-3 pt-3">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
                 <FormField
                   control={form.control}
                   name="email"

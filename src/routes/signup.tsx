@@ -1587,10 +1587,10 @@ function SignupPage() {
         </div>
       </header>
 
-      <main className="relative z-10 flex items-start justify-center px-4 pt-32 sm:pt-32 pb-8 min-h-screen">
+      <main className="relative z-10 flex items-start justify-center px-4 pt-12 sm:pt-16 pb-6 min-h-screen">
         {step === "role" ? (
           <Card className="w-full max-w-lg border-border shadow-[var(--shadow-card)]">
-            <CardHeader className="text-center pb-2">
+            <CardHeader className="text-center pb-1">
               <CardTitle className="font-display text-2xl font-bold tracking-tight">
                 Create your account
               </CardTitle>
@@ -1599,7 +1599,7 @@ function SignupPage() {
               </CardDescription>
             </CardHeader>
 
-            <CardContent className="pt-6 space-y-4">
+            <CardContent className="pt-4 space-y-3">
               <button
                 type="button"
                 onClick={() => handleRoleSelect("student")}
@@ -1650,7 +1650,7 @@ function SignupPage() {
           </Card>
         ) : selectedRole === "student" ? (
           <Card className="w-full max-w-2xl border-border shadow-[var(--shadow-card)]">
-            <CardHeader className="text-center pb-2">
+            <CardHeader className="text-center pb-1">
               <div className="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-xl bg-primary-soft text-primary">
                 <GraduationCap className="h-6 w-6" />
               </div>
@@ -1911,7 +1911,7 @@ function SignupPage() {
           </Card>
         ) : (
           <Card className="w-full max-w-3xl border-border shadow-[var(--shadow-card)]">
-            <CardHeader className="text-center pb-2">
+            <CardHeader className="text-center pb-1">
               <div className="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-xl bg-primary-soft text-primary">
                 <BookOpenCheck className="h-6 w-6" />
               </div>
