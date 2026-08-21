@@ -20,7 +20,7 @@ export const Route = createFileRoute("/subjects/")({
 
 function SubjectsPage() {
   return (
-    <main className="min-h-screen bg-background text-foreground pb-safe pt-5 sm:pt-6">
+    <main className="min-h-screen bg-background text-foreground pb-safe pt-16 sm:pt-20">
       <Navbar />
       <section className="relative overflow-hidden pt-12 pb-10 sm:pt-16 sm:pb-12 md:pt-20 md:pb-14">
         <div className="bg-mesh absolute inset-0 -z-10" />

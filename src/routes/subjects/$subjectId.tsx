@@ -36,7 +36,7 @@ function SubjectDetailPage() {
   const otherSubjects = category.subjects.filter((s) => s.id !== subject.id);
 
   return (
-    <main className="min-h-screen bg-background text-foreground pb-safe pt-5 sm:pt-6">
+    <main className="min-h-screen bg-background text-foreground pb-safe pt-16 sm:pt-20">
       <Navbar />
 
       {/* Hero */}

@@ -668,7 +668,7 @@ function AccountPage() {
   );
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-background pt-16 sm:pt-20">
       <Navbar />
 
       <section className="relative overflow-hidden pt-5 pb-4 sm:pt-6 sm:pb-6">

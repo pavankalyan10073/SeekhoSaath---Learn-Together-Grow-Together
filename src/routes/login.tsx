@@ -137,7 +137,7 @@ function LoginPage() {
         </div>
       </header>
 
-      <main className="relative z-10 flex items-start justify-center px-4 pt-12 sm:pt-16 pb-4 sm:pb-5 min-h-screen">
+      <main className="relative z-10 flex items-start justify-center px-4 pt-28 sm:pt-28 pb-4 sm:pb-5 min-h-screen">
         <Card className="w-full max-w-md border-border shadow-[var(--shadow-card)]">
           <CardHeader className="text-center pb-1">
             <CardTitle className="font-display text-2xl font-bold tracking-tight">
