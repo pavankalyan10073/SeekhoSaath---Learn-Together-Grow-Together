@@ -116,7 +116,7 @@ export function BookSessionDialog({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.fullName.trim() || !formData.phone.trim() || !formData.email.trim()) {
+    if (!formData.fullName.trim() || !formData.phone.trim() || !formData.email.trim() || !formData.amount) {
       toast.error("Please fill all fields");
       return;
     }
@@ -163,37 +163,6 @@ export function BookSessionDialog({
     }
   };
 
-  const handlePaymentSuccess = async (response: {
-    razorpay_order_id: string;
-    razorpay_payment_id: string;
-    razorpay_signature: string;
-  }) => {
-    if (!bookingId) return;
-    try {
-      const res = await fetch("/api/payments/razorpay-webhook", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          razorpay_order_id: response.razorpay_order_id,
-          razorpay_payment_id: response.razorpay_payment_id,
-          razorpay_signature: response.razorpay_signature,
-          bookingId,
-          method: "razorpay",
-        }),
-      });
-
-      if (!res.ok) throw new Error("Payment verification failed");
-      
-      toast.success("Payment successful! Your session has been booked.");
-      onOpenChange(false);
-      setFormData({ fullName: "", phone: "", email: "", mode: "online" });
-      setShowPayment(false);
-      setBookingId(null);
-    } catch (error) {
-      toast.error("Payment verification failed. Please contact support.");
-    }
-  };
-
   const initializePayment = async () => {
     if (!bookingId) {
       toast.error("Payment not initialized");
@@ -203,7 +172,7 @@ export function BookSessionDialog({
     if (paymentUrl) {
       window.location.href = paymentUrl;
     } else {
-      toast.error("Payment URL not received. Please try again.");
+      window.location.href = CASHFREE_SESSION_FORM;
     }
   };
 

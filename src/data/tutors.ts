@@ -7,7 +7,7 @@ export interface Tutor {
   id: string;
   name: string;
   subj: string;
-  price: string;
+    price: "₹49",
   rating: number;
   sessions: number;
   img: string;
@@ -81,7 +81,7 @@ export const tutors: Tutor[] = [
     id: "rahul-mehta",
     name: "Rahul Mehta",
     subj: "Mathematics • Class 8-12",
-    price: "₹49",
+    price: "₹99",
     rating: 4.8,
     sessions: 940,
     img: tutor2,
@@ -97,7 +97,7 @@ export const tutors: Tutor[] = [
     id: "sara-khanna",
     name: "Sara Khanna",
     subj: "Chemistry • NEET",
-    price: "₹49",
+    price: "₹199",
     rating: 5.0,
     sessions: 1480,
     img: tutor3,
@@ -129,7 +129,7 @@ export const tutors: Tutor[] = [
     id: "priya-sharma",
     name: "Priya Sharma",
     subj: "Biology • NEET",
-    price: "₹49",
+    price: "₹99",
     rating: 4.9,
     sessions: 1350,
     img: tutor1,
@@ -161,7 +161,7 @@ export const tutors: Tutor[] = [
     id: "meera-krishnan",
     name: "Meera Krishnan",
     subj: "Mathematics • IIT-JEE",
-    price: "₹49",
+    price: "₹199",
     rating: 5.0,
     sessions: 1600,
     img: tutor3,
@@ -177,7 +177,7 @@ export const tutors: Tutor[] = [
     id: "vikram-singh",
     name: "Vikram Singh",
     subj: "Physics • Class 6-10",
-    price: "₹49",
+    price: "₹99",
     rating: 4.7,
     sessions: 780,
     img: tutor4,
@@ -209,7 +209,7 @@ export const tutors: Tutor[] = [
     id: "rohan-desai",
     name: "Rohan Desai",
     subj: "Economics • Class 11-12",
-    price: "₹49",
+    price: "₹99",
     rating: 4.7,
     sessions: 520,
     img: tutor2,
@@ -225,7 +225,7 @@ export const tutors: Tutor[] = [
     id: "kavita-joshi",
     name: "Kavita Joshi",
     subj: "Chemistry • Class 6-10",
-    price: "₹49",
+    price: "₹199",
     rating: 4.8,
     sessions: 890,
     img: tutor3,
@@ -257,7 +257,7 @@ export const tutors: Tutor[] = [
     id: "deepa-menon",
     name: "Deepa Menon",
     subj: "Biology • Class 6-10",
-    price: "₹49",
+    price: "₹99",
     rating: 4.8,
     sessions: 720,
     img: tutor1,
@@ -289,7 +289,7 @@ export const tutors: Tutor[] = [
     id: "neha-gupta",
     name: "Neha Gupta",
     subj: "Java • BTech",
-    price: "₹49",
+    price: "₹199",
     rating: 4.8,
     sessions: 850,
     img: tutor3,
@@ -305,7 +305,7 @@ export const tutors: Tutor[] = [
     id: "rajesh-yadav",
     name: "Rajesh Yadav",
     subj: "Python • BTech",
-    price: "₹49",
+    price: "₹99",
     rating: 4.9,
     sessions: 1050,
     img: tutor4,
@@ -337,7 +337,7 @@ export const tutors: Tutor[] = [
     id: "aditya-mishra",
     name: "Aditya Mishra",
     subj: "Social Science • Class 6-10",
-    price: "₹49",
+    price: "₹99",
     rating: 4.7,
     sessions: 610,
     img: tutor2,
@@ -353,7 +353,7 @@ export const tutors: Tutor[] = [
     id: "pooja-agarwal",
     name: "Pooja Agarwal",
     subj: "Hindi • Class 1-8",
-    price: "₹49",
+    price: "₹199",
     rating: 4.8,
     sessions: 920,
     img: tutor3,
@@ -382,4 +382,5 @@ export const tutors: Tutor[] = [
     responseTime: "< 1 hour",
   },
 ];
+
 
