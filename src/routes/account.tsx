@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/lib/supabase";
@@ -33,32 +33,22 @@ import {
   LogOut,
   ChevronRight,
   Award,
-  Globe,
-  MapPin,
   Calendar,
   Pencil,
   X,
-  Check,
   Bell,
   TrendingUp,
-  DollarSign,
   Users,
-  Video,
-  Award as Trophy,
-  Target,
-  Zap,
   RefreshCw,
   ExternalLink,
   ArrowUpRight,
   Activity,
   BarChart3,
-  MessageSquare,
-  FileText,
-  HelpCircle,
-  Moon,
-  Globe2,
-  BellRing,
   CheckCheck,
+  Home,
+  Search,
+  Heart,
+  MessageSquare,
 } from "lucide-react";
 
 export const Route = createFileRoute("/account")({
@@ -113,6 +103,9 @@ function AccountPage() {
   }>>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loadingData, setLoadingData] = useState(true);
+  const [dataError, setDataError] = useState<string | null>(null);
+  const mountedRef = useRef(true);
+  const loadTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const isTutor = role === "tutor";
   const isAdmin = role === "admin";
@@ -124,56 +117,83 @@ function AccountPage() {
     if (userRole) setRole(userRole);
   }, [userRole]);
 
-  useEffect(() => {
-    let mounted = true;
-    const load = async () => {
-      if (!user?.id) return;
-      setLoadingData(true);
-      try {
-        if (isTutor) {
-          const { data: tutorRow } = await supabase
-            .from("tutors")
-            .select("id")
-            .eq("user_id", user.id)
-            .single();
-          if (tutorRow && mounted) {
-            setTutorId(tutorRow.id);
-            const [tutorBookings, tutorStats] = await Promise.all([
-              getTutorBookings(tutorRow.id),
-              getTutorStats(tutorRow.id),
+  const loadData = useCallback(async () => {
+    if (!user?.id) return;
+    
+    setLoadingData(true);
+    setDataError(null);
+    
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      loadTimeoutRef.current = setTimeout(() => {
+        reject(new Error("Loading timeout - please check your connection"));
+      }, 15000);
+    });
+
+    try {
+      await Promise.race([
+        (async () => {
+          if (isTutor) {
+            const { data: tutorRow } = await supabase
+              .from("tutors")
+              .select("id")
+              .eq("user_id", user.id)
+              .single();
+
+            if (tutorRow && mountedRef.current) {
+              setTutorId(tutorRow.id);
+              const [tutorBookings, tutorStats] = await Promise.all([
+                getTutorBookings(tutorRow.id),
+                getTutorStats(tutorRow.id),
+              ]);
+              if (mountedRef.current) {
+                setBookings(tutorBookings);
+                setStats((prev) => ({ ...prev, ...tutorStats, totalSpent: 0 }));
+              }
+            }
+          } else {
+            const [studentBookings, studentStats] = await Promise.all([
+              getStudentBookings(user.id),
+              getStudentStats(user.id),
             ]);
-            if (mounted) {
-              setBookings(tutorBookings);
-              setStats((prev) => ({ ...prev, ...tutorStats, totalSpent: 0 }));
+            if (mountedRef.current) {
+              setBookings(studentBookings);
+              setStats((prev) => ({ ...prev, ...studentStats, totalEarnings: 0 }));
             }
           }
-        } else {
-          const [studentBookings, studentStats] = await Promise.all([
-            getStudentBookings(user.id),
-            getStudentStats(user.id),
-          ]);
-          if (mounted) {
-            setBookings(studentBookings);
-            setStats((prev) => ({ ...prev, ...studentStats, totalEarnings: 0 }));
-          }
-        }
 
-        const notifs = await getNotifications(user.id);
-        if (mounted) {
-          setNotifications(notifs);
-          setUnreadCount(notifs.filter((n) => !n.read).length);
-        }
-      } catch (error) {
-        console.error("Failed to load account data:", error);
-      } finally {
-        if (mounted) setLoadingData(false);
+          const notifs = await getNotifications(user.id);
+          if (mountedRef.current) {
+            setNotifications(notifs);
+            setUnreadCount(notifs.filter((n) => !n.read).length);
+          }
+        })(),
+        timeoutPromise,
+      ]);
+    } catch (error) {
+      console.error("Failed to load account data:", error);
+      if (mountedRef.current) {
+        setDataError(error instanceof Error ? error.message : "Failed to load data");
+      }
+    } finally {
+      if (loadTimeoutRef.current) {
+        clearTimeout(loadTimeoutRef.current);
+      }
+      if (mountedRef.current) {
+        setLoadingData(false);
+      }
+    }
+  }, [user?.id, isTutor]);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    loadData();
+    return () => {
+      mountedRef.current = false;
+      if (loadTimeoutRef.current) {
+        clearTimeout(loadTimeoutRef.current);
       }
     };
-    load();
-    return () => {
-      mounted = false;
-    };
-  }, [user?.id, isTutor]);
+  }, [loadData]);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -276,7 +296,7 @@ function AccountPage() {
     setLoading(true);
     try {
       await updateProfileEmail(currentPassword, emailValue.trim());
-      toast.success("Email updated successfully. Please verify your new email.");
+      toast.success("Email updated successfully");
       closeEdit();
     } catch (err: any) {
       const code = err?.code || "";
@@ -379,25 +399,25 @@ function AccountPage() {
     }
   };
 
-  const StatCard = ({ icon: Icon, label, value, subtext, color, gradient }: {
+  const StatCard = ({ icon: Icon, label, value, subtext, gradient, textColor }: {
     icon: any;
     label: string;
     value: string | number;
     subtext?: string;
-    color: string;
     gradient: string;
+    textColor: string;
   }) => (
-    <div className="group relative overflow-hidden rounded-2xl border border-border/80 bg-gradient-to-br from-card to-muted/20 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/5 dark:hover:shadow-black/20">
+    <div className="group relative overflow-hidden rounded-2xl border border-border/80 bg-card p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-black/5 dark:hover:shadow-black/20 sm:p-5">
       <div className={`absolute -right-4 -top-4 h-20 w-20 rounded-full bg-gradient-to-br ${gradient} opacity-10 blur-xl transition-all duration-500 group-hover:opacity-20`} />
       <div className="relative">
-        <div className={`inline-flex rounded-xl bg-gradient-to-br ${gradient} p-2.5 text-white shadow-md`}>
+        <div className={`inline-flex rounded-xl bg-gradient-to-br ${gradient} p-2 text-white shadow-md`}>
           <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
         </div>
         <div className="mt-3">
-          <div className="text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
+          <div className={`text-xl font-extrabold tracking-tight ${textColor} sm:text-2xl`}>
             {value}
           </div>
-          <div className="mt-0.5 text-xs font-semibold text-muted-foreground sm:text-sm">
+          <div className="mt-0.5 text-[11px] font-semibold text-muted-foreground sm:text-sm">
             {label}
           </div>
           {subtext && (
@@ -417,16 +437,13 @@ function AccountPage() {
     action?: () => void;
     actionLabel?: string;
   }) => (
-    <div className="flex flex-col items-center justify-center py-12 text-center">
+    <div className="flex flex-col items-center justify-center py-10 text-center sm:py-12">
       <div className="relative">
-        <div className="h-16 w-16 rounded-full bg-gradient-to-br from-crimson/10 to-ember/10 flex items-center justify-center">
-          <Icon className="h-8 w-8 text-crimson/60" />
-        </div>
-        <div className="absolute -right-1 -bottom-1 h-5 w-5 rounded-full bg-mint/20 flex items-center justify-center">
-          <Activity className="h-3 w-3 text-mint" />
+        <div className="h-14 w-14 rounded-full bg-gradient-to-br from-crimson/10 to-ember/10 flex items-center justify-center sm:h-16 sm:w-16">
+          <Icon className="h-7 w-7 text-crimson/60 sm:h-8 sm:w-8" />
         </div>
       </div>
-      <h3 className="mt-4 font-display text-base font-extrabold text-foreground sm:text-lg">
+      <h3 className="mt-4 font-display text-sm font-extrabold text-foreground sm:text-base">
         {title}
       </h3>
       <p className="mt-1 max-w-xs text-xs text-muted-foreground sm:text-sm">
@@ -448,17 +465,17 @@ function AccountPage() {
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className="group relative overflow-hidden rounded-2xl border border-border/80 bg-gradient-to-br from-card to-muted/10 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:shadow-black/5 dark:hover:shadow-black/20 sm:p-5"
+      className="group relative overflow-hidden rounded-2xl border border-border/80 bg-card p-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:shadow-black/5 dark:hover:shadow-black/20 sm:p-5"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3 sm:gap-4">
-          <div className="relative">
-            <div className="h-11 w-11 rounded-full bg-gradient-to-br from-crimson to-ember flex items-center justify-center text-white font-extrabold text-sm shadow-md sm:h-12 sm:w-12">
+          <div className="relative flex-shrink-0">
+            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-crimson to-ember flex items-center justify-center text-white font-extrabold text-sm shadow-md sm:h-11 sm:w-11">
               {booking.tutorName.charAt(0)}
             </div>
-            <div className={`absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-card ${getStatusColor(booking.status)}`} />
+            <div className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-card ${getStatusColor(booking.status)}`} />
           </div>
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <div className="text-sm font-extrabold text-foreground truncate sm:text-base">
               {isTutor ? booking.studentName : booking.tutorName}
             </div>
@@ -466,9 +483,8 @@ function AccountPage() {
               <BookOpen className="h-3 w-3 flex-shrink-0" />
               <span className="truncate">{booking.tutorSubject}</span>
             </div>
-            <div className="mt-1 flex items-center gap-2 text-[10px] text-muted-foreground sm:text-xs">
+            <div className="mt-1.5 flex items-center gap-2 text-[10px] text-muted-foreground sm:text-xs">
               <span className="inline-flex items-center gap-1 rounded-full bg-muted/80 px-2 py-0.5 font-semibold">
-                <Video className="h-3 w-3" />
                 {booking.mode}
               </span>
               {booking.date && (
@@ -486,8 +502,8 @@ function AccountPage() {
             </div>
           </div>
         </div>
-        <div className="text-right">
-          <div className={`inline-flex rounded-full px-2.5 py-1 text-[10px] font-extrabold sm:px-3 sm:py-1.5 sm:text-xs ${getStatusColor(booking.status)}`}>
+        <div className="text-right flex-shrink-0">
+          <div className={`inline-flex rounded-full px-2 py-1 text-[10px] font-extrabold sm:px-2.5 sm:py-1 sm:text-xs ${getStatusColor(booking.status)}`}>
             {booking.status}
           </div>
           <div className="mt-1.5 text-sm font-extrabold text-foreground sm:text-base">
@@ -504,7 +520,7 @@ function AccountPage() {
       animate={{ opacity: 1, x: 0 }}
       className={`relative overflow-hidden rounded-2xl border p-4 transition-all duration-200 sm:p-5 ${
         notification.read
-          ? "border-border/80 bg-gradient-to-br from-card to-muted/10"
+          ? "border-border/80 bg-card"
           : "border-crimson/30 bg-gradient-to-br from-crimson/5 to-ember/5 shadow-sm"
       }`}
     >
@@ -514,7 +530,7 @@ function AccountPage() {
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <div className={`h-2 w-2 rounded-full ${notification.read ? "bg-muted-foreground/30" : "bg-crimson"}`} />
+            <div className={`h-2 w-2 rounded-full flex-shrink-0 ${notification.read ? "bg-muted-foreground/30" : "bg-crimson"}`} />
             <div className="text-sm font-extrabold text-foreground truncate sm:text-base">
               {notification.title}
             </div>
@@ -523,7 +539,7 @@ function AccountPage() {
             {notification.message}
           </div>
           <div className="mt-2 flex items-center gap-1 text-[10px] text-muted-foreground/70 sm:text-xs">
-            <Clock className="h-3 w-3" />
+            <Calendar className="h-3 w-3" />
             {new Date(notification.createdAt).toLocaleString("en-IN", {
               day: "numeric",
               month: "short",
@@ -540,9 +556,9 @@ function AccountPage() {
     <main className="min-h-screen bg-background">
       <Navbar />
 
-      <section className="relative overflow-hidden pt-8 pb-12 sm:pt-12 sm:pb-16 md:pt-16 md:pb-20">
+      <section className="relative overflow-hidden pt-10 pb-8 sm:pt-14 sm:pb-12 md:pt-20 md:pb-16">
         <div className="absolute inset-0 -z-10 overflow-hidden">
-          <div className="absolute inset-0 bg-mesh opacity-40" />
+          <div className="absolute inset-0 bg-mesh opacity-30" />
           <div
             aria-hidden
             className="absolute -top-20 left-1/2 -z-10 h-64 w-64 -translate-x-1/2 rounded-full bg-crimson/15 blur-3xl sm:-top-28 sm:h-80 sm:w-80"
@@ -553,32 +569,32 @@ function AccountPage() {
           />
         </div>
 
-        <div className="container-px mx-auto max-w-6xl">
+        <div className="container-px mx-auto max-w-5xl">
           <div className="overflow-hidden rounded-3xl border border-border/80 bg-card/80 shadow-[var(--shadow-card)] backdrop-blur-sm">
             {/* Profile Header */}
-            <div className="relative bg-gradient-to-br from-navy via-navy to-crimson/95 p-6 sm:p-8 md:p-10">
+            <div className="relative bg-gradient-to-br from-navy via-navy to-crimson/95 p-5 sm:p-8 md:p-10">
               <div className="absolute inset-0 bg-[url('/hero-tutor-rounded.jpg')] opacity-10 mix-blend-overlay" />
               <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/5 blur-3xl" />
               <div className="absolute -left-10 -bottom-10 h-48 w-48 rounded-full bg-crimson/20 blur-3xl" />
 
-              <div className="relative flex flex-col items-center gap-5 sm:flex-row sm:items-center sm:gap-6">
+              <div className="relative flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:gap-6">
                 <div className="relative">
-                  <div className="h-20 w-20 rounded-full bg-gradient-to-br from-crimson to-ember p-[3px] shadow-[var(--shadow-glow)] sm:h-24 sm:w-24">
-                    <div className="flex h-full w-full items-center justify-center rounded-full bg-background text-2xl font-extrabold text-white sm:text-3xl">
+                  <div className="h-16 w-16 rounded-full bg-gradient-to-br from-crimson to-ember p-[2px] shadow-[var(--shadow-glow)] sm:h-20 sm:w-20 md:h-24 md:w-24">
+                    <div className="flex h-full w-full items-center justify-center rounded-full bg-background text-xl font-extrabold text-white sm:text-2xl md:text-3xl">
                       {initial}
                     </div>
                   </div>
                   {isTutor && (
                     <div className="absolute -bottom-1 -right-1 rounded-full bg-mint p-1.5 shadow-lg ring-4 ring-navy">
-                      <Award className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
+                      <Award className="h-3 w-3 text-white sm:h-3.5 sm:w-3.5" />
                     </div>
                   )}
                 </div>
                 <div className="text-center sm:text-left flex-1">
-                  <h1 className="font-display text-2xl font-extrabold text-white tracking-tight sm:text-3xl md:text-4xl">
+                  <h1 className="font-display text-xl font-extrabold text-white tracking-tight sm:text-2xl md:text-3xl">
                     {displayName}
                   </h1>
-                  <p className="mt-1 flex items-center justify-center gap-2 text-xs text-white/80 sm:text-sm">
+                  <p className="mt-1 flex items-center justify-center gap-1.5 text-xs text-white/80 sm:text-sm">
                     <Mail className="h-3 w-3" />
                     {user?.email}
                   </p>
@@ -623,40 +639,42 @@ function AccountPage() {
             </div>
 
             {/* Tabs */}
-            <div className="border-b border-border/60 bg-muted/20">
-              <div className="flex gap-0.5 px-3 pt-2 sm:px-6 sm:pt-3 overflow-x-auto">
+            <div className="border-b border-border/60 bg-muted/10">
+              <div className="flex gap-0.5 px-2 pt-2 sm:px-4 sm:pt-3 md:px-6 overflow-x-auto">
                 {([
                   { id: "overview", label: "Overview", icon: BarChart3 },
                   { id: "sessions", label: "Sessions", icon: Calendar },
-                  { id: "notifications", label: "Notifications", icon: BellRing, showBadge: true },
+                  { id: "notifications", label: "Notifications", icon: Bell },
                   { id: "settings", label: "Settings", icon: Settings },
                 ] as const).map((tab) => {
                   const Icon = tab.icon;
                   const isActive = activeTab === tab.id;
-                  const showBadge = tab.showBadge && ((tab.id === "sessions" && isTutor && bookings.filter((b) => b.status === "pending").length > 0) || (tab.id === "notifications" && unreadCount > 0));
+                  const showBadge = tab.id === "sessions" && isTutor && bookings.filter((b) => b.status === "pending").length > 0;
+                  const notifBadge = tab.id === "notifications" && unreadCount > 0;
                   const badgeCount = tab.id === "sessions" ? bookings.filter((b) => b.status === "pending").length : unreadCount;
 
                   return (
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id as Tab)}
-                      className={`relative flex items-center gap-2 rounded-t-xl px-4 py-3 text-sm font-extrabold whitespace-nowrap transition-all sm:px-5 ${
+                      className={`relative flex items-center gap-1.5 rounded-t-lg px-3 py-2.5 text-xs font-extrabold whitespace-nowrap transition-all sm:px-4 sm:py-3 sm:text-sm ${
                         isActive
                           ? "text-crimson bg-gradient-to-b from-crimson/5 to-transparent"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
+                          : "text-muted-foreground hover:text-foreground hover:bg-muted/20"
                       }`}
                     >
-                      <Icon className="h-4 w-4" />
-                      {tab.label}
-                      {showBadge && (
-                        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-crimson/10 text-[10px] font-extrabold text-crimson sm:h-5.5 sm:w-5.5 sm:text-[11px]">
+                      <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                      <span className="hidden sm:inline">{tab.label}</span>
+                      <span className="sm:hidden">{tab.label.slice(0, 4)}</span>
+                      {(showBadge || notifBadge) && (
+                        <span className="flex h-4 w-4 items-center justify-center rounded-full bg-crimson/10 text-[10px] font-extrabold text-crimson sm:h-5 sm:w-5 sm:text-[11px]">
                           {badgeCount}
                         </span>
                       )}
                       {isActive && (
                         <motion.div
                           layoutId="activeTab"
-                          className="absolute bottom-0 left-2 right-2 h-[2px] bg-gradient-to-r from-crimson to-ember rounded-full"
+                          className="absolute bottom-0 left-1 right-1 h-[2px] bg-gradient-to-r from-crimson to-ember rounded-full"
                         />
                       )}
                     </button>
@@ -670,14 +688,31 @@ function AccountPage() {
               {loadingData ? (
                 <div className="flex flex-col items-center justify-center py-16">
                   <div className="relative">
-                    <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-full border-4 border-muted/30 border-t-crimson animate-spin" />
+                    <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full border-4 border-muted/30 border-t-crimson animate-spin" />
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <Activity className="h-5 w-5 sm:h-6 sm:w-6 text-crimson" />
+                      <Activity className="h-4 w-4 sm:h-5 sm:w-5 text-crimson" />
                     </div>
                   </div>
                   <p className="mt-4 text-xs font-semibold text-muted-foreground sm:text-sm">
                     Loading your dashboard...
                   </p>
+                </div>
+              ) : dataError ? (
+                <div className="flex flex-col items-center justify-center py-16 text-center">
+                  <div className="rounded-full bg-destructive/10 p-3">
+                    <X className="h-6 w-6 text-destructive" />
+                  </div>
+                  <h3 className="mt-4 font-display text-base font-extrabold text-foreground">
+                    Failed to load dashboard
+                  </h3>
+                  <p className="mt-1 text-xs text-muted-foreground sm:text-sm">{dataError}</p>
+                  <button
+                    onClick={loadData}
+                    className="mt-4 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-crimson to-ember px-5 py-2.5 text-xs font-extrabold text-white shadow-[var(--shadow-glow)] transition-all hover:shadow-lg hover:-translate-y-0.5 sm:text-sm"
+                  >
+                    <RefreshCw className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    Try Again
+                  </button>
                 </div>
               ) : (
                 <>
@@ -696,32 +731,32 @@ function AccountPage() {
                               label="Sessions"
                               value={stats.completedSessions}
                               subtext={`${stats.pendingSessions} pending`}
-                              color="crimson"
                               gradient="from-crimson to-crimson/80"
+                              textColor="text-foreground"
                             />
                             <StatCard
                               icon={IndianRupee}
                               label="Earnings"
                               value={formatCurrency(stats.totalEarnings)}
                               subtext="Total revenue"
-                              color="mint"
                               gradient="from-mint to-mint/80"
+                              textColor="text-foreground"
                             />
                             <StatCard
                               icon={Star}
                               label="Rating"
                               value={stats.averageRating || "New"}
                               subtext={`${stats.totalRatings} reviews`}
-                              color="ember"
                               gradient="from-ember to-ember/80"
+                              textColor="text-foreground"
                             />
                             <StatCard
                               icon={Users}
                               label="Students"
                               value={stats.totalBookings}
                               subtext="Total bookings"
-                              color="navy"
                               gradient="from-navy to-navy/80"
+                              textColor="text-foreground"
                             />
                           </>
                         ) : (
@@ -731,41 +766,41 @@ function AccountPage() {
                               label="Sessions"
                               value={stats.completedSessions}
                               subtext={`${stats.upcomingSessions} upcoming`}
-                              color="crimson"
                               gradient="from-crimson to-crimson/80"
+                              textColor="text-foreground"
                             />
                             <StatCard
                               icon={Clock}
                               label="Learning"
                               value={`${stats.totalHours}h`}
                               subtext="Total hours"
-                              color="blue"
                               gradient="from-blue-500 to-blue-600"
+                              textColor="text-foreground"
                             />
                             <StatCard
                               icon={IndianRupee}
                               label="Spent"
                               value={formatCurrency(stats.totalSpent)}
                               subtext="Total investment"
-                              color="amber"
                               gradient="from-amber-500 to-amber-600"
+                              textColor="text-foreground"
                             />
                             <StatCard
                               icon={Users}
                               label="Tutors"
                               value={stats.tutorsEngaged}
                               subtext="Unique tutors"
-                              color="mint"
                               gradient="from-mint to-mint/80"
+                              textColor="text-foreground"
                             />
                           </>
                         )}
                       </div>
 
                       {/* Recent Activity */}
-                      <div className="rounded-2xl border border-border/80 bg-gradient-to-br from-card to-muted/10 p-5 sm:p-6">
-                        <div className="flex items-center justify-between mb-5">
-                          <h3 className="font-display text-lg font-extrabold text-foreground flex items-center gap-2 sm:text-xl">
+                      <div className="rounded-2xl border border-border/80 bg-card p-4 sm:p-6">
+                        <div className="flex items-center justify-between mb-4 sm:mb-5">
+                          <h3 className="font-display text-base font-extrabold text-foreground flex items-center gap-2 sm:text-lg">
                             <div className="rounded-xl bg-crimson/10 p-2">
                               <TrendingUp className="h-4 w-4 text-crimson sm:h-5 sm:w-5" />
                             </div>
@@ -806,7 +841,7 @@ function AccountPage() {
                       className="space-y-4"
                     >
                       <div className="flex items-center justify-between">
-                        <h3 className="font-display text-lg font-extrabold text-foreground flex items-center gap-2 sm:text-xl">
+                        <h3 className="font-display text-base font-extrabold text-foreground flex items-center gap-2 sm:text-lg">
                           <div className="rounded-xl bg-crimson/10 p-2">
                             <Calendar className="h-4 w-4 text-crimson sm:h-5 sm:w-5" />
                           </div>
@@ -817,7 +852,7 @@ function AccountPage() {
                         </span>
                       </div>
                       {bookings.length === 0 ? (
-                        <div className="rounded-2xl border border-border/80 bg-gradient-to-br from-card to-muted/10">
+                        <div className="rounded-2xl border border-border/80 bg-card">
                           <EmptyState
                             icon={Calendar}
                             title="No sessions scheduled"
@@ -841,7 +876,7 @@ function AccountPage() {
                       className="space-y-4"
                     >
                       <div className="flex items-center justify-between">
-                        <h3 className="font-display text-lg font-extrabold text-foreground flex items-center gap-2 sm:text-xl">
+                        <h3 className="font-display text-base font-extrabold text-foreground flex items-center gap-2 sm:text-lg">
                           <div className="rounded-xl bg-crimson/10 p-2">
                             <Bell className="h-4 w-4 text-crimson sm:h-5 sm:w-5" />
                           </div>
@@ -863,7 +898,7 @@ function AccountPage() {
                         )}
                       </div>
                       {notifications.length === 0 ? (
-                        <div className="rounded-2xl border border-border/80 bg-gradient-to-br from-card to-muted/10">
+                        <div className="rounded-2xl border border-border/80 bg-card">
                           <EmptyState
                             icon={Bell}
                             title="No notifications yet"
@@ -887,112 +922,104 @@ function AccountPage() {
                       className="space-y-4"
                     >
                       <div className="grid gap-3 sm:gap-4">
-                        <div className="rounded-2xl border border-border/80 bg-gradient-to-br from-card to-muted/10 overflow-hidden divide-y divide-border/60">
-                          <button
-                            onClick={() => openEdit("name")}
-                            className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5"
-                          >
-                            <div className="flex items-center gap-3 sm:gap-4">
-                              <div className="rounded-xl bg-gradient-to-br from-crimson/10 to-ember/10 p-2.5">
-                                <User className="h-4 w-4 text-crimson sm:h-5 sm:w-5" />
+                        <div className="rounded-2xl border border-border/80 bg-card overflow-hidden">
+                          <div className="divide-y divide-border/60">
+                            <button
+                              onClick={() => openEdit("name")}
+                              className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5"
+                            >
+                              <div className="flex items-center gap-3 sm:gap-4">
+                                <div className="rounded-xl bg-gradient-to-br from-crimson/10 to-ember/10 p-2.5">
+                                  <User className="h-4 w-4 text-crimson sm:h-5 sm:w-5" />
+                                </div>
+                                <div className="text-left">
+                                  <div className="text-sm font-extrabold text-foreground sm:text-base">Full Name</div>
+                                  <div className="text-xs text-muted-foreground sm:text-sm">{displayName}</div>
+                                </div>
                               </div>
-                              <div className="text-left">
-                                <div className="text-sm font-extrabold text-foreground sm:text-base">Full Name</div>
-                                <div className="text-xs text-muted-foreground sm:text-sm">{displayName}</div>
+                              <div className="flex items-center gap-2 text-muted-foreground">
+                                <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                                <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                               </div>
-                            </div>
-                            <div className="flex items-center gap-2 text-muted-foreground">
-                              <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                              <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                            </div>
-                          </button>
-                          <button
-                            onClick={() => openEdit("email")}
-                            className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5"
-                          >
-                            <div className="flex items-center gap-3 sm:gap-4">
-                              <div className="rounded-xl bg-gradient-to-br from-mint/10 to-mint/20 p-2.5">
-                                <Mail className="h-4 w-4 text-mint sm:h-5 sm:w-5" />
+                            </button>
+                            <button
+                              onClick={() => openEdit("email")}
+                              className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5"
+                            >
+                              <div className="flex items-center gap-3 sm:gap-4">
+                                <div className="rounded-xl bg-gradient-to-br from-mint/10 to-mint/20 p-2.5">
+                                  <Mail className="h-4 w-4 text-mint sm:h-5 sm:w-5" />
+                                </div>
+                                <div className="text-left">
+                                  <div className="text-sm font-extrabold text-foreground sm:text-base">Email Address</div>
+                                  <div className="text-xs text-muted-foreground sm:text-sm">{user?.email}</div>
+                                </div>
                               </div>
-                              <div className="text-left">
-                                <div className="text-sm font-extrabold text-foreground sm:text-base">Email Address</div>
-                                <div className="text-xs text-muted-foreground sm:text-sm">{user?.email}</div>
+                              <div className="flex items-center gap-2 text-muted-foreground">
+                                <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                                <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                               </div>
-                            </div>
-                            <div className="flex items-center gap-2 text-muted-foreground">
-                              <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                              <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                            </div>
-                          </button>
-                          <button
-                            onClick={() => openEdit("phone")}
-                            className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5"
-                          >
-                            <div className="flex items-center gap-3 sm:gap-4">
-                              <div className="rounded-xl bg-gradient-to-br from-navy/10 to-blue-500/10 p-2.5">
-                                <Phone className="h-4 w-4 text-navy sm:h-5 sm:w-5" />
+                            </button>
+                            <button
+                              onClick={() => openEdit("phone")}
+                              className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5"
+                            >
+                              <div className="flex items-center gap-3 sm:gap-4">
+                                <div className="rounded-xl bg-gradient-to-br from-navy/10 to-blue-500/10 p-2.5">
+                                  <Phone className="h-4 w-4 text-navy sm:h-5 sm:w-5" />
+                                </div>
+                                <div className="text-left">
+                                  <div className="text-sm font-extrabold text-foreground sm:text-base">Phone Number</div>
+                                  <div className="text-xs text-muted-foreground sm:text-sm">{user?.phoneNumber || "+91 98765 43210"}</div>
+                                </div>
                               </div>
-                              <div className="text-left">
-                                <div className="text-sm font-extrabold text-foreground sm:text-base">Phone Number</div>
-                                <div className="text-xs text-muted-foreground sm:text-sm">{user?.phoneNumber || "+91 98765 43210"}</div>
+                              <div className="flex items-center gap-2 text-muted-foreground">
+                                <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                                <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                               </div>
-                            </div>
-                            <div className="flex items-center gap-2 text-muted-foreground">
-                              <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                              <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                            </div>
-                          </button>
-                          <button className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5">
-                            <div className="flex items-center gap-3 sm:gap-4">
-                              <div className="rounded-xl bg-gradient-to-br from-ember/10 to-amber-500/10 p-2.5">
-                                <Shield className="h-4 w-4 text-ember sm:h-5 sm:w-5" />
+                            </button>
+                            <button className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5">
+                              <div className="flex items-center gap-3 sm:gap-4">
+                                <div className="rounded-xl bg-gradient-to-br from-ember/10 to-amber-500/10 p-2.5">
+                                  <Shield className="h-4 w-4 text-ember sm:h-5 sm:w-5" />
+                                </div>
+                                <div className="text-left">
+                                  <div className="text-sm font-extrabold text-foreground sm:text-base">Privacy & Security</div>
+                                  <div className="text-xs text-muted-foreground sm:text-sm">Password, 2FA, and data settings</div>
+                                </div>
                               </div>
-                              <div className="text-left">
-                                <div className="text-sm font-extrabold text-foreground sm:text-base">Privacy & Security</div>
-                                <div className="text-xs text-muted-foreground sm:text-sm">Password, 2FA, and data settings</div>
-                              </div>
-                            </div>
-                            <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                          </button>
+                              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                            </button>
+                          </div>
                         </div>
 
-                        <div className="rounded-2xl border border-border/80 bg-gradient-to-br from-card to-muted/10 overflow-hidden divide-y divide-border/60">
-                          <button className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5">
-                            <div className="flex items-center gap-3 sm:gap-4">
-                              <div className="rounded-xl bg-gradient-to-br from-blue-500/10 to-indigo-500/10 p-2.5">
-                                <Moon className="h-4 w-4 text-blue-600 sm:h-5 sm:w-5" />
+                        <div className="rounded-2xl border border-border/80 bg-card overflow-hidden">
+                          <div className="divide-y divide-border/60">
+                            <button className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5">
+                              <div className="flex items-center gap-3 sm:gap-4">
+                                <div className="rounded-xl bg-gradient-to-br from-blue-500/10 to-indigo-500/10 p-2.5">
+                                  <Home className="h-4 w-4 text-blue-600 sm:h-5 sm:w-5" />
+                                </div>
+                                <div className="text-left">
+                                  <div className="text-sm font-extrabold text-foreground sm:text-base">Preferences</div>
+                                  <div className="text-xs text-muted-foreground sm:text-sm">Notifications, privacy, and app settings</div>
+                                </div>
                               </div>
-                              <div className="text-left">
-                                <div className="text-sm font-extrabold text-foreground sm:text-base">Appearance</div>
-                                <div className="text-xs text-muted-foreground sm:text-sm">Dark mode and theme settings</div>
+                              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                            </button>
+                            <button className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5">
+                              <div className="flex items-center gap-3 sm:gap-4">
+                                <div className="rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 p-2.5">
+                                  <MessageSquare className="h-4 w-4 text-emerald-600 sm:h-5 sm:w-5" />
+                                </div>
+                                <div className="text-left">
+                                  <div className="text-sm font-extrabold text-foreground sm:text-base">Support</div>
+                                  <div className="text-xs text-muted-foreground sm:text-sm">Help center and contact support</div>
+                                </div>
                               </div>
-                            </div>
-                            <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                          </button>
-                          <button className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5">
-                            <div className="flex items-center gap-3 sm:gap-4">
-                              <div className="rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 p-2.5">
-                                <Globe2 className="h-4 w-4 text-emerald-600 sm:h-5 sm:w-5" />
-                              </div>
-                              <div className="text-left">
-                                <div className="text-sm font-extrabold text-foreground sm:text-base">Language</div>
-                                <div className="text-xs text-muted-foreground sm:text-sm">English (India)</div>
-                              </div>
-                            </div>
-                            <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                          </button>
-                          <button className="w-full flex items-center justify-between p-4 transition-colors hover:bg-muted/30 sm:p-5">
-                            <div className="flex items-center gap-3 sm:gap-4">
-                              <div className="rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 p-2.5">
-                                <HelpCircle className="h-4 w-4 text-purple-600 sm:h-5 sm:w-5" />
-                              </div>
-                              <div className="text-left">
-                                <div className="text-sm font-extrabold text-foreground sm:text-base">Help & Support</div>
-                                <div className="text-xs text-muted-foreground sm:text-sm">Get help with your account</div>
-                              </div>
-                            </div>
-                            <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                          </button>
+                              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                            </button>
+                          </div>
                         </div>
                       </div>
 
