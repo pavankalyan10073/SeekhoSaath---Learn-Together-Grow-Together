@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { supabase } from "@/lib/supabase";
 
 interface TutorApplication {
   id: string;
@@ -38,13 +39,13 @@ export function AdminApplicationsTab() {
 
   const loadApplications = async () => {
     try {
-      const res = await fetch("/api/app?action=applications");
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({ statusMessage: "Failed to fetch applications" }));
-        throw new Error(errorData.statusMessage || "Failed to fetch applications");
-      }
-      const result = await res.json();
-      setApplications(result.data || []);
+      const { data, error } = await supabase
+        .from("tutor_applications")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      setApplications(data || []);
     } catch (error) {
       console.error("Failed to load applications:", error);
       const message = error instanceof Error ? error.message : "Failed to load applications";
@@ -61,15 +62,49 @@ export function AdminApplicationsTab() {
   const handleApprove = async (id: string) => {
     setActionLoading(id);
     try {
-      const res = await fetch(`/api/app?id=${encodeURIComponent(id)}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "approve" }),
+      const { data: app } = await supabase.from("tutor_applications").select("*").eq("id", id).single();
+
+      const tutorId = `tutor-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+      const { error: insertError } = await supabase.from("tutors").insert({
+        id: tutorId,
+        user_id: app.user_id,
+        name: app.full_name,
+        email: app.email,
+        mobile: app.mobile,
+        profile_pic: app.profile_pic,
+        bio: app.bio,
+        experience: app.experience,
+        degree: app.degree,
+        college: app.college,
+        year_of_passing: app.year_of_passing,
+        specializations: app.specializations || [],
+        subjects_to_teach: app.subjects_to_teach || [],
+        charge_per_session: app.charge_per_session,
+        teaching_mode: app.teaching_mode,
+        location: `${app.city}, ${app.district}, ${app.state}`,
+        languages: app.languages || [],
+        state: app.state,
+        district: app.district,
+        city: app.city,
+        pin_code: app.pin_code,
+        full_address: app.full_address,
+        aadhar_front: app.aadhar_front,
+        aadhar_back: app.aadhar_back,
+        application_date: app.application_date,
+        verified: true,
+        rating: 0,
+        sessions: 0,
+        response_time: "< 1 hour",
+        status: "approved",
       });
-      if (!res.ok) throw new Error("Failed to approve");
+
+      if (insertError) throw insertError;
+
+      await supabase.from("tutor_applications").update({ status: "approved", verified: true }).eq("id", id);
       toast.success("Tutor approved successfully");
       await loadApplications();
     } catch (error) {
+      console.error("Failed to approve tutor:", error);
       toast.error("Failed to approve tutor");
     } finally {
       setActionLoading(null);
@@ -81,12 +116,8 @@ export function AdminApplicationsTab() {
     if (!reason) return;
     setActionLoading(id);
     try {
-      const res = await fetch(`/api/app?id=${encodeURIComponent(id)}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "reject", reason }),
-      });
-      if (!res.ok) throw new Error("Failed to reject");
+      const { error } = await supabase.from("tutor_applications").update({ status: "rejected", rejection_reason: reason }).eq("id", id);
+      if (error) throw error;
       toast.success("Tutor application rejected");
       await loadApplications();
     } catch (error) {

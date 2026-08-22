@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { supabase } from "@/lib/supabase";
 
 interface Tutor {
   id: string;
@@ -47,13 +48,13 @@ export function AdminTutorsTab() {
 
   const loadTutors = async () => {
     try {
-      const res = await fetch("/api/app?action=tutors");
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({ statusMessage: "Failed to fetch tutors" }));
-        throw new Error(errorData.statusMessage || "Failed to fetch tutors");
-      }
-      const result = await res.json();
-      setTutors(result.data || []);
+      const { data, error } = await supabase
+        .from("tutors")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      setTutors(data || []);
     } catch (error) {
       console.error("Failed to load tutors:", error);
       const message = error instanceof Error ? error.message : "Failed to load tutors";
@@ -74,7 +75,7 @@ export function AdminTutorsTab() {
       tutor.name.toLowerCase().includes(query) ||
       tutor.email.toLowerCase().includes(query) ||
       tutor.location.toLowerCase().includes(query) ||
-      tutor.subjectsToTeach.some((s) => s.toLowerCase().includes(query))
+      tutor.subjects_to_teach?.some((s) => s.toLowerCase().includes(query))
     );
   });
 
@@ -87,8 +88,8 @@ export function AdminTutorsTab() {
       `Location: ${tutor.location}\n` +
       `Experience: ${tutor.experience}\n` +
       `Degree: ${tutor.degree} @ ${tutor.college}\n` +
-      `Charge: ₹${tutor.chargePerSession}/session\n` +
-      `Mode: ${tutor.teachingMode}\n` +
+      `Charge: ₹${tutor.charge_per_session}/session\n` +
+      `Mode: ${tutor.teaching_mode}\n` +
       `Rating: ${tutor.rating}\n` +
       `Sessions: ${tutor.sessions}\n` +
       `Status: ${tutor.status}`
@@ -108,7 +109,7 @@ export function AdminTutorsTab() {
       <Card>
         <CardHeader>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <CardTitle>All Tutors</CardTitle>
+            <CardTitle>Approved Tutors</CardTitle>
             <input
               type="text"
               placeholder="Search tutors..."
@@ -130,9 +131,9 @@ export function AdminTutorsTab() {
                 >
                   <div className="flex-1">
                     <div className="flex items-center gap-3">
-                      {tutor.profilePic && (
+                      {tutor.profile_pic && (
                         <img
-                          src={tutor.profilePic}
+                          src={tutor.profile_pic}
                           alt={tutor.name}
                           className="h-10 w-10 rounded-full object-cover border-2 border-border"
                         />
@@ -146,7 +147,7 @@ export function AdminTutorsTab() {
                     </div>
                     <div className="mt-2 flex flex-wrap gap-2 text-xs text-muted-foreground">
                       <span>📍 {tutor.location}</span>
-                      <span>💰 ₹{tutor.chargePerSession}/session</span>
+                      <span>💰 ₹{tutor.charge_per_session}/session</span>
                       <span>⭐ {tutor.rating}</span>
                       <span>📚 {tutor.sessions} sessions</span>
                       <span
