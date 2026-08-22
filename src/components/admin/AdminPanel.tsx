@@ -59,14 +59,12 @@ export function AdminPanel({ onNavigate }: { onNavigate?: (tab: string) => void 
       setApplications(data || []);
     } catch (error) {
       console.error("Failed to load applications:", error);
-      if (error && typeof error === "object" && "message" in error) {
-        console.error("[admin] applications error message", (error as { message?: string }).message);
-      }
-      if (error && typeof error === "object" && "status" in error) {
-        console.error("[admin] applications error status", (error as { status?: number }).status);
-      }
       const message = error instanceof Error ? error.message : "Failed to load applications";
-      toast.error(message);
+      if (message.includes("503") || message.includes("Service Unavailable")) {
+        toast.error("Unable to load data from database. The Supabase schema may not be applied yet.");
+      } else {
+        toast.error(message);
+      }
     } finally {
       setLoading(false);
     }

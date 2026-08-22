@@ -68,14 +68,12 @@ export function AdminTutorsTab() {
       setTutors(data || []);
     } catch (error) {
       console.error("Failed to load tutors:", error);
-      if (error && typeof error === "object" && "message" in error) {
-        console.error("[admin] tutors error message", (error as { message?: string }).message);
-      }
-      if (error && typeof error === "object" && "status" in error) {
-        console.error("[admin] tutors error status", (error as { status?: number }).status);
-      }
       const message = error instanceof Error ? error.message : "Failed to load tutors";
-      toast.error(message);
+      if (message.includes("503") || message.includes("Service Unavailable")) {
+        toast.error("Unable to load data from database. The Supabase schema may not be applied yet.");
+      } else {
+        toast.error(message);
+      }
     } finally {
       setLoading(false);
     }
