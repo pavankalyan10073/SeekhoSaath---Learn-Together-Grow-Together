@@ -36,6 +36,16 @@ self.addEventListener("fetch", (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
+  // Always bypass Supabase API requests
+  if (url.origin === "https://mobqaakpvm.supabase.co") {
+    event.respondWith(
+      fetch(request).catch(() => {
+        return new Response("", { status: 503, statusText: "Service Unavailable" });
+      })
+    );
+    return;
+  }
+
   // Skip cross-origin requests
   if (url.origin !== location.origin) {
     // For external assets like fonts, try network first
@@ -47,7 +57,11 @@ self.addEventListener("fetch", (event) => {
       );
       return;
     }
-    event.respondWith(fetch(request));
+    event.respondWith(
+      fetch(request).catch(() => {
+        return new Response("", { status: 503, statusText: "Service Unavailable" });
+      })
+    );
     return;
   }
 
