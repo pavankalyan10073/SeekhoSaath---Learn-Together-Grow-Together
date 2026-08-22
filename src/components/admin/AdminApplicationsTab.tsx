@@ -180,8 +180,8 @@ export function AdminApplicationsTab() {
                       </div>
                       <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
                         <span>🎓 {app.degree} @ {app.college}</span>
-                        <span>📅 {app.yearOfPassing}</span>
-                        <span>💰 ₹{app.chargePerSession}/session</span>
+                        <span>📅 {app.year_of_passing}</span>
+                        <span>💰 ₹{app.charge_per_session}/session</span>
                         <span>📍 {app.location}</span>
                       </div>
                     </div>
