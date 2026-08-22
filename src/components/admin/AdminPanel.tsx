@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getAllTutorApplications } from "@/lib/supabase-server-data";
 
 interface TutorApplication {
   id: string;
@@ -39,8 +38,10 @@ export function AdminPanel({ onNavigate }: { onNavigate?: (tab: string) => void 
 
   const loadApplications = async () => {
     try {
-      const apps = await getAllTutorApplications();
-      setApplications(apps);
+      const res = await fetch("/api/admin/applications");
+      if (!res.ok) throw new Error("Failed to fetch applications");
+      const result = await res.json();
+      setApplications(result.data || []);
     } catch (error) {
       console.error("Failed to load applications:", error);
       toast.error("Failed to load applications");

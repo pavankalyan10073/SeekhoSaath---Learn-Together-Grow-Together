@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect, createContext, useContext, type ReactNode } from "react";
 
 interface AdminUser {
