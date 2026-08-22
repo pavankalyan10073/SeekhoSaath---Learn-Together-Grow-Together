@@ -1,5 +1,6 @@
 import { defineEventHandler, createError, readBody } from "h3";
 import { $fetch } from "ofetch";
+import { createServerClient } from "@/lib/supabase-server";
 
 export default defineEventHandler(async (event) => {
   if (event.method !== "POST") {
@@ -7,7 +8,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const body = await readBody(event);
-  const { fullName, phone, email, mode, tutorName, tutorSubject } = body;
+  const { fullName, phone, email, mode, tutorName, tutorSubject, userId } = body;
 
   if (!fullName || !phone || !email || !mode) {
     throw createError({ statusCode: 400, statusMessage: "Missing required fields" });

@@ -1,5 +1,6 @@
 import { defineEventHandler, createError, readBody } from "h3";
 import { createBooking, getTutorById } from "@/lib/supabase-data";
+import { createServerClient } from "@/lib/supabase-server";
 
 export default defineEventHandler(async (event) => {
   if (event.method !== "POST") {
@@ -7,7 +8,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const body = await readBody(event);
-  const { tutorId, tutorName, tutorSubject, studentName, studentPhone, studentEmail, mode, amount, tuitionType, date, time } = body;
+  const { tutorId, tutorName, tutorSubject, studentName, studentPhone, studentEmail, mode, amount, tuitionType, date, time, userId } = body;
 
   if (!tutorId || !studentName || !studentPhone || !studentEmail || !amount) {
     throw createError({ statusCode: 400, statusMessage: "Missing required fields" });
@@ -18,8 +19,10 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: "Tutor not found" });
   }
 
+  const bookingUserId = (userId as string) || "guest";
+
   const booking = await createBooking({
-    userId: "guest",
+    userId: bookingUserId,
     tutorId,
     tutorName: tutorName || tutor.name,
     tutorSubject: tutorSubject || tutor.subjectsToTeach[0] || tutor.location,

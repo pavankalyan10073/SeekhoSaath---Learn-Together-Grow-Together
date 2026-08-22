@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useAuth } from "@/lib/auth-context";
 
 const GOOGLE_SHEET_WEBHOOK = import.meta.env.VITE_GOOGLE_SHEET_WEBHOOK || "";
 const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER || "9391485316";
@@ -102,6 +103,7 @@ export function BookSessionDialog({
   onOpenChange: (open: boolean) => void;
   tutor: { id: string; name: string; subj: string };
 }) {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
@@ -136,6 +138,7 @@ export function BookSessionDialog({
         studentEmail: formData.email,
         mode: formData.mode,
         amount: Number(formData.amount) * 100,
+        userId: user?.uid || null,
       };
 
       const res = await fetch("/api/payments/create-order", {

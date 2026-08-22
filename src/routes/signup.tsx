@@ -57,7 +57,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
-import { saveTutorApplication, updateUserRole, uploadImage, saveUserProfile } from "@/lib/supabase-data";
+import { uploadImage } from "@/lib/supabase-data";
 import { subjectCategories, type Subject } from "@/data/subjects";
 
 type Role = "student" | "tutor" | null;
@@ -1415,11 +1415,16 @@ function SignupPage() {
     try {
       const user = await signUp(data.email, data.password, data.fullName);
       if (user?.uid) {
-        await saveUserProfile(user.uid, {
-          email: data.email,
-          fullName: data.fullName,
-          mobile: data.mobile,
-          role: "student",
+        await fetch("/api/profiles/upsert", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: user.uid,
+            email: data.email,
+            fullName: data.fullName,
+            mobile: data.mobile,
+            role: "student",
+          }),
         });
       }
       toast.success("Account created successfully!");
@@ -1460,42 +1465,47 @@ function SignupPage() {
 
       const user = await signUp(step1Data.email, step1Data.password, step1Data.fullName);
 
-      const applicationId = `tutor-app-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-      
-      const application: TutorFormData & { id: string; applicationDate: string; verified: boolean; userId: string } = {
-        ...tutorData,
-        id: applicationId,
-        userId: user?.uid || "",
-        applicationDate: new Date().toISOString(),
-        verified: false,
-      };
-
-      await saveTutorApplication(application);
       if (user?.uid) {
-        await updateUserRole(user.uid, "tutor");
-        await saveUserProfile(user.uid, {
-          email: step1Data.email,
-          fullName: step1Data.fullName,
-          mobile: tutorData.mobile || step1Data.mobile,
-          role: "tutor",
-          profilePic: tutorData.profilePic,
-          bio: tutorData.bio,
-          experience: tutorData.experience,
-          degree: tutorData.degree,
-          college: tutorData.college,
-          yearOfPassing: tutorData.yearOfPassing,
-          specializations: tutorData.specializations,
-          subjectsToTeach: tutorData.subjectsToTeach,
-          chargePerSession: tutorData.chargePerSession,
-          teachingMode: tutorData.teachingMode,
-          state: tutorData.state,
-          district: tutorData.district,
-          city: tutorData.city,
-          pinCode: tutorData.pinCode,
-          fullAddress: tutorData.fullAddress,
-          languages: tutorData.languages,
-          aadharFront: tutorData.aadharFront,
-          aadharBack: tutorData.aadharBack,
+        await fetch("/api/tutor-applications", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...tutorData,
+            userId: user.uid,
+            applicationDate: new Date().toISOString(),
+            verified: false,
+            status: "pending",
+          }),
+        });
+
+        await fetch("/api/profiles/upsert", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: user.uid,
+            email: step1Data.email,
+            fullName: step1Data.fullName,
+            mobile: tutorData.mobile || step1Data.mobile,
+            role: "tutor",
+            profilePic: tutorData.profilePic,
+            bio: tutorData.bio,
+            experience: tutorData.experience,
+            degree: tutorData.degree,
+            college: tutorData.college,
+            yearOfPassing: tutorData.yearOfPassing,
+            specializations: tutorData.specializations,
+            subjectsToTeach: tutorData.subjectsToTeach,
+            chargePerSession: tutorData.chargePerSession,
+            teachingMode: tutorData.teachingMode,
+            state: tutorData.state,
+            district: tutorData.district,
+            city: tutorData.city,
+            pinCode: tutorData.pinCode,
+            fullAddress: tutorData.fullAddress,
+            languages: tutorData.languages,
+            aadharFront: tutorData.aadharFront,
+            aadharBack: tutorData.aadharBack,
+          }),
         });
       }
 

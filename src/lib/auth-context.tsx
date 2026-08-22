@@ -16,7 +16,7 @@ import {
   type User,
 } from "firebase/auth";
 import { auth, googleProvider } from "./firebase";
-import { getUserRole, saveUserProfile } from "@/lib/supabase-data";
+import { getUserRole } from "@/lib/supabase-data";
 
 interface AuthContextType {
   user: User | null;
@@ -57,10 +57,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (firebaseUser) {
         await refreshUserRole(firebaseUser.uid);
         try {
-          await saveUserProfile(firebaseUser.uid, {
-            email: firebaseUser.email || "",
-            fullName: firebaseUser.displayName || firebaseUser.email?.split("@")[0] || "",
-            role: (await getUserRole(firebaseUser.uid)) || "student",
+          await fetch("/api/profiles/upsert", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              userId: firebaseUser.uid,
+              email: firebaseUser.email || "",
+              fullName: firebaseUser.displayName || firebaseUser.email?.split("@")[0] || "",
+              role: (await getUserRole(firebaseUser.uid)) || "student",
+            }),
           });
         } catch {
           // profile sync failed, continue

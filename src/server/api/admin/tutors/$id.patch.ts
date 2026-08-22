@@ -1,5 +1,5 @@
 import { defineEventHandler, createError, readBody, getRouterParam } from "h3";
-import { approveTutorApplication, rejectTutorApplication } from "@/lib/supabase-data";
+import { approveTutorApplication, rejectTutorApplication } from "@/lib/supabase-server-data";
 
 export default defineEventHandler(async (event) => {
   if (event.method !== "PATCH") {
@@ -20,8 +20,8 @@ export default defineEventHandler(async (event) => {
 
   try {
     if (action === "approve") {
-      const tutor = await approveTutorApplication(id, "admin");
-      return { success: true, message: "Tutor approved successfully", data: tutor };
+      const result = await approveTutorApplication(id);
+      return { success: true, message: "Tutor approved successfully", data: result };
     } else {
       if (!reason) {
         throw createError({ statusCode: 400, statusMessage: "Rejection reason is required" });

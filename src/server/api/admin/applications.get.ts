@@ -1,5 +1,5 @@
-import { defineEventHandler, createError, readBody, getRouterParam } from "h3";
-import { getAllTutorApplications } from "@/lib/supabase-data";
+import { defineEventHandler, createError } from "h3";
+import { getAllTutorApplications } from "@/lib/supabase-server-data";
 
 export default defineEventHandler(async (event) => {
   if (event.method !== "GET") {
