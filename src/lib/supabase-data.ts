@@ -64,6 +64,10 @@ export interface Tutor {
   status: "pending" | "approved" | "rejected";
   createdAt: Date;
   updatedAt: Date;
+  img: string;
+  price: string;
+  subj: string;
+  education: string;
 }
 
 export interface Booking {
@@ -282,6 +286,10 @@ export async function getApprovedTutors(): Promise<Tutor[]> {
     status: row.status as "pending" | "approved" | "rejected",
     createdAt: new Date(row.created_at as string),
     updatedAt: new Date(row.updated_at as string),
+    img: (row.profile_pic as string) || "",
+    price: "₹" + String(row.charge_per_session || ""),
+    subj: ((row.subjects_to_teach as string[]) || []).join(" • "),
+    education: ((row.degree as string) || "") + (row.college ? " from " + row.college : ""),
   }));
 }
 
@@ -327,6 +335,10 @@ export async function getTutorById(tutorId: string): Promise<Tutor | null> {
     status: row.status as "pending" | "approved" | "rejected",
     createdAt: new Date(row.created_at as string),
     updatedAt: new Date(row.updated_at as string),
+    img: (row.profile_pic as string) || "",
+    price: "₹" + String(row.charge_per_session || ""),
+    subj: ((row.subjects_to_teach as string[]) || []).join(" • "),
+    education: ((row.degree as string) || "") + (row.college ? " from " + row.college : ""),
   };
 }
 
