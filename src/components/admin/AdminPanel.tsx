@@ -37,8 +37,11 @@ export function AdminPanel({ onNavigate }: { onNavigate?: (tab: string) => void 
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
+  const [diag, setDiag] = useState<string>("");
+
   const loadApplications = async () => {
     try {
+      setDiag("");
       console.log("[admin] loading applications", {
         url: import.meta.env.VITE_SUPABASE_URL,
         hasKey: Boolean(import.meta.env.VITE_SUPABASE_ANON_KEY),
@@ -55,13 +58,17 @@ export function AdminPanel({ onNavigate }: { onNavigate?: (tab: string) => void 
       console.log("[admin] applications result", result);
       const { data, error } = result;
 
-      if (error) throw error;
+      if (error) {
+        const msg = [error.message, error.details, error.hint, error.code].filter(Boolean).join(" | ");
+        setDiag(msg || "Unknown Supabase error");
+        throw new Error(msg || "Failed to fetch applications");
+      }
       setApplications(data || []);
     } catch (error) {
       console.error("Failed to load applications:", error);
       const message = error instanceof Error ? error.message : "Failed to load applications";
-      if (message.includes("503") || message.includes("Service Unavailable")) {
-        toast.error("Unable to load data from database. The Supabase schema may not be applied yet.");
+      if (message.includes("503") || message.includes("Service Unavailable") || message.includes("Failed to fetch")) {
+        toast.error("Database returned 503. Check Supabase Table Editor and PostgREST status.");
       } else {
         toast.error(message);
       }
@@ -147,6 +154,11 @@ export function AdminPanel({ onNavigate }: { onNavigate?: (tab: string) => void 
 
   return (
     <div className="space-y-6">
+      {diag ? (
+        <div className="rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-xs text-destructive">
+          <span className="font-bold">Database error:</span> {diag}
+        </div>
+      ) : null}
       <div className="grid gap-4 sm:gap-6 md:grid-cols-3 mb-8">
         <Card>
           <CardHeader className="pb-2">
