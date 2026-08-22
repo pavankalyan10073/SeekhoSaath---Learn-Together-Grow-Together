@@ -38,7 +38,7 @@ export function AdminApplicationsTab() {
 
   const loadApplications = async () => {
     try {
-      const res = await fetch("/api/admin?action=applications");
+      const res = await fetch("/api/app?action=applications");
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({ statusMessage: "Failed to fetch applications" }));
         throw new Error(errorData.statusMessage || "Failed to fetch applications");
@@ -61,7 +61,7 @@ export function AdminApplicationsTab() {
   const handleApprove = async (id: string) => {
     setActionLoading(id);
     try {
-      const res = await fetch(`/api/admin?id=${encodeURIComponent(id)}`, {
+      const res = await fetch(`/api/app?id=${encodeURIComponent(id)}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "approve" }),
@@ -81,7 +81,7 @@ export function AdminApplicationsTab() {
     if (!reason) return;
     setActionLoading(id);
     try {
-      const res = await fetch(`/api/admin?id=${encodeURIComponent(id)}`, {
+      const res = await fetch(`/api/app?id=${encodeURIComponent(id)}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "reject", reason }),
