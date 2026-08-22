@@ -39,12 +39,16 @@ export function AdminApplicationsTab() {
   const loadApplications = async () => {
     try {
       const res = await fetch("/api/admin/applications");
-      if (!res.ok) throw new Error("Failed to fetch applications");
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ statusMessage: "Failed to fetch applications" }));
+        throw new Error(errorData.statusMessage || "Failed to fetch applications");
+      }
       const result = await res.json();
       setApplications(result.data || []);
     } catch (error) {
       console.error("Failed to load applications:", error);
-      toast.error("Failed to load applications");
+      const message = error instanceof Error ? error.message : "Failed to load applications";
+      toast.error(message);
     } finally {
       setLoading(false);
     }

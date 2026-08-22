@@ -37,12 +37,16 @@ export function AdminBookingsTab() {
   const loadBookings = async () => {
     try {
       const res = await fetch("/api/admin/bookings");
-      if (!res.ok) throw new Error("Failed to fetch bookings");
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ statusMessage: "Failed to fetch bookings" }));
+        throw new Error(errorData.statusMessage || "Failed to fetch bookings");
+      }
       const result = await res.json();
       setBookings(result.data || []);
     } catch (error) {
       console.error("Failed to load bookings:", error);
-      toast.error("Failed to load bookings");
+      const message = error instanceof Error ? error.message : "Failed to load bookings";
+      toast.error(message);
     } finally {
       setLoading(false);
     }

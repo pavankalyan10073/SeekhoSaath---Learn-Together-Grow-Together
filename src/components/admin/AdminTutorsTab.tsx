@@ -48,12 +48,16 @@ export function AdminTutorsTab() {
   const loadTutors = async () => {
     try {
       const res = await fetch("/api/admin/tutors");
-      if (!res.ok) throw new Error("Failed to fetch tutors");
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ statusMessage: "Failed to fetch tutors" }));
+        throw new Error(errorData.statusMessage || "Failed to fetch tutors");
+      }
       const result = await res.json();
       setTutors(result.data || []);
     } catch (error) {
       console.error("Failed to load tutors:", error);
-      toast.error("Failed to load tutors");
+      const message = error instanceof Error ? error.message : "Failed to load tutors";
+      toast.error(message);
     } finally {
       setLoading(false);
     }
