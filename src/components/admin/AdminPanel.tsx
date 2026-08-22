@@ -32,7 +32,7 @@ interface TutorApplication {
   rejectionReason?: string;
 }
 
-export function AdminPanel() {
+export function AdminPanel({ onNavigate }: { onNavigate?: (tab: string) => void } = {}) {
   const [applications, setApplications] = useState<TutorApplication[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);

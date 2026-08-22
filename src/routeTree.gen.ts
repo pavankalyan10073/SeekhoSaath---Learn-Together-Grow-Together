@@ -29,10 +29,12 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as TutorsIndexRouteImport } from './routes/tutors/index'
 import { Route as SubjectsIndexRouteImport } from './routes/subjects/index'
 import { Route as BlogsIndexRouteImport } from './routes/blogs/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as TutorsTutorIdRouteImport } from './routes/tutors/$tutorId'
 import { Route as SubjectsSubjectIdRouteImport } from './routes/subjects/$subjectId'
 import { Route as PaymentSuccessRouteImport } from './routes/payment/success'
 import { Route as BlogsBlogIdRouteImport } from './routes/blogs/$blogId'
+import { Route as AdminLoginRouteImport } from './routes/admin/login'
 
 const TrustSafetyRoute = TrustSafetyRouteImport.update({
   id: '/trust-safety',
@@ -134,6 +136,11 @@ const BlogsIndexRoute = BlogsIndexRouteImport.update({
   path: '/blogs/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const TutorsTutorIdRoute = TutorsTutorIdRouteImport.update({
   id: '/tutors/$tutorId',
   path: '/tutors/$tutorId',
@@ -154,12 +161,17 @@ const BlogsBlogIdRoute = BlogsBlogIdRouteImport.update({
   path: '/blogs/$blogId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/careers': typeof CareersRoute
   '/community': typeof CommunityRoute
   '/contact': typeof ContactRoute
@@ -173,10 +185,12 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
   '/trust-safety': typeof TrustSafetyRoute
+  '/admin/login': typeof AdminLoginRoute
   '/blogs/$blogId': typeof BlogsBlogIdRoute
   '/payment/success': typeof PaymentSuccessRoute
   '/subjects/$subjectId': typeof SubjectsSubjectIdRoute
   '/tutors/$tutorId': typeof TutorsTutorIdRoute
+  '/admin/': typeof AdminIndexRoute
   '/blogs/': typeof BlogsIndexRoute
   '/subjects/': typeof SubjectsIndexRoute
   '/tutors/': typeof TutorsIndexRoute
@@ -185,7 +199,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
-  '/admin': typeof AdminRoute
   '/careers': typeof CareersRoute
   '/community': typeof CommunityRoute
   '/contact': typeof ContactRoute
@@ -199,10 +212,12 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
   '/trust-safety': typeof TrustSafetyRoute
+  '/admin/login': typeof AdminLoginRoute
   '/blogs/$blogId': typeof BlogsBlogIdRoute
   '/payment/success': typeof PaymentSuccessRoute
   '/subjects/$subjectId': typeof SubjectsSubjectIdRoute
   '/tutors/$tutorId': typeof TutorsTutorIdRoute
+  '/admin': typeof AdminIndexRoute
   '/blogs': typeof BlogsIndexRoute
   '/subjects': typeof SubjectsIndexRoute
   '/tutors': typeof TutorsIndexRoute
@@ -212,7 +227,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/careers': typeof CareersRoute
   '/community': typeof CommunityRoute
   '/contact': typeof ContactRoute
@@ -226,10 +241,12 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
   '/trust-safety': typeof TrustSafetyRoute
+  '/admin/login': typeof AdminLoginRoute
   '/blogs/$blogId': typeof BlogsBlogIdRoute
   '/payment/success': typeof PaymentSuccessRoute
   '/subjects/$subjectId': typeof SubjectsSubjectIdRoute
   '/tutors/$tutorId': typeof TutorsTutorIdRoute
+  '/admin/': typeof AdminIndexRoute
   '/blogs/': typeof BlogsIndexRoute
   '/subjects/': typeof SubjectsIndexRoute
   '/tutors/': typeof TutorsIndexRoute
@@ -254,10 +271,12 @@ export interface FileRouteTypes {
     | '/signup'
     | '/terms'
     | '/trust-safety'
+    | '/admin/login'
     | '/blogs/$blogId'
     | '/payment/success'
     | '/subjects/$subjectId'
     | '/tutors/$tutorId'
+    | '/admin/'
     | '/blogs/'
     | '/subjects/'
     | '/tutors/'
@@ -266,7 +285,6 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/account'
-    | '/admin'
     | '/careers'
     | '/community'
     | '/contact'
@@ -280,10 +298,12 @@ export interface FileRouteTypes {
     | '/signup'
     | '/terms'
     | '/trust-safety'
+    | '/admin/login'
     | '/blogs/$blogId'
     | '/payment/success'
     | '/subjects/$subjectId'
     | '/tutors/$tutorId'
+    | '/admin'
     | '/blogs'
     | '/subjects'
     | '/tutors'
@@ -306,10 +326,12 @@ export interface FileRouteTypes {
     | '/signup'
     | '/terms'
     | '/trust-safety'
+    | '/admin/login'
     | '/blogs/$blogId'
     | '/payment/success'
     | '/subjects/$subjectId'
     | '/tutors/$tutorId'
+    | '/admin/'
     | '/blogs/'
     | '/subjects/'
     | '/tutors/'
@@ -319,7 +341,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AccountRoute: typeof AccountRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   CareersRoute: typeof CareersRoute
   CommunityRoute: typeof CommunityRoute
   ContactRoute: typeof ContactRoute
@@ -484,6 +506,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/tutors/$tutorId': {
       id: '/tutors/$tutorId'
       path: '/tutors/$tutorId'
@@ -512,14 +541,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogsBlogIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
+
+interface AdminRouteChildren {
+  AdminLoginRoute: typeof AdminLoginRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminLoginRoute: AdminLoginRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AccountRoute: AccountRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   CareersRoute: CareersRoute,
   CommunityRoute: CommunityRoute,
   ContactRoute: ContactRoute,
