@@ -1,4 +1,4 @@
-const CACHE_NAME = "seekhosaath-v2";
+const CACHE_NAME = "seekhosaath-v3";
 const PRECACHE_URLS = [
   "/",
   "/manifest.json",
@@ -8,7 +8,6 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(PRECACHE_URLS).catch(() => {
-        // If precache fails, continue anyway
       });
     })
   );
@@ -36,19 +35,21 @@ self.addEventListener("fetch", (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Always bypass Supabase API requests
   if (url.origin === "https://mobqaakpvm.supabase.co") {
     event.respondWith(
-      fetch(request).catch(() => {
-        return new Response("", { status: 503, statusText: "Service Unavailable" });
+      fetch(request).catch((err) => {
+        console.error("[sw] supabase fetch failed", err);
+        return new Response(JSON.stringify({ error: "Supabase fetch failed" }), {
+          headers: { "Content-Type": "application/json" },
+          status: 503,
+          statusText: "Service Unavailable",
+        });
       })
     );
     return;
   }
 
-  // Skip cross-origin requests
   if (url.origin !== location.origin) {
-    // For external assets like fonts, try network first
     if (request.destination === "font") {
       event.respondWith(
         fetch(request).catch(() => {
@@ -58,14 +59,14 @@ self.addEventListener("fetch", (event) => {
       return;
     }
     event.respondWith(
-      fetch(request).catch(() => {
+      fetch(request).catch((err) => {
+        console.error("[sw] cross-origin fetch failed", err);
         return new Response("", { status: 503, statusText: "Service Unavailable" });
       })
     );
     return;
   }
 
-  // API requests: network first
   if (url.pathname.startsWith("/api/")) {
     event.respondWith(
       fetch(request)
@@ -90,7 +91,6 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Static assets: cache first
   if (request.destination === "image" || request.destination === "font" || request.destination === "style" || request.destination === "script") {
     event.respondWith(
       caches.match(request).then((cached) => {
@@ -107,7 +107,6 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // HTML pages: network first, fallback to cache
   event.respondWith(
     fetch(request)
       .then((response) => {
