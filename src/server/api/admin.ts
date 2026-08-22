@@ -1,5 +1,4 @@
-import { defineEventHandler, createError } from "h3";
-import { readBody } from "h3";
+import { defineEventHandler, createError, readBody } from "h3";
 import { createServerClient } from "@/lib/supabase-server";
 
 export default defineEventHandler(async (event) => {
