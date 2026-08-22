@@ -36,11 +36,11 @@ function SubjectDetailPage() {
   const otherSubjects = category.subjects.filter((s) => s.id !== subject.id);
 
   return (
-    <main className="min-h-screen bg-background text-foreground pb-safe pt-16 sm:pt-20">
+    <main className="min-h-screen bg-background text-foreground pb-safe pt-14 sm:pt-16">
       <Navbar />
 
       {/* Hero */}
-      <section className="relative overflow-hidden pt-12 pb-10 sm:pt-16 sm:pb-12 md:pt-20 md:pb-14">
+      <section className="relative overflow-hidden pt-2 pb-6 sm:pt-3 sm:pb-8 md:pt-4 md:pb-10">
         <div className="bg-mesh absolute inset-0 -z-10" />
         <div
           aria-hidden
