@@ -22,16 +22,16 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const stored = localStorage.getItem("admin_auth");
-    if (stored) {
-      try {
+    try {
+      const stored = localStorage.getItem("admin_auth");
+      if (stored) {
         const parsed = JSON.parse(stored);
         if (parsed?.email === ADMIN_EMAIL) {
           setAdmin({ email: ADMIN_EMAIL, role: "admin" });
         }
-      } catch {
-        localStorage.removeItem("admin_auth");
       }
+    } catch {
+      localStorage.removeItem("admin_auth");
     }
     setLoading(false);
   }, []);
@@ -40,7 +40,11 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
     if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
       const adminUser = { email: ADMIN_EMAIL, role: "admin" as const };
       setAdmin(adminUser);
-      localStorage.setItem("admin_auth", JSON.stringify(adminUser));
+      try {
+        localStorage.setItem("admin_auth", JSON.stringify(adminUser));
+      } catch {
+        // storage may be unavailable
+      }
       return true;
     }
     return false;
@@ -48,7 +52,11 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     setAdmin(null);
-    localStorage.removeItem("admin_auth");
+    try {
+      localStorage.removeItem("admin_auth");
+    } catch {
+      // ignore
+    }
   };
 
   return (

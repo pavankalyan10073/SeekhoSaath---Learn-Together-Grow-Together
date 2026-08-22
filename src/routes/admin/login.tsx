@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useAdminAuth } from "@/lib/admin-auth";
-import { useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,13 +17,14 @@ function AdminLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login, admin } = useAdminAuth();
+  const { login, admin, loading: authLoading } = useAdminAuth();
   const navigate = useNavigate();
 
-  if (admin) {
-    navigate({ to: "/admin" });
-    return null;
-  }
+  useEffect(() => {
+    if (!authLoading && admin) {
+      navigate({ to: "/admin" });
+    }
+  }, [admin, authLoading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,6 +41,18 @@ function AdminLoginPage() {
       setLoading(false);
     }
   };
+
+  if (authLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-crimson border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (admin) {
+    return null;
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">

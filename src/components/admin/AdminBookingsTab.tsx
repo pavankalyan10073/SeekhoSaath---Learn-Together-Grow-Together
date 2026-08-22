@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { createServerClient } from "@/lib/supabase-server";
 
 interface Booking {
   id: string;
@@ -37,14 +36,10 @@ export function AdminBookingsTab() {
 
   const loadBookings = async () => {
     try {
-      const supabase = createServerClient();
-      const { data, error } = await supabase
-        .from("bookings")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-      setBookings(data || []);
+      const res = await fetch("/api/admin/bookings");
+      if (!res.ok) throw new Error("Failed to fetch bookings");
+      const result = await res.json();
+      setBookings(result.data || []);
     } catch (error) {
       console.error("Failed to load bookings:", error);
       toast.error("Failed to load bookings");

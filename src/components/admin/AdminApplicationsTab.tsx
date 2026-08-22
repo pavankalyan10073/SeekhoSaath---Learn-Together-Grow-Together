@@ -4,9 +4,6 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getAllTutorApplications } from "@/lib/supabase-server-data";
-import { createServerClient } from "@/lib/supabase-server";
-import { approveTutorApplication, rejectTutorApplication } from "@/lib/supabase-server-data";
 
 interface TutorApplication {
   id: string;
@@ -38,12 +35,13 @@ export function AdminApplicationsTab() {
   const [applications, setApplications] = useState<TutorApplication[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
-  const [selectedApp, setSelectedApp] = useState<TutorApplication | null>(null);
 
   const loadApplications = async () => {
     try {
-      const apps = await getAllTutorApplications();
-      setApplications(apps);
+      const res = await fetch("/api/admin/applications");
+      if (!res.ok) throw new Error("Failed to fetch applications");
+      const result = await res.json();
+      setApplications(result.data || []);
     } catch (error) {
       console.error("Failed to load applications:", error);
       toast.error("Failed to load applications");
@@ -59,7 +57,12 @@ export function AdminApplicationsTab() {
   const handleApprove = async (id: string) => {
     setActionLoading(id);
     try {
-      await approveTutorApplication(id);
+      const res = await fetch(`/api/admin/tutors/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "approve" }),
+      });
+      if (!res.ok) throw new Error("Failed to approve");
       toast.success("Tutor approved successfully");
       await loadApplications();
     } catch (error) {
@@ -74,7 +77,12 @@ export function AdminApplicationsTab() {
     if (!reason) return;
     setActionLoading(id);
     try {
-      await rejectTutorApplication(id, reason);
+      const res = await fetch(`/api/admin/tutors/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "reject", reason }),
+      });
+      if (!res.ok) throw new Error("Failed to reject");
       toast.success("Tutor application rejected");
       await loadApplications();
     } catch (error) {

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getAllTutorApplications } from "@/lib/supabase-data";
+import { getAllTutorApplications } from "@/lib/supabase-server-data";
 
 interface TutorApplication {
   id: string;
@@ -95,128 +95,121 @@ export function AdminPanel({ onNavigate }: { onNavigate?: (tab: string) => void 
   const processedApplications = applications.filter((a) => a.status !== "pending");
 
   return (
-    <div className="min-h-screen bg-background">
-      <main className="container-px mx-auto max-w-7xl py-8 sm:py-10 md:py-14">
-        <div className="mb-8">
-          <h1 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">Admin Dashboard</h1>
-          <p className="mt-2 text-sm text-muted-foreground sm:text-base">Manage tutor applications and platform settings</p>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-3 mb-8">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Pending Applications</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-crimson">{pendingApplications.length}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Total Applications</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">{applications.length}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Approved Tutors</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-mint">{processedApplications.filter((a) => a.status === "approved").length}</div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Pending Tutor Applications</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {loading ? (
-              <p className="text-sm text-muted-foreground">Loading applications...</p>
-            ) : pendingApplications.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No pending applications</p>
-            ) : (
-              <div className="space-y-4">
-                {pendingApplications.map((app) => (
-                  <div key={app.id} className="rounded-xl border-2 border-border bg-card p-4 sm:p-6">
-                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          {app.profilePic && (
-                            <img src={app.profilePic} alt={app.fullName} className="h-12 w-12 rounded-full object-cover border-2 border-border" />
-                          )}
-                          <div>
-                            <h3 className="font-display text-base font-bold sm:text-lg">{app.fullName}</h3>
-                            <p className="text-xs text-muted-foreground sm:text-sm">{app.email} • {app.mobile}</p>
-                          </div>
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-2">{app.bio}</p>
-                        <div className="flex flex-wrap gap-2 mb-2">
-                          {app.specializations.map((s) => (
-                            <span key={s} className="rounded-full bg-crimson/10 px-2.5 py-1 text-[11px] font-bold text-crimson">{s}</span>
-                          ))}
-                        </div>
-                        <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
-                          <span>🎓 {app.degree} @ {app.college}</span>
-                          <span>📅 {app.yearOfPassing}</span>
-                          <span>💰 ₹{app.chargePerSession}/session</span>
-                          <span>📍 {app.location}</span>
-                        </div>
-                      </div>
-                      <div className="flex gap-2 sm:flex-col">
-                        <Button
-                          onClick={() => handleApprove(app.id)}
-                          disabled={actionLoading === app.id}
-                          className="bg-mint hover:bg-mint/90 text-white"
-                        >
-                          {actionLoading === app.id ? "Approving..." : "Approve"}
-                        </Button>
-                        <Button
-                          onClick={() => handleReject(app.id)}
-                          disabled={actionLoading === app.id}
-                          variant="destructive"
-                        >
-                          Reject
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
+    <div className="space-y-6">
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-3 mb-8">
         <Card>
-          <CardHeader>
-            <CardTitle>Processed Applications</CardTitle>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs font-medium text-muted-foreground sm:text-sm">Pending Applications</CardTitle>
           </CardHeader>
           <CardContent>
-            {processedApplications.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No processed applications yet</p>
-            ) : (
-              <div className="space-y-3">
-                {processedApplications.map((app) => (
-                  <div key={app.id} className="flex items-center justify-between rounded-lg border border-border bg-card p-3 sm:p-4">
-                    <div>
-                      <p className="font-medium text-sm sm:text-base">{app.fullName}</p>
-                      <p className="text-xs text-muted-foreground">{app.email}</p>
-                    </div>
-                    <span className={`rounded-full px-3 py-1 text-xs font-bold ${
-                      app.status === "approved" ? "bg-mint/15 text-mint" : "bg-destructive/15 text-destructive"
-                    }`}>
-                      {app.status}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
+            <div className="text-2xl font-bold text-crimson sm:text-3xl">{pendingApplications.length}</div>
           </CardContent>
         </Card>
-      </main>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs font-medium text-muted-foreground sm:text-sm">Total Applications</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold sm:text-3xl">{applications.length}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs font-medium text-muted-foreground sm:text-sm">Approved Tutors</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-mint sm:text-3xl">{processedApplications.filter((a) => a.status === "approved").length}</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle>Pending Tutor Applications</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {loading ? (
+            <p className="text-sm text-muted-foreground">Loading applications...</p>
+          ) : pendingApplications.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No pending applications</p>
+          ) : (
+            <div className="space-y-4">
+              {pendingApplications.map((app) => (
+                <div key={app.id} className="rounded-xl border-2 border-border bg-card p-4 sm:p-6">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        {app.profilePic && (
+                          <img src={app.profilePic} alt={app.fullName} className="h-12 w-12 rounded-full object-cover border-2 border-border" />
+                        )}
+                        <div>
+                          <h3 className="font-display text-base font-bold sm:text-lg">{app.fullName}</h3>
+                          <p className="text-xs text-muted-foreground sm:text-sm">{app.email} • {app.mobile}</p>
+                        </div>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-2">{app.bio}</p>
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {app.specializations.map((s) => (
+                          <span key={s} className="rounded-full bg-crimson/10 px-2.5 py-1 text-[11px] font-bold text-crimson">{s}</span>
+                        ))}
+                      </div>
+                      <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
+                        <span>🎓 {app.degree} @ {app.college}</span>
+                        <span>📅 {app.yearOfPassing}</span>
+                        <span>💰 ₹{app.chargePerSession}/session</span>
+                        <span>📍 {app.location}</span>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 sm:flex-col">
+                      <Button
+                        onClick={() => handleApprove(app.id)}
+                        disabled={actionLoading === app.id}
+                        className="bg-mint hover:bg-mint/90 text-white"
+                      >
+                        {actionLoading === app.id ? "Approving..." : "Approve"}
+                      </Button>
+                      <Button
+                        onClick={() => handleReject(app.id)}
+                        disabled={actionLoading === app.id}
+                        variant="destructive"
+                      >
+                        Reject
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Processed Applications</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {processedApplications.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No processed applications yet</p>
+          ) : (
+            <div className="space-y-3">
+              {processedApplications.map((app) => (
+                <div key={app.id} className="flex items-center justify-between rounded-lg border border-border bg-card p-3 sm:p-4">
+                  <div>
+                    <p className="font-medium text-sm sm:text-base">{app.fullName}</p>
+                    <p className="text-xs text-muted-foreground">{app.email}</p>
+                  </div>
+                  <span className={`rounded-full px-3 py-1 text-xs font-bold ${
+                    app.status === "approved" ? "bg-mint/15 text-mint" : "bg-destructive/15 text-destructive"
+                  }`}>
+                    {app.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -5,12 +5,12 @@ export default defineEventHandler(async (event) => {
   const supabase = createServerClient();
 
   const { data, error } = await supabase
-    .from("tutor_applications")
+    .from("bookings")
     .select("*")
     .order("created_at", { ascending: false });
 
   if (error) {
-    throw createError({ statusCode: 500, statusMessage: "Failed to fetch applications" });
+    throw createError({ statusCode: 500, statusMessage: "Failed to fetch bookings" });
   }
 
   return { success: true, data: data || [] };

@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { createServerClient } from "@/lib/supabase-server";
 
 interface Tutor {
   id: string;
@@ -48,14 +47,10 @@ export function AdminTutorsTab() {
 
   const loadTutors = async () => {
     try {
-      const supabase = createServerClient();
-      const { data, error } = await supabase
-        .from("tutors")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-      setTutors(data || []);
+      const res = await fetch("/api/admin/tutors");
+      if (!res.ok) throw new Error("Failed to fetch tutors");
+      const result = await res.json();
+      setTutors(result.data || []);
     } catch (error) {
       console.error("Failed to load tutors:", error);
       toast.error("Failed to load tutors");
