@@ -37,10 +37,19 @@ export function AdminBookingsTab() {
 
   const loadBookings = async () => {
     try {
-      const { data, error } = await supabase
+      console.log("[admin] loading bookings", {
+        url: import.meta.env.VITE_SUPABASE_URL,
+        hasKey: Boolean(import.meta.env.VITE_SUPABASE_ANON_KEY),
+      });
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("Loading timed out")), 10000)
+      );
+      const queryPromise = supabase
         .from("bookings")
         .select("*")
         .order("created_at", { ascending: false });
+
+      const { data, error } = await Promise.race([queryPromise, timeoutPromise]);
 
       if (error) throw error;
       setBookings(data || []);

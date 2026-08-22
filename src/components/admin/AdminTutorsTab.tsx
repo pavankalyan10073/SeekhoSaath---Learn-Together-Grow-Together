@@ -48,10 +48,19 @@ export function AdminTutorsTab() {
 
   const loadTutors = async () => {
     try {
-      const { data, error } = await supabase
+      console.log("[admin] loading tutors", {
+        url: import.meta.env.VITE_SUPABASE_URL,
+        hasKey: Boolean(import.meta.env.VITE_SUPABASE_ANON_KEY),
+      });
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("Loading timed out")), 10000)
+      );
+      const queryPromise = supabase
         .from("tutors")
         .select("*")
         .order("created_at", { ascending: false });
+
+      const { data, error } = await Promise.race([queryPromise, timeoutPromise]);
 
       if (error) throw error;
       setTutors(data || []);
