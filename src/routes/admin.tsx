@@ -1,16 +1,14 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { AdminPanel } from "@/components/admin/AdminPanel";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { AdminAuthProvider } from "@/lib/admin-auth";
 
 export const Route = createFileRoute("/admin")({
-  head: () => ({
-    meta: [
-      { title: "Admin — SeekhoSaath" },
-      { name: "description", content: "Admin dashboard for managing tutor applications." },
-    ],
-  }),
-  component: AdminPage,
+  component: AdminLayout,
 });
 
-function AdminPage() {
-  return <AdminPanel />;
+function AdminLayout() {
+  return (
+    <AdminAuthProvider>
+      <Outlet />
+    </AdminAuthProvider>
+  );
 }

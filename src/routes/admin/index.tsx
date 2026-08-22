@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useAdminAuth } from "@/lib/admin-auth";
+import { useNavigate } from "@tanstack/react-router";
 import { AdminPanel } from "@/components/admin/AdminPanel";
 import { AdminApplicationsTab } from "@/components/admin/AdminApplicationsTab";
 import { AdminTutorsTab } from "@/components/admin/AdminTutorsTab";
@@ -18,6 +19,7 @@ export const Route = createFileRoute("/admin/")({
 
 function AdminPage() {
   const { admin, loading: authLoading } = useAdminAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [stats, setStats] = useState({
     totalUsers: 0,
@@ -30,9 +32,9 @@ function AdminPage() {
 
   useEffect(() => {
     if (!authLoading && !admin) {
-      throw redirect({ to: "/admin/login" });
+      navigate({ to: "/admin/login" });
     }
-  }, [admin, authLoading]);
+  }, [admin, authLoading, navigate]);
 
   useEffect(() => {
     if (!admin) return;
@@ -77,7 +79,8 @@ function AdminPage() {
   }
 
   if (!admin) {
-    throw redirect({ to: "/admin/login" });
+    navigate({ to: "/admin/login" });
+    return null;
   }
 
   return (
@@ -95,7 +98,7 @@ function AdminPage() {
           <Button
             onClick={() => {
               localStorage.removeItem("admin_auth");
-              throw redirect({ to: "/admin/login" });
+              navigate({ to: "/admin/login" });
             }}
             variant="outline"
             className="w-full sm:w-auto"

@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useAdminAuth } from "@/lib/admin-auth";
+import { useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,9 +19,11 @@ function AdminLoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const { login, admin } = useAdminAuth();
+  const navigate = useNavigate();
 
   if (admin) {
-    throw redirect({ to: "/admin" });
+    navigate({ to: "/admin" });
+    return null;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -30,7 +33,7 @@ function AdminLoginPage() {
       const success = await login(email, password);
       if (success) {
         toast.success("Welcome to Admin Panel");
-        throw redirect({ to: "/admin" });
+        navigate({ to: "/admin" });
       } else {
         toast.error("Invalid admin credentials");
       }
