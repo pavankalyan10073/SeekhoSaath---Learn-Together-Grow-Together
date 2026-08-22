@@ -38,10 +38,16 @@ export function AdminPanel({ onNavigate }: { onNavigate?: (tab: string) => void 
 
   const loadApplications = async () => {
     try {
-      const res = await fetch("/api/admin/applications");
+      const res = await fetch("/api/admin?action=applications");
       if (!res.ok) {
-        const errorData = await res.json().catch(() => ({ statusMessage: "Failed to fetch applications" }));
-        throw new Error(errorData.statusMessage || "Failed to fetch applications");
+        let errorMessage = `HTTP ${res.status}: Failed to fetch applications`;
+        try {
+          const errorData = await res.json();
+          errorMessage = errorData.statusMessage || errorData.message || errorMessage;
+        } catch {
+          // response is not JSON
+        }
+        throw new Error(errorMessage);
       }
       const result = await res.json();
       setApplications(result.data || []);
@@ -61,7 +67,7 @@ export function AdminPanel({ onNavigate }: { onNavigate?: (tab: string) => void 
   const handleApprove = async (id: string) => {
     setActionLoading(id);
     try {
-      const res = await fetch(`/api/admin/tutors/${id}`, {
+      const res = await fetch(`/api/admin?id=${encodeURIComponent(id)}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "approve" }),
@@ -81,7 +87,7 @@ export function AdminPanel({ onNavigate }: { onNavigate?: (tab: string) => void 
     if (!reason) return;
     setActionLoading(id);
     try {
-      const res = await fetch(`/api/admin/tutors/${id}`, {
+      const res = await fetch(`/api/admin?id=${encodeURIComponent(id)}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "reject", reason }),

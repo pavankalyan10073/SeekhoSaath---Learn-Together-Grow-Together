@@ -1,11 +1,11 @@
--- SeekhoSaath Supabase Production Schema
--- Run this in Supabase SQL Editor after creating your project
+-- SeekhoSaath Supabase Production Schema (minimal/admin-safe)
+-- Run this in Supabase SQL Editor
 
 -- Enable extensions
 create extension if not exists "uuid-ossp";
 
 -- ============================================
--- PROFILES (linked to Firebase UID via string id)
+-- PROFILES
 -- ============================================
 create table if not exists public.profiles (
   id text primary key,
@@ -55,7 +55,7 @@ create table if not exists public.tutor_applications (
 );
 
 -- ============================================
--- TUTORS (approved tutors only)
+-- TUTORS
 -- ============================================
 create table if not exists public.tutors (
   id uuid primary key default uuid_generate_v4(),
@@ -246,69 +246,98 @@ alter table public.sessions enable row level security;
 alter table public.student_progress enable row level security;
 alter table public.notifications enable row level security;
 
--- Profiles: public read, users manage own
-create policy "Public profiles are viewable by everyone" on public.profiles for select using (true);
-create policy "Users can insert their own profile" on public.profiles for insert with check (id = current_setting('app.current_user_id', true));
-create policy "Users can update own profile" on public.profiles for update using (id = current_setting('app.current_user_id', true));
+drop policy if exists "Public profiles are viewable by everyone" on public.profiles;
+drop policy if exists "Authenticated users can insert profiles" on public.profiles;
+drop policy if exists "Users can update own profile" on public.profiles;
 
--- Tutor applications: public read, authenticated insert, admin update
+drop policy if exists "Tutor applications are viewable by everyone" on public.tutor_applications;
+drop policy if exists "Authenticated users can insert applications" on public.tutor_applications;
+drop policy if exists "Admins can update applications" on public.tutor_applications;
+
+drop policy if exists "Approved tutors are viewable by everyone" on public.tutors;
+drop policy if exists "Admins can insert tutors" on public.tutors;
+drop policy if exists "Admins can update tutors" on public.tutors;
+
+drop policy if exists "Users can view their own bookings" on public.bookings;
+drop policy if exists "Authenticated users can insert bookings" on public.bookings;
+drop policy if exists "Users can update own bookings" on public.bookings;
+
+drop policy if exists "Users can view own payments" on public.payments;
+drop policy if exists "Users can insert own payments" on public.payments;
+
+drop policy if exists "Meetings are insertable by everyone" on public.meetings;
+drop policy if exists "Meetings are viewable by everyone" on public.meetings;
+
+drop policy if exists "Participants can view sessions" on public.sessions;
+drop policy if exists "Authenticated users can insert sessions" on public.sessions;
+drop policy if exists "Tutors can update their sessions" on public.sessions;
+
+drop policy if exists "Students can view their own progress" on public.student_progress;
+drop policy if exists "Tutors can view their students progress" on public.student_progress;
+drop policy if exists "Authenticated users can insert progress" on public.student_progress;
+drop policy if exists "Authenticated users can update progress" on public.student_progress;
+
+drop policy if exists "Users can view their own notifications" on public.notifications;
+drop policy if exists "Users can update their own notifications" on public.notifications;
+drop policy if exists "Authenticated users can insert notifications" on public.notifications;
+
+drop policy if exists "Avatar images are publicly accessible" on storage.objects;
+drop policy if exists "Authenticated users can upload tutor images" on storage.objects;
+drop policy if exists "Users can update their own images" on storage.objects;
+drop policy if exists "Users can delete their own images" on storage.objects;
+drop policy if exists "Admins can view tutor documents" on storage.objects;
+drop policy if exists "Authenticated users can upload tutor documents" on storage.objects;
+drop policy if exists "Users can update their own documents" on storage.objects;
+drop policy if exists "Users can delete their own documents" on storage.objects;
+
+create policy "Public profiles are viewable by everyone" on public.profiles for select using (true);
+create policy "Authenticated users can insert profiles" on public.profiles for insert with check (auth.uid() is not null);
+create policy "Users can update own profile" on public.profiles for update using (auth.uid()::text = id);
+
 create policy "Tutor applications are viewable by everyone" on public.tutor_applications for select using (true);
-create policy "Authenticated users can insert applications" on public.tutor_applications for insert with check (user_id = current_setting('app.current_user_id', true));
+create policy "Authenticated users can insert applications" on public.tutor_applications for insert with check (auth.uid() is not null);
 create policy "Admins can update applications" on public.tutor_applications for update using (
-  exists (select 1 from public.profiles where profiles.id = current_setting('app.current_user_id', true) and profiles.role = 'admin')
+  exists (select 1 from public.profiles where profiles.id = auth.uid()::text and profiles.role = 'admin')
 );
 
--- Tutors: public read, admin write
-create policy "Tutors are viewable by everyone" on public.tutors for select using (status = 'approved');
+create policy "Approved tutors are viewable by everyone" on public.tutors for select using (status = 'approved');
 create policy "Admins can insert tutors" on public.tutors for insert with check (
-  exists (select 1 from public.profiles where profiles.id = current_setting('app.current_user_id', true) and profiles.role = 'admin')
+  exists (select 1 from public.profiles where profiles.id = auth.uid()::text and profiles.role = 'admin')
 );
 create policy "Admins can update tutors" on public.tutors for update using (
-  exists (select 1 from public.profiles where profiles.id = current_setting('app.current_user_id', true) and profiles.role = 'admin')
+  exists (select 1 from public.profiles where profiles.id = auth.uid()::text and profiles.role = 'admin')
 );
 
--- Bookings: users see own, admins/tutors see related
-create policy "Users can view own bookings" on public.bookings for select using (user_id = current_setting('app.current_user_id', true));
-create policy "Tutors can view their bookings" on public.bookings for select using (
-  exists (select 1 from public.tutors where tutors.id = bookings.tutor_id and tutors.user_id = current_setting('app.current_user_id', true))
-);
-create policy "Users can insert bookings" on public.bookings for insert with check (user_id = current_setting('app.current_user_id', true));
-create policy "Users can update own bookings" on public.bookings for update using (user_id = current_setting('app.current_user_id', true));
+create policy "Users can view their own bookings" on public.bookings for select using (user_id = auth.uid()::text);
+create policy "Authenticated users can insert bookings" on public.bookings for insert with check (auth.uid() is not null);
+create policy "Users can update own bookings" on public.bookings for update using (user_id = auth.uid()::text);
 
--- Payments: users see own
-create policy "Users can view own payments" on public.payments for select using (user_id = current_setting('app.current_user_id', true));
-create policy "Users can insert own payments" on public.payments for insert with check (user_id = current_setting('app.current_user_id', true));
+create policy "Users can view own payments" on public.payments for select using (user_id = auth.uid()::text);
+create policy "Users can insert own payments" on public.payments for insert with check (auth.uid() is not null);
 
--- Meetings: anyone can insert, public read
 create policy "Meetings are insertable by everyone" on public.meetings for insert with check (true);
 create policy "Meetings are viewable by everyone" on public.meetings for select using (true);
 
--- Sessions: participants can view, system can write
 create policy "Participants can view sessions" on public.sessions for select using (
-  student_id = current_setting('app.current_user_id', true) or
-  exists (select 1 from public.tutors where tutors.id = sessions.tutor_id and tutors.user_id = current_setting('app.current_user_id', true))
+  student_id = auth.uid()::text or
+  exists (select 1 from public.tutors where tutors.id = sessions.tutor_id and tutors.user_id = auth.uid()::text)
 );
-create policy "System can insert sessions" on public.sessions for insert with check (true);
+create policy "Authenticated users can insert sessions" on public.sessions for insert with check (auth.uid() is not null);
 create policy "Tutors can update their sessions" on public.sessions for update using (
-  exists (select 1 from public.tutors where tutors.id = sessions.tutor_id and tutors.user_id = current_setting('app.current_user_id', true))
+  exists (select 1 from public.tutors where tutors.id = sessions.tutor_id and tutors.user_id = auth.uid()::text)
 );
 
--- Student progress
-create policy "Students can view their own progress" on public.student_progress for select using (student_id = current_setting('app.current_user_id', true));
+create policy "Students can view their own progress" on public.student_progress for select using (student_id = auth.uid()::text);
 create policy "Tutors can view their students progress" on public.student_progress for select using (
-  exists (select 1 from public.tutors where tutors.id = student_progress.tutor_id and tutors.user_id = current_setting('app.current_user_id', true))
+  exists (select 1 from public.tutors where tutors.id = student_progress.tutor_id and tutors.user_id = auth.uid()::text)
 );
-create policy "System can insert progress" on public.student_progress for insert with check (true);
-create policy "System can update progress" on public.student_progress for update using (true);
+create policy "Authenticated users can insert progress" on public.student_progress for insert with check (auth.uid() is not null);
+create policy "Authenticated users can update progress" on public.student_progress for update using (auth.uid() is not null);
 
--- Notifications
-create policy "Users can view their own notifications" on public.notifications for select using (user_id = current_setting('app.current_user_id', true));
-create policy "Users can update their own notifications" on public.notifications for update using (user_id = current_setting('app.current_user_id', true));
-create policy "System can insert notifications" on public.notifications for insert with check (true);
+create policy "Users can view their own notifications" on public.notifications for select using (user_id = auth.uid()::text);
+create policy "Users can update their own notifications" on public.notifications for update using (user_id = auth.uid()::text);
+create policy "Authenticated users can insert notifications" on public.notifications for insert with check (auth.uid() is not null);
 
--- ============================================
--- STORAGE POLICIES
--- ============================================
 create policy "Avatar images are publicly accessible" on storage.objects for select using (bucket_id = 'tutor-images');
 create policy "Authenticated users can upload tutor images" on storage.objects for insert with check (bucket_id = 'tutor-images' and auth.uid() is not null);
 create policy "Users can update their own images" on storage.objects for update using (bucket_id = 'tutor-images' and auth.uid() is not null);
@@ -318,12 +347,3 @@ create policy "Admins can view tutor documents" on storage.objects for select us
 create policy "Authenticated users can upload tutor documents" on storage.objects for insert with check (bucket_id = 'tutor-documents' and auth.uid() is not null);
 create policy "Users can update their own documents" on storage.objects for update using (bucket_id = 'tutor-documents' and auth.uid() is not null);
 create policy "Users can delete their own documents" on storage.objects for delete using (bucket_id = 'tutor-documents' and auth.uid() is not null);
-
--- ============================================
--- REALTIME
--- ============================================
-alter publication supabase_realtime add table public.bookings;
-alter publication supabase_realtime add table public.sessions;
-alter publication supabase_realtime add table public.payments;
-alter publication supabase_realtime add table public.notifications;
-alter publication supabase_realtime add table public.student_progress;
