@@ -49,12 +49,20 @@ export function AdminBookingsTab() {
         .select("*")
         .order("created_at", { ascending: false });
 
-      const { data, error } = await Promise.race([queryPromise, timeoutPromise]);
+      const result = await Promise.race([queryPromise, timeoutPromise]);
+      console.log("[admin] bookings result", result);
+      const { data, error } = result;
 
       if (error) throw error;
       setBookings(data || []);
     } catch (error) {
       console.error("Failed to load bookings:", error);
+      if (error && typeof error === "object" && "message" in error) {
+        console.error("[admin] bookings error message", (error as { message?: string }).message);
+      }
+      if (error && typeof error === "object" && "status" in error) {
+        console.error("[admin] bookings error status", (error as { status?: number }).status);
+      }
       const message = error instanceof Error ? error.message : "Failed to load bookings";
       toast.error(message);
     } finally {

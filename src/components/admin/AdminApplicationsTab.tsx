@@ -51,12 +51,20 @@ export function AdminApplicationsTab() {
         .select("*")
         .order("created_at", { ascending: false });
 
-      const { data, error } = await Promise.race([queryPromise, timeoutPromise]);
+      const result = await Promise.race([queryPromise, timeoutPromise]);
+      console.log("[admin] applications result", result);
+      const { data, error } = result;
 
       if (error) throw error;
       setApplications(data || []);
     } catch (error) {
       console.error("Failed to load applications:", error);
+      if (error && typeof error === "object" && "message" in error) {
+        console.error("[admin] applications error message", (error as { message?: string }).message);
+      }
+      if (error && typeof error === "object" && "status" in error) {
+        console.error("[admin] applications error status", (error as { status?: number }).status);
+      }
       const message = error instanceof Error ? error.message : "Failed to load applications";
       toast.error(message);
     } finally {
