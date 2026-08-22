@@ -1,7 +1,11 @@
-const { createClient } = require("@supabase/supabase-js");
+import { createClient } from "@supabase/supabase-js";
 
 const url = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!url || !serviceRoleKey) {
+  console.error("Supabase credentials missing");
+}
 
 const supabase = createClient(url, serviceRoleKey, {
   auth: { autoRefreshToken: false, persistSession: false },
@@ -12,7 +16,7 @@ function sendJson(res, statusCode, payload) {
   return res.status(statusCode).send(JSON.stringify(payload));
 }
 
-module.exports = async (req, res) => {
+export default async (req, res) => {
   const urlObj = new URL(req.url || `http://localhost${req.url}`);
   const action = urlObj.searchParams.get("action") || "applications";
 
