@@ -6,7 +6,6 @@ import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Sections";
 import { useState, useEffect } from "react";
 import { getApprovedTutors, type Tutor } from "@/lib/supabase-data";
-import { BookSessionDialog } from "@/components/site/BookingDialogs";
 
 export const Route = createFileRoute("/tutors/")({
   head: () => ({
@@ -29,8 +28,6 @@ function TutorsPage() {
   const [sortBy, setSortBy] = useState<"rating" | "sessions" | "price">("rating");
   const [dbTutors, setDbTutors] = useState<Tutor[]>([]);
   const [loading, setLoading] = useState(true);
-  const [bookOpen, setBookOpen] = useState(false);
-  const [bookingTutor, setBookingTutor] = useState<{ id: string; name: string; subj: string } | null>(null);
 
   useEffect(() => {
     const loadTutors = async () => {
@@ -207,17 +204,9 @@ function TutorsPage() {
                           {t.sessions}+ sessions
                         </div>
                       </div>
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          setBookingTutor({ id: t.id, name: t.name, subj: t.subj });
-                          setBookOpen(true);
-                        }}
-                        className="rounded-full bg-navy px-3 py-2 text-[11px] font-bold text-white transition-all hover:bg-crimson hover:shadow-lg sm:px-4 sm:py-2.5 sm:text-xs"
-                      >
+                      <span className="rounded-full bg-navy px-3 py-2 text-[11px] font-bold text-white transition-all hover:bg-crimson hover:shadow-lg sm:px-4 sm:py-2.5 sm:text-xs">
                         Book
-                      </button>
+                      </span>
                     </div>
                   </div>
                 </Link>
@@ -244,13 +233,6 @@ function TutorsPage() {
         )}
       </section>
 
-      {bookingTutor && (
-        <BookSessionDialog
-          open={bookOpen}
-          onOpenChange={setBookOpen}
-          tutor={bookingTutor}
-        />
-      )}
       <Footer />
     </main>
   );

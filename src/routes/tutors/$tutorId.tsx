@@ -4,33 +4,9 @@ import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { tutors as staticTutors } from "@/data/tutors";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Sections";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { getTutorById } from "@/lib/supabase-data";
-
-function ClientOnlyDialogs({ tutor, bookOpen, setBookOpen, meetingOpen, setMeetingOpen }: { tutor: { id: string; name: string; subj: string }; bookOpen: boolean; setBookOpen: (open: boolean) => void; meetingOpen: boolean; setMeetingOpen: (open: boolean) => void }) {
-  const [ready, setReady] = useState(false);
-  const [Dialogs, setDialogs] = useState<{ BookSessionDialog: React.ComponentType<{ open: boolean; onOpenChange: (open: boolean) => void; tutor: { id: string; name: string; subj: string } }>; MeetingDialog: React.ComponentType<{ open: boolean; onOpenChange: (open: boolean) => void; tutor: { id: string; name: string; subj: string } }> } | null>(null);
-
-  useEffect(() => {
-    import("@/components/site/BookingDialogs")
-      .then((mod) => {
-        setDialogs({ BookSessionDialog: mod.BookSessionDialog, MeetingDialog: mod.MeetingDialog });
-        setReady(true);
-      })
-      .catch((error) => {
-        console.error("Failed to load booking dialogs:", error);
-      });
-  }, []);
-
-  if (!ready || !Dialogs) return null;
-
-  return (
-    <>
-      <Dialogs.BookSessionDialog open={bookOpen} onOpenChange={setBookOpen} tutor={tutor} />
-      <Dialogs.MeetingDialog open={meetingOpen} onOpenChange={setMeetingOpen} tutor={tutor} />
-    </>
-  );
-}
+import { BookSessionDialog, MeetingDialog } from "@/components/site/BookingDialogs";
 
 export const Route = createFileRoute("/tutors/$tutorId")({
   head: () => ({
@@ -56,7 +32,7 @@ function TutorDetailPage() {
   const [bookOpen, setBookOpen] = useState(false);
   const [meetingOpen, setMeetingOpen] = useState(false);
 
-  console.log("TutorDetailPage loaded tutor:", tutor?.id, tutor?.name);
+  if (!tutor) return null;
 
   return (
     <main className="min-h-screen bg-background text-foreground pb-safe pt-14 sm:pt-16">
@@ -201,7 +177,8 @@ function TutorDetailPage() {
         </div>
       </section>
 
-      <ClientOnlyDialogs tutor={{ id: tutor.id, name: tutor.name, subj: tutor.subj }} bookOpen={bookOpen} setBookOpen={setBookOpen} meetingOpen={meetingOpen} setMeetingOpen={setMeetingOpen} />
+      <BookSessionDialog open={bookOpen} onOpenChange={setBookOpen} tutor={{ id: tutor.id, name: tutor.name, subj: tutor.subj }} />
+      <MeetingDialog open={meetingOpen} onOpenChange={setMeetingOpen} tutor={{ id: tutor.id, name: tutor.name, subj: tutor.subj }} />
       <Footer />
     </main>
   );
